@@ -162,7 +162,7 @@ export const useGameStore = create<GameState>()(
       equipped: { weapon: null, armor: null, accessory: null } as GameState['equipped'],
       ownedSkills: INITIAL_SKILLS.map(s => ({ ...s, level: 1 })),
       equippedSkills: [],
-      unlockedSkills: [],
+      unlockedSkills: [] as string[],
       battleLogs: [],
       lastBattleResult: null as BattleResultSummary | null,
       monsterKills: {},
@@ -400,13 +400,22 @@ export const useGameStore = create<GameState>()(
       processBattle: (monsterData) => {
         const { player, ownedSkills, equippedSkills, monsterKills, equipped } = get(); // 1. ดึง equipped ออกมาด้วย
         const currentKillCount = monsterKills[monsterData.id] || 0;
+
+
         const finalStats = get().getDerivedStats();
 
-        // ดึงข้อมูลสกิลล่าสุด
-        const latestEquippedSkills = equippedSkills.map(eqSkill => {
-          const latestData = ownedSkills.find(os => os.id === eqSkill.id);
-          return latestData ? latestData : eqSkill;
-        });
+        const playerForBattle = {
+          ...player,
+          actualAtk: finalStats.atk,
+          actualDef: finalStats.def,
+          maxHp: finalStats.maxHp
+        };
+
+        const latestEquippedSkills = equippedSkills
+          .map(eqSkill => {
+            return ownedSkills.find(os => os.id === eqSkill.id) || eqSkill;
+          })
+          .filter(Boolean); // กรอง null/undefined ออก
 
         // ✨ 2. ดึงข้อมูล Item จริงๆ จาก Database (ITEMS) ตามที่สวมใส่อยู่
         const weaponItem = equipped.weapon ? ITEMS[equipped.weapon] : null;
@@ -421,10 +430,8 @@ export const useGameStore = create<GameState>()(
           accItem
         ].filter(Boolean) as BattleEffect[]; // กรองเอาเฉพาะตัวที่ไม่เป็น null
 
-        const playerWithStats = { ...player, ...finalStats };
-
         // ✨ 4. ส่ง allActiveEffects (ที่มีไอเทมแล้ว) เข้าไปแทน latestEquippedSkills
-        const result = simulateBattle(playerWithStats, monsterData, allActiveEffects, currentKillCount);
+        const result = simulateBattle(playerForBattle, monsterData, allActiveEffects, currentKillCount);
 
         set((state) => {
           // --- 1. เตรียมตัวแปรพื้นฐานสำหรับอัปเดต Store ---

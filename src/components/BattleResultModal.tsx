@@ -4,18 +4,20 @@ import { MONSTERS } from '../data/monsters'
 import { getMasteryBonus } from '../utils/gameHelpers'
 import { INITIAL_SKILLS } from '../store/skills';
 import type { Skill } from '../types/game';
+import { calculateFinalStats } from '../logic/stats';
 
 export function BattleResultModal() {
-    // 1. รวบการดึงข้อมูลจาก Store ให้จบในที่เดียว
-    const {
-        lastBattleResult,
+
+    const { lastBattleResult,
         clearBattleResult,
         monsterKills,
-        player
-    } = useGameStore();
+        player,
+        equipped,
+        getEquippedSkillsWithIcons } = useGameStore();
 
     // 2. Validation เช็คผลการต่อสู้ล่าสุด
     if (!lastBattleResult) return null;
+
 
     const {
         won,
@@ -26,6 +28,7 @@ export function BattleResultModal() {
         monsterName,
         droppedSkillIds
     } = lastBattleResult;
+
 
 
 
@@ -53,17 +56,18 @@ export function BattleResultModal() {
         skillHpBonus = (vitalitySkill.level || 0) * 5;
     }
 
-    // 3. รวมผลลัพธ์: Base HP + Mastery + Skill + (อาจมีโบนัสเลเวลเพิ่มอีก)
-    // 💡 ถ้า 240 + 25 (Mastery) + 50 (Skill) = 315... แสดงว่าขาดอีก 50
-    // ผมจะเพิ่ม "ตัวแปรปรับสมดุล" เพื่อให้ได้ 365 ตามที่คุณแจ้งครับ
-    const realMaxHp = player.maxHp + masteryHpBonus + skillHpBonus + (player.level * 5); // สมมติว่าเลเวลละ 5
+    // ✅ 1. คำนวณค่าพลังสุทธิโดยใช้ฟังก์ชันเดียวกับ Dashboard
+    const equippedSkills = getEquippedSkillsWithIcons();
+    const finalStats = calculateFinalStats(player, equipped, monsterKills, equippedSkills);
 
-    // ⚠️ ถ้า realMaxHp ยังไม่เท่ากับ 365 ให้ลองเปลี่ยนเป็นดึงจากแหล่งที่ Dashboard ใช้โดยตรง
-    // หรือถ้า Dashboard คำนวณยังไง ให้เอา Logic นั้นมาวางบรรทัดบนครับ
+    // ✅ 2. ใช้ค่าจาก finalStats โดยตรง (ไม่ต้อง + โบนัสเองแล้ว)
+    const realMaxHp = finalStats.maxHp;
 
+    // ✅ 3. คำนวณความคืบหน้าต่างๆ
     const hpPercentage = Math.max(0, Math.min(100, (player.hp / realMaxHp) * 100));
     const playerExpProgress = Math.min((player.exp / player.maxExp) * 100, 100);
 
+    // ส่วน Mastery Tracker (คงไว้เหมือนเดิม)
     const currentKills = monsterKills[monsterId || ''] || 0;
     const getNextGoal = (kills: number) => {
         if (kills < 10) return 10;
@@ -72,7 +76,6 @@ export function BattleResultModal() {
     };
     const nextGoal = getNextGoal(currentKills);
     const progress = Math.min((currentKills / nextGoal) * 100, 100);
-
     const droppedSkills = (droppedSkillIds || [])
         .map(id => INITIAL_SKILLS.find(s => s.id === id))
         .filter((skill): skill is Skill => skill !== undefined);
@@ -83,7 +86,9 @@ export function BattleResultModal() {
         clearBattleResult();
     };
 
-
+    const monster = MONSTERS.find(m => m.id === monsterId);
+    const baseGold = monster?.gold || 0;
+    const baseExp = monster?.exp || 0;
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
@@ -120,6 +125,13 @@ export function BattleResultModal() {
                     <div className="space-y-2.5 bg-slate-50 p-4 rounded-[2rem] border border-slate-100">
                         <div>
                             <div className="flex justify-between items-center mb-1 px-1">
+                                <div className="flex flex-col">
+
+                                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-tighter leading-none mb-1">
+                                        Level {player.level}
+                                    </span>
+
+                                </div>
                                 <div className="flex items-center gap-1">
                                     <Heart size={10} className="text-rose-500 fill-rose-500" />
                                     <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Health</span>
@@ -152,13 +164,25 @@ export function BattleResultModal() {
                         <div className="space-y-4">
                             {/* Rewards Grid */}
                             <div className="grid grid-cols-2 gap-2">
+                                {/* ช่อง EXP - โชว์แค่ยอดรวมปกติ เพราะยังไม่มี Bonus */}
                                 <div className="bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm text-center">
-                                    <div className="text-xl font-black text-slate-800">+{expEarned}</div>
+                                    <div className="text-xl font-black text-slate-800">+{expEarned.toLocaleString()}</div>
                                     <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Exp</div>
                                 </div>
+
+                                {/* ช่อง GOLD - โชว์ Bonus เฉพาะตอนที่ได้รับเพิ่มจริงเท่านั้น */}
                                 <div className="bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm text-center">
-                                    <div className="text-xl font-black text-slate-800">+{goldEarned}</div>
-                                    <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Gold</div>
+                                    <div className="text-xl font-black text-slate-800">+{goldEarned.toLocaleString()}</div>
+                                    <div className="flex items-center justify-center gap-1">
+                                        <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Gold</div>
+
+                                        {/* ✅ เงื่อนไข: ต้องได้มากกว่าฐาน "และ" ฐานต้องไม่เป็น 0 */}
+                                        {goldEarned > baseGold && baseGold > 0 && (
+                                            <div className="text-[7px] font-black text-emerald-500 bg-emerald-50 px-1 rounded-sm animate-bounce-short">
+                                                (+{goldEarned - baseGold})
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 

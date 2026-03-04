@@ -249,10 +249,7 @@ export function DashboardPage() {
                 />
             )}
 
-            {/* --- Section 3: Quick Shop (แยกมาเป็นอีกแถว หรือไปวางที่อื่น) --- */}
-            <div className="w-full mt-6">
-                <QuickShop onBuy={buyItem} />
-            </div>
+
 
         </div>
 

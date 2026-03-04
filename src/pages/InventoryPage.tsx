@@ -145,13 +145,14 @@ export function InventoryPage() {
                       )}
                     </div>
 
+                    {/* แก้ไขปุ่ม Unequip ในส่วน Current Gear */}
                     {slot.item && (
                       <button
                         onClick={() => unequipItem(slot.type)}
-                        className="group-hover:opacity-100 opacity-0 p-1.5 sm:p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
-                        title="Unequip"
+                        className="absolute -right-1 -top-2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-white shadow-lg hover:bg-rose-600 hover:scale-105 transition-all z-20 border-2 border-white group/btn"
                       >
-                        <XCircle size={20} />
+                        <XCircle size={10} className="group-hover/btn:rotate-90 transition-transform" />
+                        <span className="text-[9px] font-black uppercase tracking-tighter">UnEquip</span>
                       </button>
                     )}
                   </div>

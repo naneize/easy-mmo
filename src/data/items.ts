@@ -76,7 +76,7 @@ export const ITEMS: Record<string, GameItem> = {
         name: 'Wooden Sword',
         description: 'ดาบไม้เก่าๆ เพิ่มพลังโจมตีเล็กน้อย',
         type: 'weapon', rarity: 'Common', price: 100, icon: '🗡️', minLevel: 1,
-        stats: { atk: 5 }
+        stats: { atk: 7 }
     },
     'w_iron_blade': {
         id: 'w_iron_blade',

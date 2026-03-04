@@ -5,7 +5,7 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'starter-field',
         name: 'ทุ่งหญ้าเริ่มต้น',
-        description: 'พื้นที่สำหรับนักผจญภัยหน้าใหม่ เต็มไปด้วยสไลม์ตัวน้อย',
+        description: 'พื้นที่สำหรับนักผจญภัยหน้าใหม่',
         minLevel: 1,
         bgEmoji: '🌱',
         monsters: MONSTERS
@@ -73,11 +73,11 @@ export const WORLD_MAPS: GameMap[] = [
             .sort((a, b) => a.level - b.level),
     },
     {
-        id: 'dragon-lair',
-        name: 'รังมังกรทมิฬ',
-        description: 'ที่อยู่ของบอสใหญ่ มังกรที่แข็งแกร่งที่สุดในปฐพี',
-        minLevel: 15,
-        bgEmoji: '🌋',
+        id: 'wizard-tower',
+        name: 'วิหารจอมเวทย์',
+        description: 'ที่อยู่ของเหล่าจอมเวทย์',
+        minLevel: 30,
+        bgEmoji: '👑',
         monsters: MONSTERS
             .filter(m => m.id.startsWith('boss'))
             .sort((a, b) => a.level - b.level),

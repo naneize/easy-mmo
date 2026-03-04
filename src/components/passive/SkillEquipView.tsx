@@ -50,31 +50,40 @@ export function SkillEquipView() {
 
                         // --- 1. กรณีสล็อตว่าง (Empty Slot) ---
                         if (!skill) return (
-                            <div key={idx} className="flex flex-col items-center justify-center gap-2 rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-slate-300 min-h-[160px]">
-                                <Plus size={24} className="opacity-20" />
-                                <div className="text-[10px] font-black uppercase tracking-tighter">Empty Slot</div>
+                            <div
+                                key={idx}
+                                className="flex flex-col items-center justify-center gap-1 rounded-[1.5rem] sm:rounded-[2rem] border-2 border-dashed border-slate-200 bg-slate-50/50 p-4 text-slate-300 min-h-[90px] sm:min-h-[110px] transition-all duration-300"
+                            >
+                                {/* ย่อขนาดไอคอน Plus ลงนิดนึง */}
+                                <Plus size={20} className="opacity-20" />
+                                <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest opacity-40">
+                                    Empty
+                                </div>
                             </div>
                         );
 
                         // --- 2. กรณีสล็อตที่มีสกิล (Equipped Slot) ---
                         return (
+
                             <div key={skill.id} className="relative group">
+                                {/* 1. ตัวการ์ด - ปิดแท็กในตัวมันเองเลย (Self-closing) */}
                                 <SkillCard
                                     skill={skill}
-                                    isEquipped={true} // ตัวนี้จะเป็นตัวกำหนดสี emerald-50 ใน SkillCard ให้อัตโนมัติ
+                                    isEquipped={true}
                                     isSynergy={player.element === skill.element}
-                                // ลบ className="bg-emerald-50..." ออก เพราะเราไปฟิกไว้ใน SkillCard แล้ว
-                                >
-                                    {/* ปุ่มถอดออก (Un-equip) */}
-                                    <button
-                                        onClick={() => unequipSkill(skill.id)}
-                                        className="absolute -right-2 -top-2 grid h-8 w-8 place-items-center rounded-full bg-slate-900 text-white hover:bg-rose-500 transition-all duration-300 z-30 shadow-lg group-hover:scale-110"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                </SkillCard>
+                                    hideDescription={true}
+                                    className="h-fit !pb-2"
+                                />
 
-                                {/* Glow effect ด้านหลัง (คงไว้ได้ครับ สวยดี!) */}
+                                {/* 2. ปุ่ม X - วางไว้ข้างนอก SkillCard แต่อยู่ใน Div "relative group" เดียวกัน */}
+                                <button
+                                    onClick={() => unequipSkill(skill.id)}
+                                    className="absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-white hover:bg-rose-500 transition-all duration-300 z-50 shadow-xl border-2 border-white group-hover:scale-110 active:scale-95"
+                                >
+                                    <X size={12} />
+                                </button>
+
+                                {/* Glow effect */}
                                 <div className="absolute inset-0 -z-10 bg-emerald-400/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             </div>
                         );

@@ -56,7 +56,7 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const isSynergy = player.element === 'Neutral';
         const baseAtkPercent = isSynergy ? 0.35 : 0.20;
         const atkPercent = baseAtkPercent + ((level - 1) * 0.03);
-        // คำนวณเพื่อแสดงใน Log เฉยๆ แต่ส่งค่าจริงผ่าน atkPercent
+
         const displayAtkBonus = Math.floor(player.atk * atkPercent);
 
         return {
@@ -184,10 +184,14 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
     },
 
     'gold-finder': ({ level }) => {
-        const goldBonus = 0.10 + ((level - 1) * 0.02);
+        // level 1 = 10%, level 2 = 12% ...
+        const goldBonusPercent = 0.10 + ((level - 1) * 0.02);
+
         return {
-            value: Math.floor(100 * goldBonus),
-            log: `⭐ Gold Finder Lv.${level} ได้รับ Gold +${Math.round(goldBonus * 100)}%`
+            // ส่งค่า multiplier ไปเลย (เช่น 1.10) เพื่อเอาไปคูณกับ gold ได้ทันที
+            multiplier: 1 + goldBonusPercent,
+            value: Math.round(goldBonusPercent * 100), // ส่งค่า 10, 12 ไปโชว์ใน UI
+            log: `⭐ Gold Finder Lv.${level}: รับทองเพิ่ม +${Math.round(goldBonusPercent * 100)}%`
         };
     },
 

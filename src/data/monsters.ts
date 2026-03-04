@@ -20,12 +20,23 @@ export const ROLE_MULTIPLIERS: Record<MonsterRoleType, { hp: number; atk: number
 };
 
 // Base stat formulas (Linear Growth)
-export const calculateBaseStats = (level: number) => ({
-    hp: 100 + (level * 60), // เพิ่ม HP ให้สูงขึ้นเล็กน้อย
-    atk: 12 + (level * 6), // เพิ่ม ATK ให้ท้าทายขึ้น
-    def: 6 + (level * 4), // เพิ่ม DEF ให้สมดุลขึ้น
-    exp: 25 + (level * 18) // เพิ่ม EXP ให้ตรงกับความยาก
-});
+export const calculateBaseStats = (level: number) => {
+    // ใช้ Math.pow(ตัวคูณ, level) เพื่อให้เลเวลสูงๆ สเตตัสพุ่งพรวด
+    const growthFactor = Math.pow(1.2, level - 1);
+
+    return {
+        // เลเวล 1 จะได้ 60 | เลเวล 10 จะพุ่งไปประมาณ 300+
+        hp: Math.floor(60 * growthFactor + (level * 20)),
+
+        // เลเวล 1 จะได้ 8 | เลเวล 10 จะพุ่งไปประมาณ 40+
+        atk: Math.floor(8 * growthFactor + (level * 2)),
+
+        // เลเวล 1 จะได้ 2 | เลเวล 10 จะพุ่งไปประมาณ 15+
+        def: Math.floor(2 * growthFactor + (level * 1.5)),
+
+        exp: Math.floor(20 * growthFactor + (level * 10))
+    };
+};
 
 // Initialize monster with calculated stats
 export const initializeMonster = (monsterData: MonsterData) => {
@@ -67,7 +78,7 @@ export const MONSTERS: MonsterData[] = [
         gold: 50, exp: 0, // exp will be calculated
         element: 'Wind',
         masteryBonus: { type: 'atk', valuePerTier: 1 },
-        droppedSkills: ['tailwind-strike', 'blade-dance']
+        droppedSkills: ['tailwind-strike', 'gold-finder']
     },
     {
         id: 'm-04',
@@ -422,18 +433,6 @@ export const MONSTERS: MonsterData[] = [
 
     // --- บอสประจำเขต (Boss) ---
     {
-        id: 'boss-01',
-        name: 'พญามังกรทมิฬ',
-        description: 'หายนะแห่งผืนป่า หากป้องกันไม่ดีอาจตายในเทิร์นเดียว',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
-        level: 15,
-        role: MonsterRole.BOSS,
-        gold: 3000, exp: 0, // exp will be calculated
-        element: 'Dark',
-        masteryBonus: { type: 'atk', valuePerTier: 10 },
-        droppedSkills: ['dark-pact', 'armor-penetration']
-    },
-    {
         id: 'boss-02',
         name: 'จอมเวทย์แห่งความตาย',
         description: 'บอสแห่งความตายที่มีพลังทำลายล้างสูง',
@@ -471,7 +470,7 @@ export const MONSTERS: MonsterData[] = [
     },
     {
         id: 'boss-05',
-        name: 'จอมเวทย์แห่งความว่าง',
+        name: 'จอมเวทย์แห่งความว่างเปล่า',
         description: 'บอสสุดท้ายที่มีพลังทำลายล้างสูงสุด',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
         level: 50,

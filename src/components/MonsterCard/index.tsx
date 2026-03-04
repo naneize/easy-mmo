@@ -110,11 +110,16 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
 
 
                     <div className="flex flex-col gap-1 items-end">
+                        {/* EXP Badge */}
                         <div className="bg-amber-50 text-amber-600 px-2 py-1 rounded-xl border border-amber-100 flex items-center gap-1 text-[10px] font-black shadow-sm">
-                            <Sparkles size={10} /> +{initializedMonster.exp}
+                            <Sparkles size={10} />
+                            <span>+{initializedMonster.exp} EXP</span>
                         </div>
+
+                        {/* GOLD Badge */}
                         <div className="bg-yellow-50 text-yellow-600 px-2 py-1 rounded-xl border border-yellow-100 flex items-center gap-1 text-[10px] font-black shadow-sm">
-                            <Coins size={10} /> +{monster.gold}
+                            <Coins size={10} />
+                            <span>+{monster.gold} GOLD</span>
                         </div>
                     </div>
                 </div>

@@ -86,10 +86,36 @@ export const simulateBattle = (
 
     // #region --- [RESULT] ---
     const won = m_hp <= 0;
+
+    // 💰 --- เริ่มการคำนวณ Gold พร้อม Bonus ---
+    let finalGold = 0;
+    if (won) {
+        const baseGold = monster.gold || 0;
+
+        // ค้นหาสกิล Gold Finder จากรายการสกิลที่ส่งเข้ามา (equippedSkills) 
+        // หรือดึงจาก player.skills ตามโครงสร้างของคุณ
+        const goldFinderSkill = equippedSkills.find(s => s.id === 'gold-finder');
+
+        finalGold = baseGold;
+
+        if (goldFinderSkill) {
+            // 1. คำนวณ % ตามเลเวล (Lv.1 = 0.10, Lv.2 = 0.12...)
+            const bonusPercent = 0.10 + ((goldFinderSkill.level - 1) * 0.02);
+
+            // 2. คำนวณ "เงินส่วนที่เพิ่มขึ้น" แล้วปัดเศษทิ้ง
+            const bonusGold = Math.floor(baseGold * bonusPercent);
+
+            // 3. รวมเงินรางวัลทั้งหมด
+            finalGold = baseGold + bonusGold;
+        }
+    }
+    // 💰 --- จบการคำนวณ ---
+
     if (!won && p_hp <= 0) {
         logs.push(Log.lose(monster.name, m_hp));
     } else if (won) {
-        logs.push(Log.win(monster.name, monster.gold, initializedMonster.exp, p_hp));
+        // ✅ เปลี่ยนจาก monster.gold เป็น finalGold เพื่อให้ Log แสดงค่าที่บวกโบนัสแล้ว
+        logs.push(Log.win(monster.name, finalGold, initializedMonster.exp, p_hp));
     }
 
     return {
@@ -98,7 +124,8 @@ export const simulateBattle = (
         logs,
         totalTurns: turn - 1,
         won,
-        goldEarned: won ? monster.gold : 0,
+        // ✅ ส่ง finalGold กลับไปเพื่อให้ Store อัปเดตทองให้ผู้เล่นจริง
+        goldEarned: won ? finalGold : 0,
         expEarned: won ? initializedMonster.exp : 0,
         monsterId: monster.id,
         monsterName: monster.name,
