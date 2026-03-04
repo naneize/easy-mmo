@@ -79,31 +79,23 @@ interface GameState {
 }
 // #endregion
 
-// Utility function for skill unlock costs
-export const getSkillUnlockCost = (element?: string) => {
-  if (!element || element === 'Neutral') return 1000;
-  const basicElements = ['Fire', 'Water', 'Wind', 'Earth'];
-  if (basicElements.includes(element)) return 2500;
-  return 5000;
-};
+
 
 // Utility function for skill upgrade costs based on tier
 export const getUpgradeCost = (currentLevel: number, tier: SkillTier) => {
-  const baseUnlockCosts = {
-    common: 500,
-    rare: 2500,
-    epic: 10000,
-    legendary: 50000
+  const settings = {
+    common: { base: 500, mult: 1.4 },
+    rare: { base: 2500, mult: 1.5 },
+    epic: { base: 10000, mult: 1.6 },
+    legendary: { base: 50000, mult: 1.8 }
   };
 
-  const base = baseUnlockCosts[tier] || 1000;
+  const { base, mult } = settings[tier] || { base: 1000, mult: 1.5 };
 
-  // ถ้าเลเวล 0 คือราคาปลดล็อก (Base)
   if (currentLevel === 0) return base;
-
-  // ถ้าเลเวล > 0 คือราคาอัปเกรด (ใช้สูตรคูณ 1.6)
-  return Math.floor(base * Math.pow(1.6, currentLevel));
+  return Math.floor(base * Math.pow(mult, currentLevel));
 };
+
 
 export const getNextLevelPreview = (skill: Skill, player: Entity) => {
   const effectFn = SKILL_EFFECTS[skill.id];
@@ -111,10 +103,20 @@ export const getNextLevelPreview = (skill: Skill, player: Entity) => {
 
   const nextLevel = (skill.level || 1) + 1;
 
+  const dummyMonster = {
+    id: 'dummy',
+    name: 'Dummy',
+    hp: 100,
+    maxHp: 100,
+    atk: 10,
+    def: 10,
+    element: 'Neutral'
+  } as any;
+
   // จำลองการรันฟังก์ชันด้วย Level ถัดไป
   const nextResult = effectFn({
     player,
-    monster: {} as any,
+    monster: dummyMonster,
     baseValue: skill.value ?? 0,
     level: nextLevel
   });
@@ -122,8 +124,14 @@ export const getNextLevelPreview = (skill: Skill, player: Entity) => {
   return {
     level: nextLevel,
     value: nextResult.value,
+    // --- Modifiers (ค่าบวกตรงๆ) ---
     hpMod: nextResult.hpMod,
-    atkMod: nextResult.atkMod
+    atkMod: nextResult.atkMod,
+    defMod: nextResult.defMod, // เพิ่ม defMod ด้วยเผื่อมีสกิลบวก DEF ตรงๆ
+    // --- Percentages (ค่าบวกเป็น %) ---
+    hpPercent: nextResult.hpPercent, // สำคัญมากสำหรับ Elemental Mastery
+    atkPercent: nextResult.atkPercent, // สำคัญมากสำหรับ Elemental Mastery
+    defPercent: nextResult.defPercent  // สำคัญมากสำหรับ Elemental Mastery
   };
 };
 
@@ -154,7 +162,7 @@ export const useGameStore = create<GameState>()(
       equipped: { weapon: null, armor: null, accessory: null } as GameState['equipped'],
       ownedSkills: INITIAL_SKILLS.map(s => ({ ...s, level: 1 })),
       equippedSkills: [],
-      unlockedSkills: ['blazing-soul'],
+      unlockedSkills: [],
       battleLogs: [],
       lastBattleResult: null as BattleResultSummary | null,
       monsterKills: {},
@@ -507,28 +515,29 @@ export const useGameStore = create<GameState>()(
 
       getOwnedSkillsWithIcons: () => {
         const { ownedSkills, unlockedSkills } = get();
-
-        // ตรวจสอบความปลอดภัยของข้อมูล
         const safeUnlockedList = Array.isArray(unlockedSkills)
           ? unlockedSkills.map(id => String(id).trim())
           : [];
 
-        return ownedSkills.map(s => {
-          // ทำความสะอาด ID ของสกิลที่ดึงมา
+        const processedSkills = ownedSkills.map(s => {
           const cleanId = String(s.id).trim();
           const isUnlocked = safeUnlockedList.includes(cleanId);
 
-          // Debug ดูค่าที่ "สะอาดแล้ว"
-          if (cleanId === 'calm-focus') {
-            console.log(`Checking [${cleanId}]: Unlocked = ${isUnlocked}`);
-          }
-
-          return reconstructSkill({
+          return {
             ...s,
-            id: cleanId, // บังคับใช้ไอดีที่สะอาดแล้ว
+            id: cleanId,
             unlocked: isUnlocked
-          });
+          };
         });
+
+        // 🔥 แสดงผลเป็นตารางใน Console เพื่อให้ไล่เช็คได้ง่ายๆ
+        console.table(processedSkills.map(s => ({
+          ID: s.id,
+          Name: s.name,
+          IsUnlocked: s.unlocked
+        })));
+
+        return processedSkills.map(s => reconstructSkill(s));
       },
 
 

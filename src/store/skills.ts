@@ -31,7 +31,6 @@ const ICON_MAP: Record<string, React.ElementType> = {
   'tailwind-strike': Wind,
   'holy-aura': Sun,
   'dark-pact': Moon,
-  // New skill icons
   'vitality-boost': Heart,
   'gold-finder': Star,
   'fire-ember': Flame,
@@ -120,7 +119,7 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'blazing-soul',
     name: 'Blazing Soul',
-    description: 'เพิ่ม ATK 10% (เพิ่มเป็น 25% หากผู้เล่นเป็นธาตุ Fire) โดยจะเพิ่มขึ้น 1.5% ต่อ LV',
+    description: 'เพิ่ม ATK 10% (เพิ่มเป็น 20% หากผู้เล่นเป็นธาตุ Fire) โดยจะเพิ่มขึ้น 1.5% ต่อ LV',
     type: 'constant',
     tier: 'common',
     targetStat: 'atk_percent',
@@ -373,15 +372,14 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'elemental-mastery',
     name: 'Elemental Mastery',
-    description: 'เพิ่ม ATK 25% DEF 20% และ HP 15% ถ้าเป็นธาตุเดียวกับสกิล มี Cooldown 3 เทิร์น',
-    type: 'constant',
+    description: 'ปลุกพลังแฝงแห่งธาตุ: เพิ่ม ATK, DEF และ HP มหาศาลตามเลเวลสกิล (สายไร้ธาตุจะได้รับโบนัสที่รุนแรงกว่าปกติ)', type: 'constant',
     tier: 'legendary',
-    targetStat: 'atk_percent',
+    targetStat: 'multiple',
     Icon: Crown,
     element: 'Neutral',
     value: 0.25,
     level: 1,
-    maxLevel: 5,
+    maxLevel: 10,
     unlocked: false
   }
   // #endregion

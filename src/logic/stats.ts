@@ -145,7 +145,7 @@ export const calculateFinalStats = (
         baseDef: baseDef,
         baseMaxHp: baseMaxHp,
 
-        lifesteal: Math.min(1, lifesteal), // ไม่ให้เกิน 100%
+        lifesteal: Math.min(0.5, lifesteal), // ไม่ให้เกิน 100%
 
         // คำนวณ Bonus สุทธิ (ส่วนต่างที่จะแสดงเป็นเลขสีเขียว/ส้ม)
         bonusAtk: finalAtk - baseAtk,

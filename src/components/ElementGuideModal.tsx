@@ -1,14 +1,13 @@
 import React from 'react';
 import { Swords, X, ShieldAlert } from 'lucide-react';
 
-// สมมติว่า ELEMENT_CHART เก็บค่าพลังแพ้ทางชนะทางไว้
-// ถ้าคุณมีไฟล์ constants แยก ให้ import มาแทนนะครับ
 interface ElementGuideProps {
     onClose: () => void;
     elementChart: Record<string, Record<string, number>>;
 }
 
 export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) {
+    // กรองเอา Neutral ออกเพื่อให้แสดงผลเฉพาะธาตุที่มีระบบแพ้ทาง
     const elements = Object.keys(elementChart).filter((e) => e !== 'Neutral');
 
     return (
@@ -31,7 +30,7 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                         <div>
                             <h3 className="text-xl font-black uppercase tracking-tight">Element Strategy</h3>
                             <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest opacity-80">
-                                ตารางความได้เปรียบทางธาตุ
+                                ตารางความได้เปรียบทางธาตุ (Updated v1.1)
                             </p>
                         </div>
                     </div>
@@ -47,12 +46,12 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                 <div className="p-8 overflow-y-auto bg-slate-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {elements.map((ele) => {
-                            const advantages = elementChart[ele];
+                            const advantages = elementChart[ele] || {};
                             return (
-                                <div key={ele} className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                                <div key={ele} className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm transition-hover hover:border-indigo-300">
                                     <div className="flex items-center gap-2 mb-4">
                                         <span className={`text-[10px] font-black text-white px-3 py-1 rounded-lg shadow-sm 
-                      ${ele === 'Fire' ? 'bg-orange-500' :
+                                            ${ele === 'Fire' ? 'bg-orange-500' :
                                                 ele === 'Water' ? 'bg-blue-500' :
                                                     ele === 'Earth' ? 'bg-emerald-600' :
                                                         ele === 'Wind' ? 'bg-sky-400' :
@@ -63,8 +62,16 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
 
                                     <div className="space-y-3">
                                         {Object.entries(advantages).map(([target, multi]) => {
-                                            const isStrong = (multi as number) > 1;
-                                            const percent = Math.abs(((multi as number) - 1) * 100).toFixed(0);
+                                            const m = multi as number;
+                                            const isStrong = m > 1;
+                                            const isNeutral = m === 1;
+
+                                            // คำนวณเปอร์เซ็นต์จากฐาน 1.0 
+                                            // เช่น 1.25 -> +25%, 0.75 -> -25%
+                                            const percent = Math.abs(Math.round((m - 1) * 100));
+
+                                            if (isNeutral) return null; // ไม่แสดงถ้าค่าเป็น 1.0 (ปกติ)
+
                                             return (
                                                 <div key={target} className="flex items-center justify-between text-xs">
                                                     <div className="flex items-center gap-2">
@@ -75,9 +82,8 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                                                         )}
                                                         <span className="font-bold text-slate-600 uppercase">vs {target}</span>
                                                     </div>
-                                                    <span className={`font-black px-2 py-0.5 rounded-md ${isStrong ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'
-                                                        }`}>
-                                                        {isStrong ? '+' : '-'}{percent}%
+                                                    <span className={`font-black px-2 py-0.5 rounded-md ${isStrong ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
+                                                        {isStrong ? '↑' : '↓'} {percent}%
                                                     </span>
                                                 </div>
                                             );
@@ -95,7 +101,7 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                         onClick={onClose}
                         className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black shadow-lg hover:bg-indigo-600 transition-all active:scale-95"
                     >
-                        รับทราบ!
+                        รับทราบแผนกลยุทธ์!
                     </button>
                 </div>
             </div>

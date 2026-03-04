@@ -21,7 +21,9 @@ interface SkillResult {
     action?: string;
 }
 
+
 export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> = {
+
 
     // #region --- Active Skills ---
 
@@ -34,7 +36,7 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             chance: chance,
             value: scaledValue,
-            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}⚡ Spark Burst Lv.${level} สายฟ้าฟาด! (${Math.round(chance * 100)}% Chance)`,
+            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}⚡ Spark Burst Lv.${level} สายฟ้าฟาด! (Base Dmg: ${scaledValue})`,
         };
     },
 
@@ -83,13 +85,24 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
     'blazing-soul': ({ player, level }) => {
         const isSynergy = player.element === 'Fire';
         const levelBonus = (level - 1) * 0.015;
-        const bonusMult = isSynergy ? (0.25 + levelBonus) : (0.10 + levelBonus);
-        const displayAtkBonus = Math.floor(player.atk * bonusMult);
+
+        // คำนวณแยก 2 ค่าชัดเจน
+        const normalAtk = 0.10 + levelBonus;
+        const synergyAtk = 0.20 + levelBonus;
+
+        // เลือกใช้ค่าจริงตามเงื่อนไข
+        const bonusMult = isSynergy ? synergyAtk : normalAtk;
 
         return {
             value: 0,
             atkPercent: bonusMult,
-            log: `${isSynergy ? '🔥 [Blazing Synergy]' : '🔥 [Blazing Soul]'} Lv.${level} ATK +${displayAtkBonus}`
+            // ส่งค่าเปรียบเทียบไปให้ UI
+            displayStats: {
+                atk: normalAtk,
+                synergyAtk: synergyAtk,
+                isSynergy: isSynergy
+            },
+            log: `${isSynergy ? '🔥 [Blazing Synergy]' : '🔥 [Blazing Soul]'} Lv.${level} » ATK +${Math.floor(player.atk * bonusMult)} (+${(bonusMult * 100).toFixed(1)}%)`
         };
     },
 
@@ -126,7 +139,7 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             action: 'double-attack',
             value: 0,
             chance: chance,
-            log: `${isSynergy ? '🌪️ [Tailwind Synergy]' : '🌪️ [Tailwind]'} โจมตีต่อเนื่อง! (โอกาส ${displayChance}%${synergyText})`
+            log: `${isSynergy ? '🌪️ [Tailwind Synergy]' : '🌪️ [Tailwind]'} เตรียมโจมตีต่อเนื่อง! (โอกาส ${displayChance}%)`
         };
     },
 
@@ -309,27 +322,27 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const hasElementalAffinity = player.element !== 'Neutral';
 
         if (!hasElementalAffinity) {
-            const nAtk = 0.30;
-            const nDef = 0.25;
-            const nHp = 0.20;
+            const nAtk = 0.30 + ((level - 1) * 0.04);
+            const nDef = 0.25 + ((level - 1) * 0.03);
+            const nHp = 0.20 + ((level - 1) * 0.03);
             return {
                 value: 0,
                 atkPercent: nAtk,
                 defPercent: nDef,
                 hpPercent: nHp,
-                log: `👑 [Elemental Mastery] = (Neutral): ATK +${Math.floor(player.atk * nAtk)} (30%) DEF +${Math.floor(player.def * nDef)} (25%) HP +${Math.floor(player.maxHp * nHp)} (20%)`
+                log: `👑 [Elemental Mastery] = (Neutral): พลังไร้ธาตุขั้นสุดยอด! (ATK +${Math.round(nAtk * 100)}% / DEF +${Math.round(nDef * 100)}% / HP +${Math.round(nHp * 100)}%)`
             };
         }
 
-        const critMultiplier = 1.5 + ((level - 1) * 0.1);
         return {
             value: 0,
             atkPercent: atkPercent,
             defPercent: defPercent,
             hpPercent: hpPercent,
-            log: `👑 [Elemental Mastery] = (${player.element}): ATK +${Math.floor(player.atk * atkPercent)} (${Math.round(atkPercent * 100)}%) DEF +${Math.floor(player.def * defPercent)} (${Math.round(defPercent * 100)}%) HP +${Math.floor(player.maxHp * hpPercent)} (${Math.round(hpPercent * 100)}%) Critical x${critMultiplier.toFixed(1)}`
+            log: `👑 [Elemental Mastery] (${player.element}): ATK +${Math.round(atkPercent * 100)}% | DEF +${Math.round(defPercent * 100)}% | HP +${Math.round(hpPercent * 100)}%`
         };
     },
 
     // #endregion
-};
+}; // <-- ตรวจสอบให้แน่ใจว่ามีปีกกาปิดอันนี้อยู่ที่ท้ายไฟล์สุดๆ
+

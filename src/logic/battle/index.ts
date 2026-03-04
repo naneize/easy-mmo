@@ -25,6 +25,21 @@ export const simulateBattle = (
     let turn = 1;
 
     logs.push(Log.start(monster.name, initializedMonster.hp));
+
+    const { pElementMult } = context;
+
+    // ✅ แก้ไข: ส่ง pElementMult พร้อมด้วยธาตุของผู้เล่นและมอนสเตอร์
+    // ตรวจสอบชื่อ property ให้ดี (น่าจะเป็น player.element และ monster.element)
+    const elementNotice = Log.elementalNotice(
+        pElementMult,
+        player.element,
+        monster.element
+    );
+
+    if (elementNotice) {
+        logs.push(elementNotice);
+    }
+
     if (mastery.tier > 0) {
         logs.push({ type: 'synergy', text: `📜 Mastery Lv.${mastery.tier} Active! (+${mastery.value} ${mastery.type.toUpperCase()})` });
     }
@@ -81,6 +96,7 @@ export const simulateBattle = (
         playerHp: Math.max(0, Math.floor(p_hp)),
         monsterHp: Math.max(0, Math.floor(m_hp)),
         logs,
+        totalTurns: turn - 1,
         won,
         goldEarned: won ? monster.gold : 0,
         expEarned: won ? initializedMonster.exp : 0,

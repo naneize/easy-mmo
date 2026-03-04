@@ -9,19 +9,22 @@ export const BattleLogger = {
 
     turn: (num: number): BattleLogEntry => ({
         type: 'turn',
-        text: `━━━━━━━━━━ รอบที่ ${num} ━━━━━━━━━━`
+        text: ` รอบที่ ${num} `
     }),
 
-    // --- ระบบธาตุ (Elemental & Synergy) ---
-    elementalNotice: (mult: number): BattleLogEntry | null => {
-        if (mult > 1) return {
-            type: 'elemental',
-            text: `🔥 ธาตุของคุณได้เปรียบ! (Damage x${mult})`
-        };
-        if (mult < 1) return {
-            type: 'elemental',
-            text: `❄️ ธาตุของคุณเสียเปรียบ... (Damage x${mult})`
-        };
+    // --- ในไฟล์ battleLogger.ts ---
+    elementalNotice: (mult: number, pElem: string = 'Neutral', mElem: string = 'Neutral'): BattleLogEntry | null => {
+        const playerType = pElem || 'Neutral';
+        const monsterType = mElem || 'Neutral';
+
+        if (mult !== 1) {
+            return {
+                type: 'elemental',
+                playerElem: playerType, // ✅ ตอนนี้ TS จะไม่ด่าแล้ว
+                monsterElem: monsterType, // ✅ เพราะเราลงทะเบียนไว้ใน Interface แล้ว
+                text: `ธาตุ ${playerType} ${mult > 1 ? 'ได้เปรียบ' : 'เสียเปรียบ'} ${monsterType}! Damage x${mult}`
+            };
+        }
         return null;
     },
 

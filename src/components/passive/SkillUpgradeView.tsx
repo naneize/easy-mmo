@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { ArrowUpCircle, Lock, Sparkles, Activity, Swords, Shield, Filter } from 'lucide-react';
-import { useGameStore, getUpgradeCost, getNextLevelPreview } from '../../store/useGameStore';
+import { useGameStore, getUpgradeCost } from '../../store/useGameStore';
 import { SkillCard } from './SkillCard';
 
 const TAB_COLORS: Record<string, string> = {
@@ -119,7 +119,7 @@ export function SkillUpgradeView() {
                         // เช็คเงินตามสถานะ
                         const canAfford = player.gold >= upgradeCost;
 
-                        const nextPreview = getNextLevelPreview(skill, player);
+
 
                         return (
                             <SkillCard key={skill.id} skill={skill} variant="upgrade">
@@ -174,13 +174,30 @@ export function SkillUpgradeView() {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <div className="flex items-center gap-1.5 text-slate-400">
-                                                            <Lock size={12} />
-                                                            <span>Insufficient Gold</span>
+                                                        {/* ตัวอย่างการปรับ Logic ในส่วนของปุ่ม Upgrade หรือ Action Area */}
+                                                        <div className="flex flex-col gap-1">
+                                                            {player.gold < upgradeCost ? (
+                                                                // กรณีเงินไม่พอ: โชว์ราคาเป็นสีแดง และบอกส่วนต่างที่ขาด
+                                                                <div className="flex flex-col items-center w-full"> {/* ใช้ items-center เพื่อจัดกึ่งกลาง */}
+                                                                    <div className="flex items-center gap-1.5 text-red-500 font-bold">
+                                                                        <Lock size={12} className="opacity-70" />
+                                                                        <span className="text-[11px] sm:text-[12px]">
+                                                                            Cost: {upgradeCost.toLocaleString()} Gold
+                                                                        </span>
+                                                                    </div>
+
+                                                                    {/* บรรทัดล่างจะอยู่กึ่งกลางของคำว่า Cost พอดี */}
+                                                                    <span className="text-[9px] text-red-400 font-medium tracking-tight">
+                                                                        (Need {(upgradeCost - player.gold).toLocaleString()} Gold)
+                                                                    </span>
+                                                                </div>
+                                                            ) : (
+                                                                // กรณีเงินพอ: โชว์ราคาปกติ หรือปุ่มกด
+                                                                <div className="flex items-center gap-1.5 text-emerald-600 font-bold text-[11px] sm:text-[12px]">
+                                                                    <span>Cost: {upgradeCost.toLocaleString()} Gold</span>
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                        <span className="text-[8px] font-medium opacity-60 tracking-normal lowercase">
-                                                            Need {upgradeCost.toLocaleString()} (Missing {(upgradeCost - player.gold).toLocaleString()})
-                                                        </span>
                                                     </>
                                                 )}
                                             </button>

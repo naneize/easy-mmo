@@ -7,7 +7,7 @@ export type SkillTier = 'common' | 'rare' | 'epic' | 'legendary';
 export type StatTarget =
     | 'atk_percent' | 'atk_flat' | 'def_flat' | 'def_percent'
     | 'hp_percent' | 'maxHp_flat' | 'maxHp_percent' | 'regen_flat'
-    | 'dmg_reduction' | 'lifesteal' | 'lifesteal_percent'
+    | 'dmg_reduction' | 'lifesteal' | 'lifesteal_percent' | 'multiple'
     | 'chance_boost' | 'crit_chance' | 'crit_multi' | 'armor_pen';
 
 // --- ระบบไอเทม ---
@@ -68,6 +68,8 @@ export interface TriggerLog {
     extraValue?: number;
     actions?: any;
 }
+
+
 // --- ตัวละครพื้นฐาน ---
 interface BaseEntity {
     name: string;
@@ -114,6 +116,8 @@ export interface BattleLogEntry {
     type: string;
     text: string;
     icon?: string;
+    playerElem?: string;
+    monsterElem?: string;
 }
 
 // ✨ เพิ่ม Union Type เพื่อใช้ใน Engine แทน any[]
@@ -129,6 +133,7 @@ export interface BattleResult {
     monsterId: string;
     monsterName: string;
     droppedSkillIds?: string[];
+    totalTurns: number;
 }
 
 // --- แผนที่ ---

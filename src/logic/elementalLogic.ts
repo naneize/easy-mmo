@@ -1,13 +1,32 @@
 import type { ElementType } from '../types/game';
 
+// ✅ ประกาศค่ากลางไว้ที่นี่ เพื่อให้แก้จุดเดียวจบ
+const ADVANTAGE_BASE = 1.25;      // จากเดิม 1.5 (ปรับลดลงมาหน่อยแต่ยังรู้สึกว่าชนะธาตุอยู่)
+const DISADVANTAGE_BASE = 0.75;   // จากเดิม 0.5 (ไม่ให้ตีเบาจนน่าเกลียด)
+const HIGH_REWARD = 1.5;         // จากเดิม 2.0 (สำหรับ Light/Dark)
+const SLIGHT_ADVANTAGE = 1.1;    // สำหรับ Light/Dark ชนะธาตุปกติ
+
 export const ELEMENT_CHART: Record<ElementType, Partial<Record<ElementType, number>>> = {
-    Fire: { Wind: 1.5, Water: 0.5 },
-    Water: { Fire: 1.5, Earth: 0.5 },
-    Earth: { Water: 1.5, Wind: 0.5 },
-    Wind: { Earth: 1.5, Fire: 0.5 },
-    // แสงชนะมืด มืดชนะแสง (High Risk, High Reward)
-    Light: { Dark: 2.0, Fire: 1.1, Water: 1.1, Earth: 1.1, Wind: 1.1 },
-    Dark: { Light: 2.0, Fire: 1.1, Water: 1.1, Earth: 1.1, Wind: 1.1 },
+    Fire: { Wind: ADVANTAGE_BASE, Water: DISADVANTAGE_BASE },
+    Water: { Fire: ADVANTAGE_BASE, Earth: DISADVANTAGE_BASE },
+    Earth: { Water: ADVANTAGE_BASE, Wind: DISADVANTAGE_BASE },
+    Wind: { Earth: ADVANTAGE_BASE, Fire: ADVANTAGE_BASE },
+
+    // ปรับ Light/Dark จาก 2.0 -> 1.5 เพื่อไม่ให้ One-shot กันเกินไป
+    Light: {
+        Dark: HIGH_REWARD,
+        Fire: SLIGHT_ADVANTAGE,
+        Water: SLIGHT_ADVANTAGE,
+        Earth: SLIGHT_ADVANTAGE,
+        Wind: SLIGHT_ADVANTAGE
+    },
+    Dark: {
+        Light: HIGH_REWARD,
+        Fire: SLIGHT_ADVANTAGE,
+        Water: SLIGHT_ADVANTAGE,
+        Earth: SLIGHT_ADVANTAGE,
+        Wind: SLIGHT_ADVANTAGE
+    },
     Neutral: {},
 };
 
