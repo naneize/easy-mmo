@@ -2,6 +2,7 @@ export type ElementType = 'Neutral' | 'Fire' | 'Water' | 'Earth' | 'Wind' | 'Lig
 export type SkillType = 'on-hit' | 'on-defend' | 'constant';
 export type SkillTier = 'common' | 'rare' | 'epic' | 'legendary';
 
+
 // --- สเตตัสเป้าหมาย ---
 export type StatTarget =
     | 'atk_percent' | 'atk_flat' | 'def_flat' | 'def_percent'
@@ -60,6 +61,13 @@ export interface Skill {
     actions?: string[];
 }
 
+
+export interface TriggerLog {
+    type: 'skill';
+    text: string;
+    extraValue?: number;
+    actions?: any;
+}
 // --- ตัวละครพื้นฐาน ---
 interface BaseEntity {
     name: string;

@@ -1,6 +1,7 @@
 import { BattleLogger as Log } from "../../battleLogger";
 import { processTriggerSkills } from '../skillProcessor';
 import { initializeMonster } from '../../../data/monsters';
+import type { BattleLogEntry } from '../../../types/game';
 
 export const handlePlayerTurn = (
     p_hp: number,
@@ -12,7 +13,7 @@ export const handlePlayerTurn = (
     bonusStats: any,
     maxHp: number
 ) => {
-    const turnLogs = [];
+    const turnLogs: BattleLogEntry[] = [];
     let currentPHp = p_hp;
     let currentMHp = m_hp;
 

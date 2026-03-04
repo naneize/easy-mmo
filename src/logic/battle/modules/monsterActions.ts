@@ -9,8 +9,9 @@ export const handleMonsterTurn = (
     player: any,
     monster: any,
     allEffects: any[]
+
 ) => {
-    const turnLogs = [];
+    const turnLogs: any[] = [];
     let currentPHp = p_hp;
     let currentMHp = m_hp;
 
@@ -18,7 +19,7 @@ export const handleMonsterTurn = (
     const { extraValue: counterDmg, actions, triggerLogs } =
         processTriggerSkills('on-defend', allEffects, player, monster, monsterAtk);
 
-    if (actions.includes('counter')) {
+    if ((actions as string[]).includes('counter')) {
         turnLogs.push(...triggerLogs);
         turnLogs.push(Log.dodge('คุณ'));
         currentMHp -= counterDmg;
