@@ -1,5 +1,6 @@
 import { Sun, Moon, Zap, Sparkles } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SkillCardProps {
     skill: any;
@@ -23,14 +24,16 @@ const ELEMENT_COLORS: Record<string, string> = {
     Neutral: 'bg-slate-500 text-white shadow-slate-200'
 };
 
-const TIER_CONFIGS = {
-    common: { label: 'Common', color: 'text-slate-400', border: 'border-slate-200', glow: 'group-hover:shadow-slate-100', bgIcon: 'bg-slate-100 text-slate-500' },
-    rare: { label: 'Rare', color: 'text-blue-500', border: 'border-blue-200', glow: 'group-hover:shadow-blue-100', bgIcon: 'bg-blue-50 text-blue-600' },
-    epic: { label: 'Epic', color: 'text-purple-500', border: 'border-purple-200', glow: 'group-hover:shadow-purple-100', bgIcon: 'bg-purple-50 text-purple-600' },
-    legendary: { label: 'Legendary', color: 'text-orange-500', border: 'border-orange-200', glow: 'group-hover:shadow-orange-200', bgIcon: 'bg-orange-50 text-orange-600' }
-};
-
 export function SkillCard({ skill, className = "", isEquipped, isSynergy, onClick, disabled, children, hideDescription = false }: SkillCardProps) {
+    const { t } = useTranslation();
+
+    const TIER_CONFIGS = {
+        common: { label: t('inventory.common'), color: 'text-slate-400', border: 'border-slate-200', glow: 'group-hover:shadow-slate-100', bgIcon: 'bg-slate-100 text-slate-500' },
+        rare: { label: t('inventory.rare'), color: 'text-blue-500', border: 'border-blue-200', glow: 'group-hover:shadow-blue-100', bgIcon: 'bg-blue-50 text-blue-600' },
+        epic: { label: t('inventory.epic'), color: 'text-purple-500', border: 'border-purple-200', glow: 'group-hover:shadow-purple-100', bgIcon: 'bg-purple-50 text-purple-600' },
+        legendary: { label: t('inventory.legendary'), color: 'text-orange-500', border: 'border-orange-200', glow: 'group-hover:shadow-orange-200', bgIcon: 'bg-orange-50 text-orange-600' }
+    };
+
     const Icon = skill.Icon;
     const isLocked = skill.locked || skill.isLocked;
     const tier = (skill.tier || 'common') as keyof typeof TIER_CONFIGS;
@@ -53,7 +56,7 @@ export function SkillCard({ skill, className = "", isEquipped, isSynergy, onClic
                     <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full shadow-sm
                         ${isLocked ? 'bg-slate-200 text-slate-400' : ELEMENT_COLORS[skill.element ?? 'Neutral']}`}>
                         {skill.element === 'Light' ? <Sun size={8} /> : skill.element === 'Dark' ? <Moon size={8} /> : <Zap size={8} />}
-                        <span className="text-[7px] sm:text-[9px] font-black uppercase tracking-wider">{skill.element ?? 'Neutral'}</span>
+                        <span className="text-[7px] sm:text-[9px] font-black uppercase tracking-wider">{t(`${(skill.element ?? 'Neutral').toLowerCase()}`)}</span>
                     </div>
                     <div className={`text-[7px] sm:text-[9px] font-black uppercase tracking-widest ${tierStyle.color}`}>{tierStyle.label}</div>
                 </div>
@@ -69,14 +72,14 @@ export function SkillCard({ skill, className = "", isEquipped, isSynergy, onClic
 
                 <div className="min-w-0 flex-1">
                     <div className="text-sm sm:text-lg font-black truncate leading-tight flex items-center gap-1.5 text-slate-800">
-                        {skill.name}
+                        {t(skill.nameKey)}
                         {isSynergy && <Sparkles size={14} className="text-amber-400 animate-pulse shrink-0" />}
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 rounded border border-indigo-100 text-indigo-500 bg-indigo-50/50">
                             LV.{skill.level || 1}
                         </span>
-                        <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase">{skill.type || 'Ability'}</span>
+                        <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase">{skill.type || t('skills.ability')}</span>
                     </div>
                 </div>
             </div>
@@ -85,7 +88,7 @@ export function SkillCard({ skill, className = "", isEquipped, isSynergy, onClic
             {!hideDescription && (
                 <div className="mt-3 bg-slate-50/50 rounded-lg p-2 border border-slate-100/50">
                     <p className="text-[10px] sm:text-[12px] leading-relaxed text-slate-600 font-medium">
-                        {skill.description}
+                        {t(skill.descriptionKey)}
                     </p>
                 </div>
             )}
@@ -99,7 +102,7 @@ export function SkillCard({ skill, className = "", isEquipped, isSynergy, onClic
             {isEquipped && !hideDescription && (
                 <div className="absolute top-0 right-0 h-12 w-12 overflow-hidden pointer-events-none">
                     <div className="absolute top-[-8px] right-[-25px] h-6 w-16 bg-emerald-500 text-white text-[6px] font-black uppercase flex items-center justify-center rotate-45 shadow-sm pt-2">
-                        Active
+                        {t('skills.active')}
                     </div>
                 </div>
             )}

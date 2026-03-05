@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../store/useGameStore';
 import { ITEMS } from '../data/items';
 import type { ItemType } from '../types/game';
@@ -12,6 +13,7 @@ type RarityFilter = 'All' | 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary
 type MainTab = 'equipment' | 'materials' | 'consumables';
 
 export function InventoryPage() {
+  const { t } = useTranslation();
   const { inventory, equipped, equipItem, unequipItem, getDerivedStats, player } = useGameStore();
   const finalStats = getDerivedStats();
 
@@ -44,18 +46,18 @@ export function InventoryPage() {
 
       {/* --- 1. Total Power (Top - ย้ายมาไว้บนสุด) --- */}
       <div className="rounded-3xl bg-slate-900 p-5 sm:p-6 text-white shadow-xl">
-        <div className="mb-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-slate-400">Total Combat Power</div>
+        <div className="mb-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-slate-400">{t('inventory.totalCombatPower')}</div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <div>
-            <div className="text-[9px] sm:text-[10px] font-bold text-sky-400 uppercase">Attack</div>
+            <div className="text-[9px] sm:text-[10px] font-bold text-sky-400 uppercase">{t('inventory.attack')}</div>
             <div className="text-xl sm:text-2xl font-black">{finalStats.atk}</div>
           </div>
           <div>
-            <div className="text-[9px] sm:text-[10px] font-bold text-emerald-400 uppercase">Defense</div>
+            <div className="text-[9px] sm:text-[10px] font-bold text-emerald-400 uppercase">{t('inventory.defense')}</div>
             <div className="text-xl sm:text-2xl font-black">{finalStats.def}</div>
           </div>
           <div className="col-span-2 sm:col-span-1 pt-2 sm:pt-0 border-t border-slate-800 sm:border-0 sm:pl-4 sm:border-l sm:border-slate-800">
-            <div className="text-[9px] sm:text-[10px] font-bold text-rose-400 uppercase">Max Health</div>
+            <div className="text-[9px] sm:text-[10px] font-bold text-rose-400 uppercase">{t('inventory.maxHealth')}</div>
             <div className="text-xl sm:text-2xl font-black">{finalStats.maxHp}</div>
           </div>
         </div>
@@ -67,14 +69,14 @@ export function InventoryPage() {
         <div className="lg:col-span-4 space-y-6">
           <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
             <h2 className="mb-4 flex items-center gap-2 text-lg font-black text-slate-800 uppercase italic">
-              <Shield className="text-sky-500" size={20} /> Current Gear
+              <Shield className="text-sky-500" size={20} /> {t('inventory.currentGear')}
             </h2>
 
             <div className="grid gap-4">
               {[
-                { type: 'weapon' as const, item: currentWeapon, icon: <Sword size={18} />, label: 'Weapon' },
-                { type: 'armor' as const, item: currentArmor, icon: <Shield size={18} />, label: 'Armor' },
-                { type: 'accessory' as const, item: currentAccessory, icon: <Sparkles size={18} />, label: 'Accessory' }
+                { type: 'weapon' as const, item: currentWeapon, icon: <Sword size={18} />, label: t('inventory.weapon') },
+                { type: 'armor' as const, item: currentArmor, icon: <Shield size={18} />, label: t('inventory.armor') },
+                { type: 'accessory' as const, item: currentAccessory, icon: <Sparkles size={18} />, label: t('inventory.accessory') }
               ].map((slot) => {
                 const rarityClass = slot.item?.rarity === 'Legendary' ? 'border-amber-400 shadow-amber-100' :
                   slot.item?.rarity === 'Epic' ? 'border-purple-400 shadow-purple-100' :
@@ -94,11 +96,11 @@ export function InventoryPage() {
                       <div className="flex items-center gap-2">
                         <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400">{slot.label}</div>
                         {slot.item?.passive && (
-                          <span className="text-[7px] sm:text-[8px] font-black text-purple-500 uppercase">Passive Active</span>
+                          <span className="text-[7px] sm:text-[8px] font-black text-purple-500 uppercase">{t('inventory.passiveActive')}</span>
                         )}
                       </div>
                       <div className={`truncate font-black text-sm sm:text-base ${slot.item ? 'text-slate-800' : 'text-slate-400 italic'}`}>
-                        {slot.item?.name || 'Empty Slot'}
+                        {slot.item?.name || t('inventory.emptySlot')}
                       </div>
                       {slot.item?.stats && (
                         <div className="flex flex-wrap gap-x-2 gap-y-1 text-[9px] sm:text-[10px] font-bold">
@@ -130,7 +132,7 @@ export function InventoryPage() {
                               {/* เช็คถ้าเป็นสาย lifesteal ให้แสดงคำอธิบายเพิ่ม */}
                               {slot.item.passive.target === 'lifesteal' && (
                                 <span className="ml-1 opacity-90">
-                                  (ดูดเลือด +{slot.item.passive.value}%)
+                                  {t('inventory.lifestealDescription', { value: slot.item.passive.value })}
                                 </span>
                               )}
 
@@ -152,7 +154,7 @@ export function InventoryPage() {
                         className="absolute -right-1 -top-2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-white shadow-lg hover:bg-rose-600 hover:scale-105 transition-all z-20 border-2 border-white group/btn"
                       >
                         <XCircle size={10} className="group-hover/btn:rotate-90 transition-transform" />
-                        <span className="text-[9px] font-black uppercase tracking-tighter">UnEquip</span>
+                        <span className="text-[9px] font-black uppercase tracking-tighter">{t('inventory.unequip')}</span>
                       </button>
                     )}
                   </div>
@@ -171,13 +173,13 @@ export function InventoryPage() {
               onClick={() => { setActiveTab('equipment'); setRarityFilter('All'); }}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-xl text-xs sm:text-sm font-black uppercase transition-all whitespace-nowrap ${activeTab === 'equipment' ? 'bg-white text-sky-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
             >
-              <Sword size={16} /> Equipment
+              <Sword size={16} /> {t('inventory.myCollection')}
             </button>
             <button
               onClick={() => setActiveTab('materials')}
               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 sm:px-6 py-2 rounded-xl text-xs sm:text-sm font-black uppercase transition-all whitespace-nowrap ${activeTab === 'materials' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
             >
-              <Hammer size={16} /> Materials
+              <Hammer size={16} /> {t('inventory.resources')}
             </button>
           </div>
 
@@ -185,7 +187,7 @@ export function InventoryPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <h2 className="flex items-center gap-2 text-base sm:text-lg font-black text-slate-800 uppercase italic">
                 <Package className="text-sky-500" size={20} />
-                {activeTab === 'equipment' ? 'My Collection' : 'Resources'} ({filteredItems.length})
+                {activeTab === 'equipment' ? t('inventory.myCollection') : t('inventory.resources')} ({filteredItems.length})
               </h2>
 
               {activeTab === 'equipment' && (
@@ -201,7 +203,7 @@ export function InventoryPage() {
                           : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
                         }`}
                     >
-                      {r}
+                      {t(`inventory.${r.toLowerCase()}`)}
                     </button>
                   ))}
                 </div>
@@ -211,7 +213,7 @@ export function InventoryPage() {
             {filteredItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                 <Layers size={48} className="mb-4 opacity-20" />
-                <p className="font-bold uppercase tracking-widest text-sm">No Items Found</p>
+                <p className="font-bold uppercase tracking-widest text-sm">{t('inventory.noItemsFound')}</p>
                 <p className="text-xs">ไม่พบไอเทมในหมวดหมู่นี้</p>
               </div>
             ) : (
@@ -247,7 +249,7 @@ export function InventoryPage() {
                               item.rarity === 'Rare' ? 'border-blue-200 bg-blue-50 text-blue-600' :
                                 item.rarity === 'Legendary' ? 'border-amber-200 bg-amber-50 text-amber-600' :
                                   'border-slate-200 bg-slate-50 text-slate-500'}`}>
-                            {item.rarity}
+                            {t(`inventory.${item.rarity.toLowerCase()}`)}
                           </span>
 
                           {isLocked && (
@@ -282,7 +284,7 @@ export function InventoryPage() {
                                 {item.passive.name}
                                 {/* เช็คถ้าเป็น lifesteal ให้แสดงค่า % ต่อท้าย */}
                                 {item.passive.target === 'lifesteal' && (
-                                  <span className="text-fuchsia-600">+{item.passive.value}% ดูดเลือด</span>
+                                  <span className="text-fuchsia-600">+{item.passive.value}% {t('global.lifesteal')}</span>
                                 )}
                               </span>
                             )}
@@ -290,7 +292,7 @@ export function InventoryPage() {
                             {/* --- 3. ส่วนแสดง Material (เหมือนเดิม) --- */}
                             {item.type === 'material' && (
                               <span className="text-[9px] sm:text-[10px] font-bold text-amber-600 bg-amber-50 px-2 rounded-full border border-amber-100">
-                                Resource
+                                {t('inventory.resource')}
                               </span>
                             )}
                           </div>
@@ -308,7 +310,7 @@ export function InventoryPage() {
                               : 'bg-slate-100 text-slate-600 hover:bg-slate-900 hover:text-white shadow-sm'
                             }`}
                         >
-                          {isEquipped ? 'Equipped' : isLocked ? 'Locked' : 'Equip'}
+                          {isEquipped ? t('inventory.equipped') : isLocked ? t('inventory.locked') : t('ui.equip')}
                         </button>
                       )}
                     </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { ElementType } from '../../types/game';
 import { Fingerprint, Timer, Coins, HelpCircle } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
+import { useTranslation } from 'react-i18next';
 
 
 const ELEMENT_STYLES: Record<ElementType, string> = {
@@ -30,6 +31,9 @@ export function ElementSelector({ currentElement, onSelect, onOpenGuide }: Eleme
         if (lvl < 10) return 100;
         return 250;
     };
+    const { t, i18n } = useTranslation();
+    console.log('Current Language:', i18n.language);
+    console.log('Translation for Hint:', t('ui.elementHint'));
 
     const baseCost = player.level * getBaseMultiplier(player.level);
     const wealthTax = Math.floor(player.gold * 0.05);
@@ -85,7 +89,7 @@ export function ElementSelector({ currentElement, onSelect, onOpenGuide }: Eleme
                             )}
                         </div>
                         <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide">
-                            เลือกธาตุที่ชนะทางมอนสเตอร์เพื่อดาเมจสูงสุด
+                            {t('ui.elementHint')}
                         </p>
                     </div>
 

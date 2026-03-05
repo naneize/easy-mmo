@@ -1,8 +1,10 @@
 import React from 'react'
 // เปลี่ยน Backpack เป็น Trophy
-import { Home, Package, Sparkles, Store, Sword, Trophy, Users } from 'lucide-react'
+import { Home, Icon, Package, Sparkles, Store, Sword, Trophy, Users } from 'lucide-react'
 import { useNavigationStore, type GameTabId } from '../store/navigation'
 import { useGameStore } from '../store/useGameStore'
+import { LanguageSwitcher } from './LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 
 type TabConfig = {
   id: GameTabId
@@ -10,21 +12,20 @@ type TabConfig = {
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
-const tabs: TabConfig[] = [
-  { id: 'dashboard', label: 'Home', Icon: Home },
-  { id: 'inventory', label: 'Inventory', Icon: Package },
-  { id: 'skills', label: 'Skills', Icon: Sparkles },
-  { id: 'classes', label: 'Classes', Icon: Users },
-  { id: 'adventure', label: 'Adventure', Icon: Sword },
-  { id: 'achievements', label: 'Achievements', Icon: Trophy },
-  { id: 'market', label: 'Market', Icon: Store },
-
-]
-
 export function GameNavigation() {
-  const activeTab = useNavigationStore((s) => s.activeTab)
-  const setActiveTab = useNavigationStore((s) => s.setActiveTab)
-  const player = useGameStore((s) => s.player)
+  const { activeTab, setActiveTab } = useNavigationStore()
+  const { player } = useGameStore()
+  const { t } = useTranslation()
+
+  const tabs: TabConfig[] = [
+    { id: 'dashboard', label: t('ui.dashboard'), Icon: Home },
+    { id: 'inventory', label: t('ui.inventory'), Icon: Package },
+    { id: 'skills', label: t('ui.skills'), Icon: Sparkles },
+    { id: 'classes', label: t('ui.classes'), Icon: Users },
+    { id: 'adventure', label: t('ui.adventure'), Icon: Sword },
+    { id: 'achievements', label: t('ui.achievements'), Icon: Trophy },
+    { id: 'market', label: t('ui.market'), Icon: Store },
+  ]
 
   return (
     <>
@@ -79,24 +80,23 @@ export function GameNavigation() {
                 {player.level}
               </div>
             </div>
-            <div className="min-w-0">
-              <div className="truncate text-sm font-black text-slate-800 uppercase tracking-tight">Adventurer</div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-1.5 w-16 rounded-full bg-slate-200 overflow-hidden">
-                  <div
-                    className="h-full bg-emerald-400 transition-all duration-500"
-                    style={{ width: `${(player.exp / 100) * 100}%` }}
-                  />
-                </div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">EXP</span>
-              </div>
-            </div>
+
+          </div>
+
+          {/* Language Switcher */}
+          <div className="mt-6 px-4">
+            <LanguageSwitcher />
           </div>
         </div>
       </aside>
 
       {/* Mobile Bottom Nav */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/90 backdrop-blur-md pb-[env(safe-area-inset-bottom)] sm:hidden">
+        {/* Language Switcher - Mobile */}
+        <div className="flex justify-center px-4 py-2 border-b border-slate-100">
+          <LanguageSwitcher />
+        </div>
+
         <nav className="flex h-16 overflow-x-auto no-scrollbar scroll-smooth px-2">
           {tabs.map(({ id, label, Icon }) => {
             const isActive = id === activeTab

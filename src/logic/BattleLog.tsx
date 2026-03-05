@@ -1,4 +1,5 @@
 import { useEffect, useRef, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
     History, Trash2, Zap, Sparkles,
     Sword, Trophy, Skull, ArrowUpCircle, Flame, HeartPulse, Activity,
@@ -6,13 +7,17 @@ import {
 } from 'lucide-react'
 import type { BattleLogEntry } from '../types/game'
 
+
 interface BattleLogProps {
     logs: BattleLogEntry[]
     onReset: () => void
 }
 
 export function BattleLog({ logs, onReset }: BattleLogProps) {
+    const { t } = useTranslation();
     const scrollRef = useRef<HTMLDivElement>(null)
+
+
 
     // สไตล์คงที่ ย้ายออกมาข้างนอกเพื่อ Performance
     const logStyles: Record<string, string> = useMemo(() => ({
@@ -23,7 +28,7 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
         elemental: 'bg-orange-500/10 text-orange-400 border-orange-500/20 font-medium py-1.5',
         skill: 'bg-sky-500/10 text-sky-300 border-sky-500/20 shadow-inner py-1.5',
         turn: 'bg-slate-900/60 text-slate-500 border-slate-800/40 my-6 py-1.5 opacity-100 text-center justify-center border-dashed border-x-0 border-b-0',
-        start: 'bg-white/5 text-slate-400 border-slate-700/50 uppercase tracking-[0.1em] py-1.5 text-[12px]',
+        start: 'bg-white/5 text-slate-400 border-slate-700/50 uppercase tracking-[0.1em] py-1.5 text-[16px]',
         regen: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20 py-1.5',
         attack: 'bg-white/5 text-slate-300 border-transparent hover:bg-white/10 py-1.5 opacity-90',
         critical: 'bg-gradient-to-r from-amber-600/30 to-orange-600/30 text-orange-200 border-orange-500/60 font-black shadow-[0_0_20px_rgba(249,115,22,0.3)] ring-1 ring-orange-400/30 py-3 scale-[1.01]',
@@ -50,16 +55,16 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
                 <div>
                     <h3 className="flex items-center gap-2 text-lg font-black text-slate-800 uppercase tracking-tighter">
                         <History size={20} className="text-indigo-500" />
-                        Battle Records
+                        {t('battleLog.battleRecords')}
                     </h3>
                     <div className="flex items-center gap-2 ml-6 mt-1">
                         <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
-                            Combat Session Log #{logs.length}
+                            {t('battleLog.combatSession', { count: logs.length })}
                         </p>
                         {/* ✨ เพิ่ม Badge แสดงจำนวน Turn */}
                         <div className="flex items-center gap-1 rounded-md bg-indigo-50 px-1.5 py-0.5 border border-indigo-100">
                             <span className="text-[9px] font-black text-indigo-500 uppercase">
-                                Total: {totalTurns} Turns
+                                {t('battleLog.totalTurns', { count: totalTurns })}
                             </span>
                         </div>
                     </div>
@@ -70,7 +75,7 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
                     className="group flex items-center gap-1.5 text-[9px] font-bold text-slate-400 hover:text-rose-500 transition-all uppercase tracking-widest bg-slate-100 py-1.5 px-3 rounded-full hover:bg-rose-50"
                 >
                     <Trash2 size={10} className="group-hover:rotate-12 transition-transform" />
-                    Reset Buffer
+                    {t('battleLog.resetBuffer')}
                 </button>
             </div>
 

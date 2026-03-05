@@ -46,6 +46,8 @@ export interface Skill {
     id: string;
     name: string;
     description: string;
+    nameKey: string;
+    descriptionKey: string;
     type: SkillType;
     tier: SkillTier;
     Icon: any;
@@ -102,7 +104,10 @@ export interface Entity extends BaseEntity {
 // --- มอนสเตอร์ ---
 export interface MonsterData extends BaseEntity {
     id: string;
-    description?: string;
+    name: string;
+    nameKey: string;
+    description: string;
+    descriptionKey: string;
     role: import('../data/monsters').MonsterRoleType
     gold: number;
     exp: number;
@@ -143,7 +148,9 @@ export interface BattleResult {
 export interface GameMap {
     id: string;
     name: string;
+    nameKey: string;
     description: string;
+    descriptionKey: string;
     minLevel: number;
     bgEmoji: string;
     monsters: MonsterData[];

@@ -1,6 +1,7 @@
 import { CheckCircle2 } from 'lucide-react'
 import type { MonsterData } from '../../types/game'
 import { getMasteryBonus } from '../../utils/gameHelpers'
+import { useTranslation } from 'react-i18next'
 
 interface MilestoneItemProps {
     goal: number;
@@ -9,6 +10,7 @@ interface MilestoneItemProps {
 }
 
 export function MilestoneItem({ goal, currentKills, monster }: MilestoneItemProps) {
+    const { t } = useTranslation()
     const isReached = currentKills >= goal
 
     // ใช้ getMasteryBonus เพื่อคำนวณค่าที่ถูกต้องตาม tier
@@ -39,7 +41,7 @@ export function MilestoneItem({ goal, currentKills, monster }: MilestoneItemProp
                     </div>
                 )}
                 <span className={`text-[11px] font-black ${isReached ? 'text-emerald-700' : 'text-slate-500'}`}>
-                    ปราบครบ {goal} ตัว
+                    {t('milestoneItem.defeated', { count: goal })}
                 </span>
             </div>
             <div className={`text-[11px] font-black px-3 py-1 rounded-lg ${isReached ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'

@@ -8,6 +8,7 @@ import { QuickShop } from '../components/dashboard/QuickShop';
 import { ELEMENT_CHART } from '../logic/elementalLogic';
 import { ElementGuideModal } from '../components/ElementGuideModal';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ELEMENT_STYLES: Record<string, string> = {
     Fire: 'from-orange-500 to-rose-600',
@@ -20,6 +21,7 @@ const ELEMENT_STYLES: Record<string, string> = {
 };
 
 export function DashboardPage() {
+    const { t } = useTranslation();
     const {
         player,
         equipped,
@@ -129,7 +131,6 @@ export function DashboardPage() {
                         <div>
                             <div className="flex items-center gap-2">
                                 {/* เปลี่ยนสีชื่อเป็น Slate-800 ให้อ่านง่ายบนพื้นสว่าง */}
-                                <h2 className="text-2xl font-black tracking-tight text-slate-800">{player.name}</h2>
                                 <button
                                     type="button"
                                     onClick={() => setIsClassModalOpen(true)}
@@ -146,9 +147,6 @@ export function DashboardPage() {
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2 mt-2">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-white/50 px-2 py-1 rounded-md border border-white/50">
-                                    Rank: Bronze
-                                </p>
 
                                 {masteredCount > 0 && (
                                     <div className="flex items-center gap-1 bg-indigo-500 px-2 py-1 rounded-md text-[9px] font-black text-white border border-indigo-200 shadow-sm">
@@ -272,11 +270,11 @@ export function DashboardPage() {
                                         </div>
                                         <div>
                                             <div className="text-sm font-bold text-slate-700 flex items-center gap-1">
-                                                {skill.name}
+                                                {t(skill.nameKey)}
                                                 {hasSynergy && <Sparkles size={12} className="text-indigo-500 animate-pulse" />}
                                             </div>
                                             <div className="text-[10px] font-medium text-slate-500/80 line-clamp-1">
-                                                {skill.description}
+                                                {t(skill.descriptionKey)}
                                             </div>
                                         </div>
                                     </div>
@@ -310,7 +308,7 @@ export function DashboardPage() {
                             ))
                         ) : (
                             <div className="py-8 text-center text-sm text-slate-400 italic">
-                                ยังไม่มีประวัติการต่อสู้
+                                {t('ui.noBattleLogs')}
                             </div>
                         )}
                     </div>

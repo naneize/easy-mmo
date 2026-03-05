@@ -5,7 +5,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'starter-field',
         name: 'ทุ่งหญ้าเริ่มต้น',
+        nameKey: 'maps.starterField.name',
         description: 'พื้นที่สำหรับนักผจญภัยหน้าใหม่',
+        descriptionKey: 'maps.starterField.description',
         minLevel: 1,
         bgEmoji: '🌱',
         monsters: [
@@ -18,7 +20,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'whispering-forest',
         name: 'ป่ากระซิบ',
+        nameKey: 'maps.whisperingForest.name',
         description: 'ป่าลึกที่เริ่มมีมอนสเตอร์ที่ดุร้ายและรวดเร็ว',
+        descriptionKey: 'maps.whisperingForest.description',
         minLevel: 5,
         bgEmoji: '🌲',
         monsters: [
@@ -30,7 +34,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'shadow-plains',
         name: 'ทุ่งเงา',
+        nameKey: 'maps.shadowPlains.name',
         description: 'ทุ่งกว้างที่เต็มไปด้วยนักธนูและสัตว์อสูร',
+        descriptionKey: 'maps.shadowPlains.description',
         minLevel: 12,
         bgEmoji: '🏜️',
         monsters: [
@@ -44,7 +50,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'crystal-mountains',
         name: 'ภูเขาผลึก',
+        nameKey: 'maps.crystalMountains.name',
         description: 'ภูเขาสูงที่เต็มไปด้วยจอมเวทย์และสัตว์อสูรที่ทรงพลัง',
+        descriptionKey: 'maps.crystalMountains.description',
         minLevel: 21,
         bgEmoji: '⛰️',
         monsters: [
@@ -58,7 +66,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'inferno-wastelands',
         name: 'ดินแดนนรก',
+        nameKey: 'maps.infernoWastelands.name',
         description: 'ดินแดนที่ถูกเผาทำลายด้วยไฟและพลังมืด',
+        descriptionKey: 'maps.infernoWastelands.description',
         minLevel: 31,
         bgEmoji: '🔥',
         monsters: [
@@ -72,7 +82,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'celestial-realm',
         name: 'แดนสวรรค์',
+        nameKey: 'maps.celestialRealm.name',
         description: 'ดินแดนศักดิ์สิทธิ์ที่เต็มไปด้วยเทพและสัตว์อสูรสูงสุด',
+        descriptionKey: 'maps.celestialRealm.description',
         minLevel: 41,
         bgEmoji: '✨',
         monsters: [
@@ -86,7 +98,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'eternal-peaks',
         name: 'ยอดเขานิรันดร์',
+        nameKey: 'maps.eternalPeaks.name',
         description: 'จุดสิ้นสุดของการผจญภัยที่เต็มไปด้วยความท้าทายสูงสุด',
+        descriptionKey: 'maps.eternalPeaks.description',
         minLevel: 46,
         bgEmoji: '🏔️',
         monsters: [
@@ -98,7 +112,9 @@ export const WORLD_MAPS: GameMap[] = [
     {
         id: 'wizard-tower',
         name: 'วิหารจอมเวทย์',
+        nameKey: 'maps.wizardTower.name',
         description: 'ที่อยู่ของเหล่าจอมเวทย์และบอสที่ทรงพลัง',
+        descriptionKey: 'maps.wizardTower.description',
         minLevel: 25,
         bgEmoji: '👑',
         monsters: [

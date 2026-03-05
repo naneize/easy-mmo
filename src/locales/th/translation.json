@@ -1,0 +1,507 @@
+{
+  "global": {
+    "atk": "ATK",
+    "def": "DEF",
+    "hp": "HP",
+    "critChance": "โอกาสคริติคอล",
+    "critDamage": "ความเสียหายคริติคอล",
+    "lifesteal": "ดูดเลือด",
+    "armorPen": "เจาะเกราะ",
+    "stamina": "สตามิน่า",
+    "exp": "EXP",
+    "gold": "Gold",
+    "level": "Lv.",
+    "element": "ธาตุ"
+  },
+  "ui": {
+    "startBattle": "เริ่มการต่อสู้",
+    "battle_processing": "กำลังตะลุมบอน...",
+    "inventory": "กระเป๋า",
+    "equip": "สวมใส่",
+    "upgrade": "อัปเกรด",
+    "back": "ย้อนกลับ",
+    "dashboard": "หน้าหลัก",
+    "market": "ตลาด",
+    "adventure": "ผจญภัย",
+    "skills": "สกิล",
+    "classes": "อาชีพ",
+    "achievements": "ความสำเร็จ",
+    "settings": "ตั้งค่า",
+    "language": "ภาษา",
+    "currentClass": "อาชีพปัจจุบัน",
+    "novice": "มือใหม่",
+    "elementGuide": "คู่มือธาตุ",
+    "elementHint": "เลือกธาตุที่ชนะทางมอนสเตอร์เพื่อดาเมจสูงสุด",
+    "classUnlockHint": "สวมใส่สกิลให้ครบ 4 ช่องตามเซต เพื่อปลดล็อคอาชีพ",
+    "noBattleLogs": "ยังไม่มีประวัติการต่อสู้"
+  },
+  "battleResult": {
+    "victory": "ชัยชนะ!",
+    "defeated": "พ่ายแพ้",
+    "levelUp": "อัปเลเวล!",
+    "health": "สุขภาพ",
+    "experience": "ประสบการณ์",
+    "lootDiscovered": "พบของดรอป!",
+    "newSkill": "สกิลใหม่!",
+    "mastery": "ความเชี่ยวชาญ",
+    "defeatMessage": "ไม่เป็นไรนะ... พักผ่อนก่อนแล้วค่อยมาลุยใหม่!",
+    "continue": "ดำเนินการต่อ",
+    "backToCamp": "กลับค่าย"
+  },
+  "elementGuide": {
+    "title": "กลยุทธ์ธาตุ",
+    "subtitle": "ตารางความได้เปรียบทางธาตุ (Updated v1.1)",
+    "vs": "พบกับ",
+    "closeButton": "รับทราบแผนกลยุทธ์!"
+  },
+  "dropDetail": {
+    "title": "ของที่ดรอป",
+    "dropRate": "3-5%",
+    "noDrops": "ไม่พบของดรอพิเศษ"
+  },
+  "masteryDetail": {
+    "title": "ความคืบหน้าความเชี่ยวชาญ",
+    "totalDefeated": "จำนวนที่ปราบได้",
+    "units": "ตัว",
+    "rank": "ระดับ",
+    "rewardMilestones": "เป้าหมายรางวัล",
+    "closeButton": "เข้าใจแล้ว"
+  },
+  "milestoneItem": {
+    "defeated": "ปราบครบ {{count}} ตัว"
+  },
+  "achievement": {
+    "title": "ความสำเร็จ",
+    "subtitle": "เป้าหมายและความสำเร็จของคุณ",
+    "progress": "ความคืบหน้า",
+    "footer": "ปลดล็อกความสำเร็จเพื่อรับรางวัลพิเศษในอนาคต"
+  },
+  "achievementToast": {
+    "unlocked": "ปลดล็อกความสำเร็จแล้ว"
+  },
+  "achievements": {
+    "firstBlood": {
+      "title": "First Blood",
+      "description": "ปราบมอนสเตอร์ตัวแรก"
+    },
+    "goldMiner": {
+      "title": "Gold Miner",
+      "description": "สะสมเงินครบ 1,000 Gold"
+    },
+    "slimeHunter": {
+      "title": "Slime Hunter",
+      "description": "ปราบ Slime ครบ 50 ตัว"
+    },
+    "monsterCollector": {
+      "title": "Monster Collector",
+      "description": "ปราบมอนสเตอร์ครบทุกสายพันธุ์"
+    }
+  },
+  "skills": {
+    "spark-burst": {
+      "name": "Spark Burst",
+      "description": "มีโอกาส 25% ที่จะโจมตีซ้ำด้วยความเสียหาย 100% (เพิ่มเป็น 40% หากผู้เล่นเป็นธาตุ Neutral) +โอกาส 2% และ +ความเสียหาย 3% ต่อระดับ",
+      "log": "⚡ Spark Burst Lv.{{level}} สายฟ้าฟาด! (ดาเมจ: {{dmg}})"
+    },
+    "blade-dance": {
+      "name": "Blade Dance",
+      "description": "เพิ่ม ATK 20% (เพิ่มเป็น 35% หากผู้เล่นเป็นธาตุ Neutral) +3% ต่อระดับ",
+      "log": "⚔️ Blade Dance Lv.{{level}} เพิ่มพลังโจมตี {{percent}}% (+{{atk}} ATK)!"
+    },
+    "aegis-guard": {
+      "name": "Aegis Guard",
+      "description": "มีโอกาส 35% ที่จะลดความเสียหายลง 50% (เพิ่มเป็น 55% หากผู้เล่นเป็นธาตุ Neutral) +1.5% ต่อระดับ",
+      "log": "🛡️ Aegis Guard Lv.{{level}} ป้องกันความเสียหาย {{percent}}%!"
+    },
+    "calm-focus": {
+      "name": "Calm Focus",
+      "description": "ฟื้นฟู 1% ของ HP สูงสุดต่อเทิร์น (เพิ่มเป็น 2% หากเป็นธาตุ Neutral) +0.5% ต่อระดับ",
+      "log": "✨ Calm Focus Lv.{{level}} ฟื้นฟู {{percent}}% ของ HP สูงสุด"
+    },
+    "blazing-soul": {
+      "name": "Blazing Soul",
+      "description": "เพิ่ม ATK 10% (เพิ่มเป็น 20% หากผู้เล่นเป็นธาตุ Fire) +1.5% ต่อระดับ",
+      "log": "🔥 Blazing Soul Lv.{{level}} ATK +{{percent}}%!"
+    },
+    "tidal-grace": {
+      "name": "Tidal Grace",
+      "description": "ฟื้นฟู 2% ของ HP สูงสุดต่อเทิร์น (5% หากผู้เล่นเป็นธาตุ Water) +0.3% ต่อระดับ",
+      "log": "💧 Tidal Grace Lv.{{level}} ฟื้นฟู +{{heal}} HP ({{percent}}%)"
+    },
+    "stone-skin": {
+      "name": "Stone Skin",
+      "description": "เพิ่ม DEF 10% (25% หากผู้เล่นเป็นธาตุ Earth) +3% ต่อระดับ",
+      "log": "🛡️ Stone Skin Lv.{{level}} DEF +{{percent}}%!"
+    },
+    "tailwind-strike": {
+      "name": "Tailwind",
+      "description": "มีโอกาส 10% ที่จะโจมตีเบิ้ล (30% หากผู้เล่นเป็นธาตุ Wind) +1% ต่อระดับ",
+      "log": "🌪️ Tailwind Lv.{{level}} เตรียมโจมตีต่อเนื่อง! (โอกาส {{chance}}%)"
+    },
+    "holy-aura": {
+      "name": "Holy Aura",
+      "description": "ลดความเสียหายที่ได้รับลง 10% (25% หากผู้เล่นเป็นธาตุ Light) +1.5% ต่อระดับ",
+      "log": "☀️ Holy Aura Lv.{{level}} ลดความเสียหาย {{percent}}%!"
+    },
+    "dark-pact": {
+      "name": "Dark Pact",
+      "description": "เพิ่ม ATK 30% (+3% ต่อระดับ) แต่ลด DEF ลง 10% (+2% ต่อระดับ) จะไม่ลด DEF หากผู้เล่นเป็นธาตุ Dark",
+      "log": "🌙 Dark Pact Lv.{{level}} ATK +{{atk}}%{{def, select, true{ (DEF -{{def}}%)} other{}})!"
+    },
+    "vitality-boost": {
+      "name": "Vitality Boost",
+      "description": "เพิ่ม HP สูงสุด 15% (+2% ต่อระดับ) ผลจะเพิ่มเป็นสองเท่าหากผู้เล่นเป็นธาตุ Neutral",
+      "log": "❤️ Vitality Boost Lv.{{level}} Max HP +{{percent}}%!"
+    },
+    "gold-finder": {
+      "name": "Gold Finder",
+      "description": "ได้รับ Gold เพิ่มขึ้น 10% หลังจบการต่อสู้ +2% ต่อระดับ",
+      "log": "⭐ Gold Finder Lv.{{level}}: รับทองเพิ่ม +{{percent}}%!"
+    },
+    "fire-ember": {
+      "name": "Fire Ember",
+      "description": "มีโอกาส 15% ที่จะสร้างความเสียหายเพิ่มอีก 50% ของ ATK (เพิ่มเป็น 25% หากผู้เล่นเป็นธาตุ Fire) +2% ต่อระดับ",
+      "log": "🔥 Fire Ember Lv.{{level}} โอกาส {{chance}}% ดาเมจเพิ่ม +{{dmg}}!"
+    },
+    "water-purify": {
+      "name": "Water Purify",
+      "description": "ล้างสถานะพิษและฟื้นฟู 8% ของ HP สูงสุดทันที (เพิ่มเป็น 12% หากผู้เล่นเป็นธาตุ Water) +1% ต่อระดับ",
+      "log": "💧 Water Purify Lv.{{level}} ฟื้นฟู +{{heal}} HP ({{percent}}%) และลบสถานะผิดปกติ"
+    },
+    "earth-wall": {
+      "name": "Earth Wall",
+      "description": "เพิ่ม DEF 20% แต่ลด ATK ลง 5% (จะไม่ลด ATK หากผู้เล่นเป็นธาตุ Earth) +2% ต่อระดับ",
+      "log": "🛡️ Earth Wall Lv.{{level}} DEF +{{def}}%{{atk, select, true{ (ATK -{{atk}}%)} other{}})!"
+    },
+    "wind-dash": {
+      "name": "Wind Dash",
+      "description": "มีโอกาส 20% ที่จะหลบการโจมตีและสวนกลับด้วยความเสียหาย 50% ของ ATK (เพิ่มเป็น 30% หากผู้เล่นเป็นธาตุ Wind) +2% ต่อระดับ",
+      "log": "💨 Wind Dash Lv.{{level}} โอกาสหลบ {{chance}}% | สวนกลับ {{counter}}% ATK"
+    },
+    "light-blessing": {
+      "name": "Light Blessing",
+      "description": "ฟื้นฟู 5% ของ HP สูงสุดต่อเทิร์นและเพิ่ม ATK 10% (เพิ่มเป็น 15% หากผู้เล่นเป็นธาตุ Light) +1% ต่อระดับ",
+      "log": "☀️ Light Blessing Lv.{{level}} ฟื้นฟู +{{heal}} HP/เทิร์น ATK +{{atk}}%"
+    },
+    "dark-corruption": {
+      "name": "Dark Corruption",
+      "description": "ลด DEF ศัตรูลง 15% (+1% ต่อระดับ) แต่เสีย HP 3% ต่อเทิร์น (จะไม่เสีย HP หากผู้เล่นเป็นธาตุ Dark)",
+      "log": "🌙 Dark Corruption Lv.{{level}} ลด DEF ศัตรู {{def}}%{{hp, select, true{ (เสีย HP -{{hp}}%/เทิร์น)} other{}})!"
+    },
+    "critical-strike": {
+      "name": "Critical Strike",
+      "description": "มีโอกาส 8% ที่จะสร้างความเสียหาย 200% (คริติคอล) +1% ต่อระดับ",
+      "log": "🎯 Critical Strike Lv.{{level}} โอกาส {{chance}}% คริติคอล!"
+    },
+    "critical-mastery": {
+      "name": "Critical Mastery",
+      "description": "เพิ่มความเสียหายคริติคอลขึ้น 20% (+5% ต่อระดับ)",
+      "log": "⚡ Critical Mastery Lv.{{level}} เพิ่มความเสียหายคริติคอล +{{bonus}}%!"
+    },
+    "lifesteal-vamp": {
+      "name": "Vampiric Touch",
+      "description": "มีโอกาส 30% ที่จะดูดเลือดเริ่มต้นที่ 15% (+2% ต่อระดับ) ของความเสียหายที่ทำได้",
+      "log": "🩸 Vampiric Touch Lv.{{level}} (โอกาส {{chance}}%) ดูดเลือด {{percent}}% (+{{heal}} HP)"
+    },
+    "armor-penetration": {
+      "name": "Armor Penetration",
+      "description": "เพิกเฉย DEF ศัตรูเริ่มต้นที่ 30% (+2% ต่อระดับ) แต่ลด ATK ลง 10%",
+      "log": "⚔️ Armor Penetration Lv.{{level}} ทะลุ DEF {{pen}}% (ATK -{{atk}}%)"
+    },
+    "elemental-mastery": {
+      "name": "Elemental Mastery",
+      "description": "ปลุกพลังธาตุที่ซ่อนอยู่: เพิ่ม ATK, DEF และ HP อย่างมหาศาลตามระดับทักษะ (ธาตุ Neutral จะได้รับโบนัสที่แข็งแกร่งกว่า)",
+      "log": "👑 Elemental Mastery ({{element}}): ATK +{{atk}}% | DEF +{{def}}% | HP +{{hp}}%"
+    },
+    "skillMastery": "การฝึกทักษะ",
+    "upgradeOrUnlockPotential": "อัปเกรดหรือปลดล็อคศักยภาพของคุณ",
+    "currentBalance": "ยอดคงเหลือ",
+    "allTypes": "ทุกประเภท",
+    "constant": "คงที่",
+    "onHit": "ตอนโจมตี",
+    "defend": "ป้องกัน",
+    "filter": "กรอง:",
+    "currentRank": "ระดับปัจจุบัน",
+    "maxMastery": "ความเชี่ยวชาญสูงสุด",
+    "level": "ระดับ",
+    "maxMasteryReached": "เชี่ยวชาญสูงสุด",
+    "upgrade": "อัปเกรด",
+    "clickToIncreasePower": "คลิกเพื่อเพิ่มพลัง",
+    "cost": "ราคา",
+    "need": "ต้องการ",
+    "skillLocked": "ทักษะถูกล็อค",
+    "findSkillByDefeating": "หาทักษะนี้โดยการเอาชนะ<br />มอนสเตอร์ที่แข็งแกร่ง",
+    "noSkillsFound": "ไม่พบทักษะในหมวดหมู่นี้",
+    "activeSlots": "ช่องที่ใช้งาน (สูงสุด 4)",
+    "empty": "ว่าง",
+    "active": "ใช้งาน",
+    "noSkillsMatchFilters": "ไม่มีทักษะที่ตรงกับตัวกรอง"
+  },
+  "maps": {
+    "starterField": {
+      "name": "ทุ่งหญ้าเริ่มต้น",
+      "description": "พื้นที่สำหรับนักผจญภัยหน้าใหม่"
+    },
+    "whisperingForest": {
+      "name": "ป่ากระซิบ",
+      "description": "ป่าลึกที่เริ่มมีมอนสเตอร์ที่ดุร้ายและรวดเร็ว"
+    },
+    "shadowPlains": {
+      "name": "ทุ่งเงา",
+      "description": "ทุ่งกว้างที่เต็มไปด้วยนักธนูและสัตว์อสูร"
+    },
+    "crystalMountains": {
+      "name": "ภูเขาผลึก",
+      "description": "ภูเขาสูงที่เต็มไปด้วยจอมเวทย์และสัตว์อสูรที่ทรงพลัง"
+    },
+    "infernoWastelands": {
+      "name": "ดินแดนนรก",
+      "description": "ดินแดนที่ถูกเผาทำลายด้วยไฟและพลังมืด"
+    },
+    "celestialRealm": {
+      "name": "แดนสวรรค์",
+      "description": "ดินแดนศักดิ์สิทธิ์ที่เต็มไปด้วยเทพและสัตว์อสูรสูงสุด"
+    },
+    "eternalPeaks": {
+      "name": "ยอดเขานิรันดร์",
+      "description": "จุดสิ้นสุดของการผจญภัยที่เต็มไปด้วยความท้าทายสูงสุด"
+    },
+    "wizardTower": {
+      "name": "วิหารจอมเวทย์",
+      "description": "ที่อยู่ของเหล่าจอมเวทย์และบอสที่ทรงพลัง"
+    }
+  },
+  "monsters": {
+    "m-01": {
+      "name": "สไลม์สดใส",
+      "description": "ก้อนเยลลี่สีฟ้าที่ดูเป็นมิตร"
+    },
+    "m-02": {
+      "name": "กระต่ายขี้โมโห",
+      "description": "พุ่งชนด้วยความเร็วสูง"
+    },
+    "m-03": {
+      "name": "ผึ้งนักรบ",
+      "description": "เหล็กไนรัวเร็ว"
+    },
+    "m-04": {
+      "name": "หนอนลาวา",
+      "description": "ความร้อนระอุทะลุการป้องกัน"
+    },
+    "m-05": {
+      "name": "โกเลมหินผา",
+      "description": "กำแพงเดินได้"
+    },
+    "m-06": {
+      "name": "จอมเวทวารี",
+      "description": "ควบคุมกระแสน้ำ"
+    },
+    "m-07": {
+      "name": "สไลม์เพลิงคลั่ง",
+      "description": "โจมตีด้วยความร้อนแรง"
+    },
+    "m-09": {
+      "name": "อัศวินโลหะโบราณ",
+      "description": "เกราะหนักโจมตีรุนแรง"
+    },
+    "m-10": {
+      "name": "วิญญาณหลงทาง",
+      "description": "คาดเดาไม่ได้"
+    },
+    "m-11": {
+      "name": "อัศวินศักดิ์สิทธิ์",
+      "description": "สมดุลรุกและรับ"
+    },
+    "m-12": {
+      "name": "นักธนูแห่งเงา",
+      "description": "ยิงศรพิษทะลุเกราะ"
+    },
+    "m-13": {
+      "name": "เสือธาตุ",
+      "description": "รวดเร็วและดุร้าย"
+    },
+    "m-14": {
+      "name": "ทหารมังกร",
+      "description": "ทหารรับจ้างพลังไฟ"
+    },
+    "m-15": {
+      "name": "แม่มดน้ำแข็ง",
+      "description": "แช่แข็งทุกสิ่ง"
+    },
+    "m-16": {
+      "name": "ยักษ์หิน",
+      "description": "พลังทำลายล้างสูง"
+    },
+    "m-17": {
+      "name": "จอมเวทย์แห่งความมืด",
+      "description": "ผู้ใช้เวทมนตร์มืด"
+    },
+    "m-18": {
+      "name": "นางพญาพายุ",
+      "description": "ผู้ควบคุมพายุ"
+    },
+    "m-19": {
+      "name": "ราชาซาลาแมนเดอร์",
+      "description": "สัตว์อสูรไฟ"
+    },
+    "m-20": {
+      "name": "ไททันน้ำ",
+      "description": "พลังฟื้นฟูสูง"
+    },
+    "m-21": {
+      "name": "เทพผู้พิทักษ์",
+      "description": "พลังป้องกันสูง"
+    },
+    "m-22": {
+      "name": "จอมเวทย์แห่งความตาย",
+      "description": "อันตรายที่สุด"
+    },
+    "m-23": {
+      "name": "เทพแห่งสายลม",
+      "description": "เร็วกว่าสายตา"
+    },
+    "m-24": {
+      "name": "จอมเวทย์แห่งไฟ",
+      "description": "เผาทำลายทุกสิ่ง"
+    },
+    "m-25": {
+      "name": "ราชามหาสมุทร",
+      "description": "ผู้ควบคุมมหาสมุทร"
+    },
+    "m-26": {
+      "name": "ยักษ์พฤกษาโบราณ",
+      "description": "พลังป้องกันสูงสุด"
+    },
+    "m-27": {
+      "name": "จอมเวทย์แห่งความว่าง",
+      "description": "ทำลายทุกสิ่ง"
+    },
+    "m-28": {
+      "name": "เทพแห่งพายุ",
+      "description": "ควบคุมสภาพอากาศ"
+    },
+    "m-29": {
+      "name": "จอมเวทย์แห่งนรก",
+      "description": "ไฟนรกทำลายล้าง"
+    },
+    "m-30": {
+      "name": "ราชามหาสมุทรลึก",
+      "description": "มหาสมุทรที่อุดมสมบูรณ์"
+    },
+    "m-31": {
+      "name": "ยักษ์พฤกษาศักดิ์สิทธิ์",
+      "description": "พลังป้องกันสูงสุด"
+    },
+    "boss-02": {
+      "name": "จอมเวทย์แห่งความตาย",
+      "description": "บอสแห่งความตาย"
+    },
+    "boss-03": {
+      "name": "จอมเวทย์แห่งไฟ",
+      "description": "บอสแห่งไฟ"
+    },
+    "boss-04": {
+      "name": "จอมเวทย์แห่งนรก",
+      "description": "บอสแห่งนรก"
+    },
+    "boss-05": {
+      "name": "จอมเวทย์แห่งความว่างเปล่า",
+      "description": "บอสสุดท้าย"
+    }
+  },
+  "classes": {
+    "title": "อาชีพ",
+    "subtitle": "สวมใส่สกิลให้ครบ 4 ช่องตามเซต เพื่อปลดล็อคอาชีพ",
+    "currentClass": "อาชีพปัจจุบัน",
+    "unlocked": "ปลดล็อคแล้ว",
+    "class": "อาชีพ",
+    "unlock": "ปลดล็อค",
+    "unlockRequirement": "ใส่สกิลครบ 4 ชิ้น",
+    "requiredSkills": "สกิลที่ต้องการ",
+    "classBonuses": "โบนัสอาชีพ",
+    "specialEffect": "เอฟเฟกต์พิเศษ",
+    "elementAffinity": "ความต่างธาตุ",
+    "advantageBonus": "โบนัสเมื่อชนะทาง",
+    "disadvantageReduction": "ลดความเสียหายเมื่อแพ้ทาง",
+    "novice": "มือใหม่",
+    "locked": "ถูกล็อค",
+    "active": "ใช้งานอยู่",
+    "berserker": {
+      "name": "Berserker",
+      "specialEffect": {
+        "bloodlust": {
+          "name": "โลหิตคลั่ง",
+          "description": "เมื่อ HP เหลือน้อยกว่า 30% จะได้รับพลังโจมตีเพิ่มขึ้น 20% ทันที!"
+        }
+      }
+    },
+    "guardian": {
+      "name": "Guardian",
+      "specialEffect": {
+        "thorns": {
+          "name": "หนามสะท้อน",
+          "description": "มีโอกาส 10% ที่จะสะท้อนความเสียหายกลับไปยังศัตรูที่โจมตี!"
+        }
+      }
+    },
+    "mage": {
+      "name": "Mage",
+      "specialEffect": {
+        "arcaneEcho": {
+          "name": "เสียงเวทย้อนกลับ",
+          "description": "การโจมตีทุกๆ 3 เทิร์นจะสร้างความเสียหายที่รุนแรงขึ้นอย่างมหาศาล!"
+        }
+      }
+    }
+  },
+  "inventory": {
+    "totalCombatPower": "พลังการต่อสู้รวม",
+    "currentGear": "อุปกรณ์ปัจจุบัน",
+    "weapon": "อาวุธ",
+    "armor": "เกราะ",
+    "accessory": "เครื่องประดับ",
+    "emptySlot": "ช่องว่าง",
+    "passiveActive": "พาสซีฟทำงาน",
+    "unequip": "ถอด",
+    "myCollection": "คอลเลกชันของฉัน",
+    "resources": "ทรัพยากร",
+    "noItemsFound": "ไม่พบไอเทม",
+    "equipped": "สวมใส่แล้ว",
+    "locked": "ถูกล็อค",
+    "common": "Common",
+    "uncommon": "Uncommon",
+    "rare": "Rare",
+    "epic": "Epic",
+    "legendary": "Legendary",
+    "resource": "ทรัพยากร",
+    "lifestealDescription": "(ดูดเลือด +{value}%)"
+  },
+  "battleLog": {
+    "battleRecords": "บันทึกการต่อสู้",
+    "you": "คุณ",
+    "combatSession": "บันทึกการต่อสู้ #{{count}}",
+    "totalTurns": "ทั้งหมด: {{count}} รอบ",
+    "resetBuffer": "ลบข้อมูล",
+    "start": "⚔️ เริ่มการต่อสู้กับ {{name}} (HP: {{hp}})",
+    "turn": "🔄 เทิร์นที่ {{num}}",
+    "attack": "⚔️ {{attacker}} โจมตี {{target}}: -{{dmg}} HP (เหลือ {{hpLeft}} HP)",
+    "criticalHit": "💥 {{attacker}} CRITICAL! {{target}} -{{dmg}} HP (x{{mult}}) เหลือ {{hpLeft}} HP",
+    "lifesteal": "🩸 [{{sourceName}}] ดูดเลือดฟื้นฟู +{{amt}} HP (ปัจจุบัน: {{currentHp}} HP)",
+    "victory": "✨ ชัยชนะ! คุณปราบ {{name}} ได้สำเร็จ (เหลือ HP: {{hpLeft}}) | 💰 +{{gold}}G 🌟 +{{exp}}EXP",
+    "defeat": "💀 พ่ายแพ้... คุณถูก {{name}} กำจัด (มอนสเตอร์เหลือ HP: {{monsterHpLeft}})",
+    "levelUp": "🎊 เลเวลอัป! เป็นเลเวล {{level}}!",
+    "statusUp": "📈 Status Up: HP+{{hp}}, ATK+{{atk}}, DEF+{{def}} (Full Heal!)",
+    "miss": "💨 MISS! {{target}} หลบได้!",
+    "counterStrike": "⚡ COUNTER! {{attacker}} สวนกลับ {{target}} -{{dmg}} HP",
+    "elementalNotice": "{{playerType}} VS {{monsterType}}! ดาเมจ x{{mult}}",
+    "synergyPrefix": "⚪ [Synergy] ",
+    "synergy": "{{prefix}}{{skillLog}}",
+    "skill": "{{name}}: {{effect}}",
+    "regen": "💚 ฟื้นฟู +{{amt}} HP (ปัจจุบัน: {{currentHp}} HP)",
+    "doubleAttack": "🌪️ DOUBLE ATTACK! 🌪️ {{attacker}} โจมตีต่อเนื่อง! -{{dmg}} HP (เหลือ {{hpLeft}} HP)",
+    "bloodlustActivated": "🔥 โลหิตคลั่งทำงาน! ATK +20%",
+    "arcaneEchoDamage": "✨ เสียงสะท้อนเวทมนตร์! (x{{mult}})",
+    "thornsReflected": "🌿 สะท้อนหนาม! {{dmg}} ดาเมจ",
+    "damageReduction": "🛡️ ลดความเสียหาย {{percent}}% (-{{amount}})"
+  }
+}

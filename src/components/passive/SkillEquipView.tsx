@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Plus, X, Sparkles, Filter, Activity, Swords, Shield } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
 import { SkillCard } from './SkillCard';
 import { calculatePlayerClass } from '../../utils/gameHelpers';
 
 export function SkillEquipView() {
+    const { t } = useTranslation();
     const { player, equipSkill, unequipSkill, getOwnedSkillsWithIcons, getEquippedSkillsWithIcons, unlockedSkills } = useGameStore();
     const [activeTab, setActiveTab] = useState('All');
     const [activeType, setActiveType] = useState('All');
@@ -16,13 +18,14 @@ export function SkillEquipView() {
     const playerClass = calculatePlayerClass(equippedSkillsWithIcons);
 
     const tabs = ['All', 'Fire', 'Water', 'Earth', 'Wind', 'Light', 'Dark', 'Neutral'];
+    const translatedTabs = tabs.map(tab => ({ id: tab, label: t(`${tab.toLowerCase()}`) }));
 
     // #region --- ส่วนที่เพิ่มเข้ามา: UI Filter Types ---
     const skillTypes = [
-        { id: 'All', label: 'All Types', Icon: Activity },
-        { id: 'constant', label: 'Constant', Icon: Sparkles },
-        { id: 'on-hit', label: 'On-Hit', Icon: Swords },
-        { id: 'on-defend', label: 'Defend', Icon: Shield },
+        { id: 'All', label: t('skills.allTypes'), Icon: Activity },
+        { id: 'constant', label: t('skills.constant'), Icon: Sparkles },
+        { id: 'on-hit', label: t('skills.onHit'), Icon: Swords },
+        { id: 'on-defend', label: t('skills.defend'), Icon: Shield },
     ];
     // #endregion
 
@@ -44,9 +47,9 @@ export function SkillEquipView() {
             {/* Active Slots */}
             <div>
                 <div className="mb-6 text-sm font-black text-slate-800 flex items-center gap-2 uppercase tracking-widest">
-                    <div className="bg-indigo-500 w-2 h-6 rounded-full"></div> Active Slots (4 Max)
+                    <div className="bg-indigo-500 w-2 h-6 rounded-full"></div> {t('skills.activeSlots')}
                     <div className={`ml-auto px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${playerClass ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
-                        Class: {playerClass ? playerClass.name : 'Novice'}
+                        {t('Class')}: {playerClass ? playerClass.name : t('ui.novice')}
                     </div>
                 </div>
 
@@ -63,7 +66,7 @@ export function SkillEquipView() {
                                 {/* ย่อขนาดไอคอน Plus ลงนิดนึง */}
                                 <Plus size={20} className="opacity-20" />
                                 <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest opacity-40">
-                                    Empty
+                                    {t('skills.empty')}
                                 </div>
                             </div>
                         );
@@ -105,14 +108,14 @@ export function SkillEquipView() {
                 <div className="space-y-3">
                     {/* Element Tabs */}
                     <div className="flex flex-wrap gap-2 bg-white p-2 rounded-[1.5rem] shadow-sm border border-slate-100">
-                        {tabs.map(tab => (
+                        {translatedTabs.map(tab => (
                             <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
                                 className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all 
-                                    ${activeTab === tab ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                                    ${activeTab === tab.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
                             >
-                                {tab}
+                                {tab.label}
                             </button>
                         ))}
                     </div>
@@ -120,7 +123,7 @@ export function SkillEquipView() {
                     {/* Type Filter Tabs (ส่วนที่เพิ่มใหม่) */}
                     <div className="flex items-center gap-3 px-2">
                         <span className="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1">
-                            <Filter size={12} /> Filter:
+                            <Filter size={12} /> {t('skills.filter')}
                         </span>
                         <div className="flex flex-wrap gap-2">
                             {skillTypes.map((type) => (
@@ -156,7 +159,7 @@ export function SkillEquipView() {
                     {/* Empty State เมื่อไม่พบสกิลจากการ Filter */}
                     {filteredSkills.length === 0 && (
                         <div className="col-span-full py-12 text-center text-slate-400 font-bold uppercase text-xs tracking-widest border-2 border-dashed border-slate-100 rounded-[2rem]">
-                            No skills match your filters
+                            {t('skills.noSkillsMatchFilters')}
                         </div>
                     )}
                 </div>

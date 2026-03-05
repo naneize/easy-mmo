@@ -1,5 +1,7 @@
 import { Lock, Map as MapIcon, ChevronRight } from 'lucide-react'
 import { WORLD_MAPS } from '../data/maps'
+import { useGameStore } from '../store/useGameStore'
+import { useTranslation } from 'react-i18next'
 import type { GameMap } from '../types/game'
 
 const ELEMENT_COLORS: Record<string, string> = {
@@ -18,6 +20,8 @@ interface MapSelectionProps {
 }
 
 export function MapSelection({ playerLevel, onSelect }: MapSelectionProps) {
+    const { t } = useTranslation()
+
     return (
         <div className="grid grid-cols-1 gap-4 animate-in fade-in zoom-in-95 duration-300">
             <div className="flex justify-between items-end mb-6">
@@ -52,8 +56,8 @@ export function MapSelection({ playerLevel, onSelect }: MapSelectionProps) {
                                             {map.bgEmoji}
                                         </div>
                                         <div>
-                                            <h3 className="font-black text-slate-800 text-2xl leading-tight">{map.name}</h3>
-                                            <p className="text-sm text-slate-500 mt-1 max-w-[220px] line-clamp-1 italic">"{map.description}"</p>
+                                            <h3 className="font-black text-slate-800 text-2xl leading-tight">{t(map.nameKey)}</h3>
+                                            <p className="text-sm text-slate-500 mt-1 max-w-[220px] line-clamp-1 italic">"{t(map.descriptionKey)}"</p>
 
                                             {!isLocked && (
                                                 <div className="mt-4 flex flex-wrap gap-1.5 items-center">

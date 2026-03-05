@@ -1,0 +1,508 @@
+{
+  "global": {
+    "atk": "ATK",
+    "def": "DEF",
+    "hp": "HP",
+    "critChance": "Crit Chance",
+    "critDamage": "Crit DMG",
+    "lifesteal": "Lifesteal",
+    "armorPen": "Armor Pen",
+    "stamina": "Stamina",
+    "exp": "EXP",
+    "gold": "Gold",
+    "level": "Lv.",
+    "element": "Element"
+  },
+  "ui": {
+    "startBattle": "Start Battle",
+    "battle_processing": "Battling...",
+    "inventory": "Inventory",
+    "equip": "Equip",
+    "back": "Back",
+    "dashboard": "Dashboard",
+    "market": "Market",
+    "skills": "Skills",
+    "adventure": "Adventure",
+    "classes": "Classes",
+    "achievements": "Achievements",
+    "settings": "Settings",
+    "language": "Language",
+    "currentClass": "Current Class",
+    "novice": "Novice",
+    "elementGuide": "Element Guide",
+    "elementHint": "Choose an element that counters the monster for maximum damage",
+    "classUnlockHint": "Equip 4 skills according to the set to unlock the class",
+    "noBattleLogs": "No battle logs yet"
+  },
+  "battleResult": {
+    "victory": "Victory!",
+    "defeated": "Defeated",
+    "levelUp": "Level Up!",
+    "health": "Health",
+    "experience": "Experience",
+    "lootDiscovered": "Loot Discovered!",
+    "newSkill": "New Skill!",
+    "mastery": "Mastery",
+    "defeatMessage": "It's okay... Take a rest and try again!",
+    "continue": "CONTINUE",
+    "backToCamp": "BACK TO CAMP"
+  },
+  "elementGuide": {
+    "title": "Element Strategy",
+    "subtitle": "Element Advantage Chart (Updated v1.1)",
+    "vs": "vs",
+    "closeButton": "Got it!"
+  },
+  "dropDetail": {
+    "title": "Drop Rewards",
+    "dropRate": "3-5%",
+    "noDrops": "No special drops found"
+  },
+  "masteryDetail": {
+    "title": "Mastery Progress",
+    "totalDefeated": "Total Defeated",
+    "units": "defeated",
+    "rank": "Rank",
+    "rewardMilestones": "Reward Milestones",
+    "closeButton": "Got it"
+  },
+  "milestoneItem": {
+    "defeated": "{{count}} defeated"
+  },
+  "achievement": {
+    "title": "Achievements",
+    "subtitle": "Your goals and accomplishments",
+    "progress": "PROGRESS",
+    "footer": "Unlock achievements to receive special rewards in the future"
+  },
+  "achievementToast": {
+    "unlocked": "Achievement Unlocked"
+  },
+  "achievements": {
+    "firstBlood": {
+      "title": "First Blood",
+      "description": "Defeat your first monster"
+    },
+    "goldMiner": {
+      "title": "Gold Miner",
+      "description": "Accumulate 1,000 Gold"
+    },
+    "slimeHunter": {
+      "title": "Slime Hunter",
+      "description": "Defeat 50 Slimes"
+    },
+    "monsterCollector": {
+      "title": "Monster Collector",
+      "description": "Defeat all monster types"
+    }
+  },
+  "skills": {
+    "spark-burst": {
+      "name": "Spark Burst",
+      "description": "25% chance to attack again for 100% damage (increases to 40% if player is Neutral element) +2% chance and +3% damage per level",
+      "log": "⚡ Spark Burst Lv.{{level}} lightning strikes! (Damage: {{dmg}})"
+    },
+    "blade-dance": {
+      "name": "Blade Dance",
+      "description": "Increase ATK by 20% (increases to 35% if player is Neutral element) +3% per level",
+      "log": "⚔️ Blade Dance Lv.{{level}} increases ATK by {{percent}}% (+{{atk}} ATK)!"
+    },
+    "aegis-guard": {
+      "name": "Aegis Guard",
+      "description": "35% chance to reduce damage by 50% (increases to 55% if player is Neutral element) +1.5% per level",
+      "log": "🛡️ Aegis Guard Lv.{{level}} reduces damage by {{percent}}%!"
+    },
+    "calm-focus": {
+      "name": "Calm Focus",
+      "description": "Regenerate 1% of max HP per turn (increases to 2% if Neutral element) +0.5% per level",
+      "log": "✨ Calm Focus Lv.{{level}} regenerates {{percent}}% of max HP"
+    },
+    "blazing-soul": {
+      "name": "Blazing Soul",
+      "description": "Increase ATK by 10% (increases to 20% if player is Fire element) +1.5% per level",
+      "log": "🔥 Blazing Soul Lv.{{level}} ATK +{{percent}}%!"
+    },
+    "tidal-grace": {
+      "name": "Tidal Grace",
+      "description": "Regenerate 2% of max HP per turn (5% if player is Water element) +0.3% per level",
+      "log": "💧 Tidal Grace Lv.{{level}} regenerates +{{heal}} HP ({{percent}}%)"
+    },
+    "stone-skin": {
+      "name": "Stone Skin",
+      "description": "Increase DEF by 10% (25% if player is Earth element) +3% per level",
+      "log": "🛡️ Stone Skin Lv.{{level}} DEF +{{percent}}%!"
+    },
+    "tailwind-strike": {
+      "name": "Tailwind",
+      "description": "10% chance to double attack (30% if player is Wind element) +1% per level",
+      "log": "🌪️ Tailwind Lv.{{level}} prepares double attack! ({{chance}}% chance)"
+    },
+    "holy-aura": {
+      "name": "Holy Aura",
+      "description": "Reduce damage taken by 10% (25% if player is Light element) +1.5% per level",
+      "log": "☀️ Holy Aura Lv.{{level}} reduces damage by {{percent}}%!"
+    },
+    "dark-pact": {
+      "name": "Dark Pact",
+      "description": "Increase ATK by 30% (+3% per level) but reduce DEF by 10% (+2% per level) No DEF penalty if player is Dark element",
+      "log": "🌙 Dark Pact Lv.{{level}} ATK +{{atk}}%{{def, select, true{ (DEF -{{def}}%)} other{}}})!"
+    },
+    "vitality-boost": {
+      "name": "Vitality Boost",
+      "description": "Increase max HP by 15% (+2% per level) Effect doubles if player is Neutral element",
+      "log": "❤️ Vitality Boost Lv.{{level}} Max HP +{{percent}}%!"
+    },
+    "gold-finder": {
+      "name": "Gold Finder",
+      "description": "Gain 10% more Gold after battles +2% per level",
+      "log": "⭐ Gold Finder Lv.{{level}}: Gain +{{percent}}% more Gold!"
+    },
+    "fire-ember": {
+      "name": "Fire Ember",
+      "description": "15% chance to deal additional 50% ATK damage (increases to 25% if player is Fire element) +2% per level",
+      "log": "🔥 Fire Ember Lv.{{level}} {{chance}}% chance for +{{dmg}} bonus damage!"
+    },
+    "water-purify": {
+      "name": "Water Purify",
+      "description": "Remove Poison and restore 8% of max HP instantly (increases to 12% if player is Water element) +1% per level",
+      "log": "💧 Water Purify Lv.{{level}} restores +{{heal}} HP ({{percent}}%) and removes negative status"
+    },
+    "earth-wall": {
+      "name": "Earth Wall",
+      "description": "Increase DEF by 20% but reduce ATK by 5% (no ATK penalty if player is Earth element) +2% per level",
+      "log": "🛡️ Earth Wall Lv.{{level}} DEF +{{def}}%{{atk, select, true{ (ATK -{{atk}}%)} other{}}})!"
+    },
+    "wind-dash": {
+      "name": "Wind Dash",
+      "description": "20% chance to dodge attack and counter with 50% ATK damage (increases to 30% if player is Wind element) +2% per level",
+      "log": "💨 Wind Dash Lv.{{level}} {{chance}}% dodge chance | {{counter}}% ATK counter"
+    },
+    "light-blessing": {
+      "name": "Light Blessing",
+      "description": "Regenerate 5% of max HP per turn and increase ATK by 10% (increases to 15% if player is Light element) +1% per level",
+      "log": "☀️ Light Blessing Lv.{{level}} regenerates +{{heal}} HP/turn ATK +{{atk}}%"
+    },
+    "dark-corruption": {
+      "name": "Dark Corruption",
+      "description": "Reduce enemy DEF by 15% (+1% per level) but lose 3% HP per turn (no HP loss if player is Dark element)",
+      "log": "🌙 Dark Corruption Lv.{{level}} reduces enemy DEF by {{def}}%{{hp, select, true{ (lose {{hp}}%/turn)} other{}}})!"
+    },
+    "critical-strike": {
+      "name": "Critical Strike",
+      "description": "8% chance to deal 200% damage (Critical) +1% per level",
+      "log": "🎯 Critical Strike Lv.{{level}} {{chance}}% critical chance!"
+    },
+    "critical-mastery": {
+      "name": "Critical Mastery",
+      "description": "Increase critical damage by 20% (+5% per level)",
+      "log": "⚡ Critical Mastery Lv.{{level}} increases critical damage by +{{bonus}}%!"
+    },
+    "lifesteal-vamp": {
+      "name": "Vampiric Touch",
+      "description": "30% chance to lifesteal starting at 15% (+2% per level) of damage dealt",
+      "log": "🩸 Vampiric Touch Lv.{{level}} ({{chance}}% chance) lifesteal {{percent}}% (+{{heal}} HP)"
+    },
+    "armor-penetration": {
+      "name": "Armor Penetration",
+      "description": "Ignore enemy DEF starting at 30% (+2% per level) but reduce ATK by 10%",
+      "log": "⚔️ Armor Penetration Lv.{{level}} ignores {{pen}}% DEF (ATK -{{atk}}%)"
+    },
+    "elemental-mastery": {
+      "name": "Elemental Mastery",
+      "description": "Awaken hidden elemental powers: Massively increase ATK, DEF, and HP based on skill level (Neutral element receives stronger bonuses)",
+      "log": "👑 Elemental Mastery ({{element}}): ATK +{{atk}}% | DEF +{{def}}% | HP +{{hp}}%"
+    },
+    "skillMastery": "Skill Mastery",
+    "upgradeOrUnlockPotential": "Upgrade or unlock your potential",
+    "currentBalance": "Current Balance",
+    "allTypes": "All Types",
+    "constant": "Constant",
+    "onHit": "On Hit",
+    "defend": "On Defend",
+    "filter": "Filter:",
+    "currentRank": "Current Rank",
+    "maxMastery": "Max Mastery",
+    "level": "Level",
+    "maxMasteryReached": "Max Mastery Reached",
+    "upgrade": "Upgrade",
+    "clickToIncreasePower": "Click to increase power",
+    "cost": "Cost",
+    "need": "Need",
+    "skillLocked": "Skill Locked",
+    "findSkillByDefeating": "Find this skill by defeating<br />powerful monsters",
+    "noSkillsFound": "No skills found in this category",
+    "activeSlots": "Active Slots (Max 4)",
+    "empty": "Empty",
+    "active": "Active",
+    "noSkillsMatchFilters": "No skills match the filters"
+  },
+  "maps": {
+    "starterField": {
+      "name": "Starter Field",
+      "description": "Area for new adventurers"
+    },
+    "whisperingForest": {
+      "name": "Whispering Forest",
+      "description": "A deep forest where monsters start getting fierce and fast"
+    },
+    "shadowPlains": {
+      "name": "Shadow Plains",
+      "description": "Wide plains filled with archers and fierce beasts"
+    },
+    "crystalMountains": {
+      "name": "Crystal Mountains",
+      "description": "High mountains filled with powerful mages and beasts"
+    },
+    "infernoWastelands": {
+      "name": "Inferno Wastelands",
+      "description": "Lands destroyed by fire and dark power"
+    },
+    "celestialRealm": {
+      "name": "Celestial Realm",
+      "description": "Sacred lands filled with deities and ultimate beasts"
+    },
+    "eternalPeaks": {
+      "name": "Eternal Peaks",
+      "description": "The end of adventure filled with ultimate challenges"
+    },
+    "wizardTower": {
+      "name": "Wizard Tower",
+      "description": "Home of powerful mages and bosses"
+    }
+  },
+  "monsters": {
+    "m-01": {
+      "name": "Glimmer Slime",
+      "description": "A friendly-looking blue jelly"
+    },
+    "m-02": {
+      "name": "Angry Rabbit",
+      "description": "Rams with speed"
+    },
+    "m-03": {
+      "name": "Warrior Bee",
+      "description": "Rapid stingers"
+    },
+    "m-04": {
+      "name": "Lava Worm",
+      "description": "Scorching heat"
+    },
+    "m-05": {
+      "name": "Rock Golem",
+      "description": "A walking wall"
+    },
+    "m-06": {
+      "name": "Water Mage",
+      "description": "Controls water"
+    },
+    "m-07": {
+      "name": "Raging Fire Slime",
+      "description": "Intense heat"
+    },
+    "m-09": {
+      "name": "Ancient Metal Knight",
+      "description": "Heavy armor"
+    },
+    "m-10": {
+      "name": "Lost Spirit",
+      "description": "Unpredictable"
+    },
+    "m-11": {
+      "name": "Holy Knight",
+      "description": "Balanced power"
+    },
+    "m-12": {
+      "name": "Shadow Archer",
+      "description": "Poison arrows"
+    },
+    "m-13": {
+      "name": "Wind Tiger",
+      "description": "Fast and deadly"
+    },
+    "m-14": {
+      "name": "Dragon Soldier",
+      "description": "Fire mercenary"
+    },
+    "m-15": {
+      "name": "Ice Witch",
+      "description": "Freezes everything"
+    },
+    "m-16": {
+      "name": "Rock Giant",
+      "description": "Ancient power"
+    },
+    "m-17": {
+      "name": "Darkness Mage",
+      "description": "Dark magic"
+    },
+    "m-18": {
+      "name": "Storm Queen",
+      "description": "Violent storms"
+    },
+    "m-19": {
+      "name": "Salamander King",
+      "description": "Burning beast"
+    },
+    "m-20": {
+      "name": "Water Titan",
+      "description": "High healing"
+    },
+    "m-21": {
+      "name": "Guardian Deity",
+      "description": "Ancient defense"
+    },
+    "m-22": {
+      "name": "Death Mage",
+      "description": "Death magic"
+    },
+    "m-23": {
+      "name": "Wind Deity",
+      "description": "Faster than sight"
+    },
+    "m-24": {
+      "name": "Fire Mage",
+      "description": "Destructive fire"
+    },
+    "m-25": {
+      "name": "Ocean King",
+      "description": "Vast ocean"
+    },
+    "m-26": {
+      "name": "Ancient Tree Giant",
+      "description": "Highest defense"
+    },
+    "m-27": {
+      "name": "Void Mage",
+      "description": "Void power"
+    },
+    "m-28": {
+      "name": "Storm Deity",
+      "description": "Weather god"
+    },
+    "m-29": {
+      "name": "Hell Mage",
+      "description": "Hell fire"
+    },
+    "m-30": {
+      "name": "Deep Ocean King",
+      "description": "Abundant ocean"
+    },
+    "m-31": {
+      "name": "Sacred Tree Giant",
+      "description": "Sacred defense"
+    },
+    "boss-02": {
+      "name": "Death Mage",
+      "description": "Death boss"
+    },
+    "boss-03": {
+      "name": "Fire Mage",
+      "description": "Fire boss"
+    },
+    "boss-04": {
+      "name": "Hell Mage",
+      "description": "Hell boss"
+    },
+    "boss-05": {
+      "name": "Void Mage",
+      "description": "Final boss"
+    }
+  },
+  "classes": {
+    "title": "Classes",
+    "subtitle": "Equip 4 skills according to the set to unlock the class",
+    "currentClass": "Current Class",
+    "unlocked": "Unlocked",
+    "class": "Class",
+    "unlock": "Unlock",
+    "unlockRequirement": "Equip all 4 skills",
+    "requiredSkills": "Required Skills",
+    "classBonuses": "Class Bonuses",
+    "specialEffect": "Special Effect",
+    "elementAffinity": "Element Affinity",
+    "advantageBonus": "Advantage Bonus",
+    "disadvantageReduction": "Disadvantage Reduction",
+    "novice": "Novice",
+    "locked": "Locked",
+    "active": "Active",
+    "berserker": {
+      "name": "Berserker",
+      "specialEffect": {
+        "bloodlust": {
+          "name": "Bloodlust",
+          "description": "When HP drops below 30%, instantly gain 20% increased attack power!"
+        }
+      }
+    },
+    "guardian": {
+      "name": "Guardian",
+      "specialEffect": {
+        "thorns": {
+          "name": "Thorn Reflection",
+          "description": "10% chance to reflect damage back to attacking enemies!"
+        }
+      }
+    },
+    "mage": {
+      "name": "Mage",
+      "specialEffect": {
+        "arcaneEcho": {
+          "name": "Arcane Echo",
+          "description": "Every 3 turns, create massively increased damage!"
+        }
+      }
+    }
+  },
+  "inventory": {
+    "totalCombatPower": "Total Combat Power",
+    "attack": "Attack",
+    "defense": "Defense",
+    "maxHealth": "Max Health",
+    "currentGear": "Current Gear",
+    "weapon": "Weapon",
+    "armor": "Armor",
+    "accessory": "Accessory",
+    "emptySlot": "Empty Slot",
+    "passiveActive": "Passive Active",
+    "unequip": "UnEquip",
+    "myCollection": "My Collection",
+    "resources": "Resources",
+    "noItemsFound": "No Items Found",
+    "equipped": "Equipped",
+    "locked": "Locked",
+    "common": "Common",
+    "uncommon": "Uncommon",
+    "rare": "Rare",
+    "epic": "Epic",
+    "legendary": "Legendary",
+    "resource": "Resource",
+    "lifestealDescription": "(Lifesteal +{value}%)"
+  },
+  "battleLog": {
+    "start": "⚔️ Battle started with {{name}} (HP: {{hp}})",
+    "turn": "🔄 Turn {{num}}",
+    "you": "You",
+    "attack": "⚔️ {{attacker}} attacks {{target}}: -{{dmg}} HP (Remaining: {{hpLeft}} HP)",
+    "synergyPrefix": "⚪ [Synergy] ",
+    "synergy": "{{prefix}}{{skillLog}}",
+    "regen": "💚 Regenerated +{{amt}} HP (Current: {{currentHp}} HP)",
+    "skill": "{{name}}: {{effect}}",
+    "levelUp": "🎊 Level Up! Reached Lv.{{level}}!",
+    "statusUp": "📈 Status Up: HP+{{hp}}, ATK+{{atk}}, DEF+{{def}} (Full Heal!)",
+    "criticalHit": "{{attacker}} ⚔ CRITICAL HIT! ⚔ Strikes {{target}} for {{dmg}} damage! (x{{mult}}) (Remaining: {{hpLeft}} HP)",
+    "doubleAttack": "🌪️ DOUBLE ATTACK! 🌪️ {{attacker}} unleashes a devastating combo on {{target}}! -{{dmg}} HP (Remaining: {{hpLeft}} HP)",
+    "miss": "💨 MISS! {{target}} gracefully dodges the attack!",
+    "counterStrike": "⚡ COUNTER STRIKE! ⚡ {{attacker}} counters {{target}}: -{{dmg}} HP (Remaining: {{hpLeft}} HP)",
+    "lifesteal": "🩸 [{{sourceName}}] Lifesteals +{{amt}} HP (Current: {{currentHp}} HP)",
+    "victory": "✨ Victory! You defeated {{name}}! (Remaining HP: {{hpLeft}}) | 💰 +{{gold}}G 🌟 +{{exp}}EXP",
+    "defeat": "💀 Defeated... You were killed by {{name}}! (Monster HP: {{monsterHpLeft}})",
+    "battleRecords": "Battle Records",
+    "combatSession": "Combat Session Log #{{count}}",
+    "totalTurns": "Total: {{count}} Turns",
+    "resetBuffer": "Reset Buffer",
+    "bloodlustActivated": "🔥 Bloodlust Activated! ATK +20%",
+    "arcaneEchoDamage": "✨ Arcane Echo Damage! (x{{mult}})",
+    "thornsReflected": "🌿 Thorns Reflected! {{dmg}} DMG",
+    "damageReduction": "🛡️ Damage Reduced {{percent}}% (-{{amount}})"
+  }
+}

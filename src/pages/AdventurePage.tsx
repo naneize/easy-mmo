@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next';
 import type { GameMap } from '../types/game'
 import type { MonsterData } from '../types/game'
 import { useGameStore } from '../store/useGameStore'
@@ -18,6 +19,7 @@ import { calculatePlayerClass } from '../utils/gameHelpers'
 
 export function AdventurePage() {
 
+    const { t } = useTranslation();
     const [selectedMap, setSelectedMap] = useState<GameMap | null>(null)
     const [showElementGuide, setShowElementGuide] = useState(false) // State สำหรับเปิด/ปิด Modal
     const { player, processBattle, battleLogs, resetBattle, getEquippedSkillsWithIcons } = useGameStore()
@@ -53,13 +55,13 @@ export function AdventurePage() {
             // 6. แสดง Toast ถ้าปลดล็อก Achievement ใหม่
             if (newlyUnlocked.length > 0) {
                 const achievementStore = useAchievementStore.getState();
-                const latestTitle = newlyUnlocked[0];
-                const achievement = achievementStore.achievements.find(a => a.title === latestTitle);
+                const latestTitleKey = newlyUnlocked[0];
+                const achievement = achievementStore.achievements.find(a => a.titleKey === latestTitleKey);
 
                 if (achievement) {
                     setActiveToast({
-                        title: achievement.title,
-                        desc: achievement.description,
+                        title: t(achievement.titleKey),
+                        desc: t(achievement.descriptionKey),
                         badgeText: 'Achievement Unlocked'
                     });
                 }
@@ -99,11 +101,11 @@ export function AdventurePage() {
                     className="group px-4 py-2 rounded-2xl bg-white border-2 border-slate-100 text-xs font-black text-slate-500 flex items-center gap-2 hover:border-indigo-200 hover:text-indigo-600 transition-all shadow-sm"
                 >
                     <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                    BACK TO WORLD MAP
+                    {t('ui.back')}
                 </button>
 
                 <div className={`px-3 py-2 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest shadow-sm ${playerClass ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
-                    Current Class: {playerClass ? playerClass.name : 'Novice'}
+                    {t('ui.currentClass')}: {playerClass ? playerClass.name : t('ui.novice')}
                 </div>
 
                 {/* ปุ่มกดดู Guide แบบประหยัดพื้นที่ */}
@@ -112,42 +114,42 @@ export function AdventurePage() {
                     className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-2xl border-2 border-amber-200 font-black text-[10px] hover:bg-amber-200 transition-all shadow-sm active:scale-95"
                 >
                     <Info size={14} />
-                    ELEMENT GUIDE
+                    {t('ui.elementGuide')}
                 </button>
             </div>
 
             {/* Map Banner */}
-            <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 p-10 rounded-[4rem] text-white shadow-2xl relative overflow-hidden border-4 border-white">
-                {/* ... เนื้อหา Banner เหมือนเดิม ... */}
-                <div className="absolute right-0 top-0 opacity-20 translate-x-1/4 -translate-y-1/4 rotate-12 text-[15rem] pointer-events-none select-none">
-                    {selectedMap.bgEmoji}
+            <div className="p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[2.5rem] text-white shadow-2xl border border-white/10">
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl backdrop-blur-sm border border-white/20">
+                        {selectedMap.bgEmoji}
+                    </div>
+                    <div>
+                        <h2 className="text-3xl font-black">{t(selectedMap.nameKey)}</h2>
+                        <p className="text-indigo-200/70 text-lg font-medium max-w-xl leading-relaxed italic">
+                            {t(selectedMap.descriptionKey)}
+                        </p>
+                    </div>
                 </div>
-                <div className="relative z-10">
-                    <div className="text-6xl mb-4">{selectedMap.bgEmoji}</div>
-                    <h2 className="text-5xl font-black tracking-tighter mb-2">{selectedMap.name}</h2>
-                    <p className="text-indigo-200/70 text-lg font-medium max-w-xl leading-relaxed italic italic">
-                        "{selectedMap.description}"
-                    </p>
-                </div>
-            </div>
 
-            {/* Monsters Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
-                {mapMonsters.map((monster) => (
-                    <MonsterCard
-                        key={monster.id}
-                        monster={monster}
-                        onBattle={() => handleStartBattle(monster)}
-                        isProcessing={processingId === monster.id}
-                    />
-                ))}
-            </div>
-
-            {battleLogs.length > 0 && (
-                <div className="animate-in fade-in slide-in-from-bottom-4">
-                    <BattleLog logs={battleLogs} onReset={resetBattle} />
+                {/* Monsters Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+                    {mapMonsters.map((monster) => (
+                        <MonsterCard
+                            key={monster.id}
+                            monster={monster}
+                            onBattle={() => handleStartBattle(monster)}
+                            isProcessing={processingId === monster.id}
+                        />
+                    ))}
                 </div>
-            )}
+
+                {battleLogs.length > 0 && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4">
+                        <BattleLog logs={battleLogs} onReset={resetBattle} />
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

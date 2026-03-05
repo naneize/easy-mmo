@@ -5,9 +5,10 @@ import { getMasteryBonus } from '../utils/gameHelpers'
 import { INITIAL_SKILLS } from '../store/skills';
 import type { Skill } from '../types/game';
 import { calculateFinalStats } from '../logic/stats';
+import { useTranslation } from 'react-i18next';
 
 export function BattleResultModal() {
-
+    const { t } = useTranslation();
     const { lastBattleResult,
         clearBattleResult,
         monsterKills,
@@ -18,7 +19,6 @@ export function BattleResultModal() {
     // 2. Validation เช็คผลการต่อสู้ล่าสุด
     if (!lastBattleResult) return null;
 
-
     const {
         won,
         expEarned,
@@ -28,9 +28,6 @@ export function BattleResultModal() {
         monsterName,
         droppedSkillIds
     } = lastBattleResult;
-
-
-
 
     // #region --- Logic: Mastery & HP Calculation ---
 
@@ -56,14 +53,14 @@ export function BattleResultModal() {
         skillHpBonus = (vitalitySkill.level || 0) * 5;
     }
 
-    // ✅ 1. คำนวณค่าพลังสุทธิโดยใช้ฟังก์ชันเดียวกับ Dashboard
+    // 1. คำนวณค่าพลังสุทธิโดยใช้ฟังก์ชันเดียวกับ Dashboard
     const equippedSkills = getEquippedSkillsWithIcons();
     const finalStats = calculateFinalStats(player, equipped, monsterKills, equippedSkills);
 
-    // ✅ 2. ใช้ค่าจาก finalStats โดยตรง (ไม่ต้อง + โบนัสเองแล้ว)
+    // 2. ใช้ค่าจาก finalStats โดยตรง (ไม่ต้อง + โบนัสเองแล้ว)
     const realMaxHp = finalStats.maxHp;
 
-    // ✅ 3. คำนวณความคืบหน้าต่างๆ
+    // 3. คำนวณความคืบหน้าต่างๆ
     const hpPercentage = Math.max(0, Math.min(100, (player.hp / realMaxHp) * 100));
     const playerExpProgress = Math.min((player.exp / player.maxExp) * 100, 100);
 
@@ -108,11 +105,11 @@ export function BattleResultModal() {
                             {won ? <Trophy size={32} className="text-white" /> : <XCircle size={32} className="text-white" />}
                         </div>
                         <h2 className="text-3xl font-black text-white uppercase tracking-tighter leading-none">
-                            {won ? 'Victory!' : 'Defeated'}
+                            {won ? t('battleResult.victory') : t('battleResult.defeated')}
                         </h2>
                         {isLevelUp && (
                             <div className="mt-1 inline-block bg-white text-amber-500 px-3 py-0.5 rounded-full text-[9px] font-black uppercase animate-bounce shadow-sm">
-                                Level Up! ✨
+                                {t('battleResult.levelUp')} ✨
                             </div>
                         )}
                     </div>
@@ -128,13 +125,13 @@ export function BattleResultModal() {
                                 <div className="flex flex-col">
 
                                     <span className="text-[10px] font-black text-indigo-600 uppercase tracking-tighter leading-none mb-1">
-                                        Level {player.level}
+                                        {t('global.level')} {player.level}
                                     </span>
 
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <Heart size={10} className="text-rose-500 fill-rose-500" />
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Health</span>
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{t('battleResult.health')}</span>
                                 </div>
                                 <span className="text-[9px] font-black text-rose-600">
                                     {Math.floor(player.hp)} / {realMaxHp}</span>
@@ -148,7 +145,7 @@ export function BattleResultModal() {
                             <div className="flex justify-between items-center mb-1 px-1">
                                 <div className="flex items-center gap-1">
                                     <Sparkles size={10} className="text-amber-500" />
-                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Experience</span>
+                                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{t('battleResult.experience')}</span>
                                 </div>
                                 <span className="text-[9px] font-black text-amber-600">
                                     {player.exp} / {player.maxExp}
@@ -167,16 +164,16 @@ export function BattleResultModal() {
                                 {/* ช่อง EXP - โชว์แค่ยอดรวมปกติ เพราะยังไม่มี Bonus */}
                                 <div className="bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm text-center">
                                     <div className="text-xl font-black text-slate-800">+{expEarned.toLocaleString()}</div>
-                                    <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Exp</div>
+                                    <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">{t('global.exp')}</div>
                                 </div>
 
                                 {/* ช่อง GOLD - โชว์ Bonus เฉพาะตอนที่ได้รับเพิ่มจริงเท่านั้น */}
                                 <div className="bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm text-center">
                                     <div className="text-xl font-black text-slate-800">+{goldEarned.toLocaleString()}</div>
                                     <div className="flex items-center justify-center gap-1">
-                                        <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Gold</div>
+                                        <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">{t('global.gold')}</div>
 
-                                        {/* ✅ เงื่อนไข: ต้องได้มากกว่าฐาน "และ" ฐานต้องไม่เป็น 0 */}
+                                        {/* เงื่อนไข: ต้องได้มากกว่าฐาน "และ" ฐานต้องไม่เป็น 0 */}
                                         {goldEarned > baseGold && baseGold > 0 && (
                                             <div className="text-[7px] font-black text-emerald-500 bg-emerald-50 px-1 rounded-sm animate-bounce-short">
                                                 (+{goldEarned - baseGold})
@@ -191,7 +188,7 @@ export function BattleResultModal() {
                                 <div className="space-y-1.5">
                                     <div className="flex items-center gap-1.5 px-1">
                                         <Gift size={12} className="text-emerald-500" />
-                                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Loot Discovered!</span>
+                                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">{t('battleResult.lootDiscovered')}</span>
                                     </div>
                                     {droppedSkills.map(skill => (
                                         <div key={skill?.id} className="flex items-center gap-3 p-2.5 bg-emerald-50 border border-emerald-100 rounded-2xl animate-in slide-in-from-left-4">
@@ -200,7 +197,7 @@ export function BattleResultModal() {
                                             </div>
                                             <div className="flex flex-col min-w-0">
                                                 <span className="text-[11px] font-black text-emerald-900 truncate">{skill?.name}</span>
-                                                <span className="text-[8px] font-bold text-emerald-600/70 uppercase leading-none">New Skill!</span>
+                                                <span className="text-[8px] font-bold text-emerald-600/70 uppercase leading-none">{t('battleResult.newSkill')}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -214,7 +211,7 @@ export function BattleResultModal() {
                                         <div className="p-1 bg-indigo-600 rounded text-white shrink-0">
                                             <Target size={12} />
                                         </div>
-                                        <span className="text-[10px] font-black text-indigo-900 truncate uppercase tracking-tighter">Mastery: {monsterName}</span>
+                                        <span className="text-[10px] font-black text-indigo-900 truncate uppercase tracking-tighter">{t('battleResult.mastery')}: {t(`monsters.${monsterId}.name`)}</span>
                                     </div>
                                     <span className="text-[10px] font-black text-indigo-600 shrink-0">
                                         {currentKills}/{nextGoal}
@@ -228,7 +225,7 @@ export function BattleResultModal() {
                     ) : (
                         <div className="py-4 bg-slate-50 rounded-[2rem] border border-dashed border-slate-200">
                             <p className="text-center text-slate-400 font-medium italic text-xs leading-relaxed px-4">
-                                "ไม่เป็นไรนะ... พักผ่อนก่อนแล้วค่อยมาลุยใหม่!"
+                                "{t('battleResult.defeatMessage')}"
                             </p>
                         </div>
                     )}
@@ -241,7 +238,7 @@ export function BattleResultModal() {
                         className={`w-full py-4 rounded-[1.5rem] font-black text-base shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 group
                         ${won ? 'bg-slate-900 text-white hover:bg-indigo-600' : 'bg-white border-2 border-slate-200 text-slate-600'}`}
                     >
-                        {won ? 'CONTINUE' : 'BACK TO CAMP'}
+                        {won ? t('battleResult.continue') : t('battleResult.backToCamp')}
                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>

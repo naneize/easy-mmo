@@ -1,6 +1,11 @@
+import i18next from 'i18next';
 import { BattleLogger as Log } from "../../battleLogger";
 import { processTriggerSkills } from '../skillProcessor';
 import { initializeMonster } from '../../../data/monsters';
+import type { BattleLogEntry } from '../../../types/game';
+
+// ประกาศตัวแปร t ให้ดึงค่าจาก i18next โดยตรง
+const t = (key: string, params?: Record<string, any>) => i18next.t(key, params) as string;
 
 export const handleMonsterTurn = (
     p_hp: number,
@@ -11,33 +16,34 @@ export const handleMonsterTurn = (
     monster: any,
     allEffects: any[],
     bonusStats: any,
-    playerClass: any
-) => {
-    const turnLogs: any[] = [];
+    baseEffectiveMaxHp: number,
+    turn: number,
+    playerClass: string
+): { p_hp: number; m_hp: number; logs: BattleLogEntry[] } => {
+
+    const turnLogs: BattleLogEntry[] = [];
     let currentPHp = p_hp;
     let currentMHp = m_hp;
 
     const initializedMonster = initializeMonster(monster);
 
-    // 1. Check Dodge / Counter (ระบบหลบหลีกและสวนกลับ)
+    // เตรียมชื่อที่แปลแล้ว
+    const monsterName = t(`monsters.${monster.id}.name`);
+    const playerName = t('battleLog.you');
+
+    // 1. Check Dodge / Counter
     const { extraValue: counterDmg, actions, triggerLogs } =
         processTriggerSkills('on-defend', allEffects, player, monster, monsterAtk);
 
     if ((actions as string[]).includes('counter')) {
         turnLogs.push(...triggerLogs);
-        turnLogs.push(Log.dodge('คุณ'));
+        turnLogs.push(Log.dodge(playerName)); // ✅ เปลี่ยนจาก 'คุณ'
         currentMHp -= counterDmg;
-        turnLogs.push(Log.counter('คุณ', monster.name, counterDmg, currentMHp));
+        turnLogs.push(Log.counter(playerName, monsterName, counterDmg, currentMHp)); // ✅ ใช้ชื่อที่แปลแล้ว
     } else {
-        // 2. Normal Damage (คำนวณดาเมจปกติ)
-
-        // เพิ่ม Damage Variance ±10% (สุ่มค่าระหว่าง 0.9 ถึง 1.1)
+        // 2. Normal Damage
         const variance = 0.9 + (Math.random() * 0.2);
-
-        // คำนวณดาเมจพื้นฐาน (ATK - DEF) โดยมีค่าขั้นต่ำคือ 1
         const baseDmg = Math.max(monsterAtk - currentDef, 1);
-
-        // คำนวณดาเมจสุดท้ายหลังรวมความไม่แน่นอน
         const variedDmg = Math.max(Math.round(baseDmg * variance), 1);
 
         const dmgReduction = typeof bonusStats?.dmgReduction === 'number' ? bonusStats.dmgReduction : 0;
@@ -49,8 +55,8 @@ export const handleMonsterTurn = (
             if (reducedAmount > 0) {
                 turnLogs.push({
                     type: 'skill',
-                    text: `🛡️ ลดความเสียหาย ${Math.round(dmgReduction * 100)}% (-${reducedAmount})`
-                } as any);
+                    text: t('battleLog.damageReduction', { percent: Math.round(dmgReduction * 100), amount: reducedAmount })
+                });
             }
         }
 
@@ -65,16 +71,21 @@ export const handleMonsterTurn = (
         currentPHp -= finalMDmg;
 
         if (isCrit) {
-            turnLogs.push(Log.critical(monster.name, 'คุณ', finalMDmg, critDamage, currentPHp));
+            // ✅ ใช้ monsterName และ playerName
+            turnLogs.push(Log.critical(monsterName, playerName, finalMDmg, critDamage, currentPHp));
         } else {
-            // ส่งค่า finalMDmg เข้า Log เพื่อแสดงผลตัวเลขที่แกว่งจริงในเกม
-            turnLogs.push(Log.attack(monster.name, 'คุณ', finalMDmg, currentPHp));
+            // ✅ ใช้ monsterName และ playerName
+            turnLogs.push(Log.attack(monsterName, playerName, finalMDmg, currentPHp));
         }
 
-        if (playerClass?.specialEffect?.id === 'thorns' && Math.random() < 0.1 && finalMDmg > 0) {
+        // ระบบสะท้อนหนาม (Thorns Reflected)
+        if (playerClass && (playerClass === 'guardian') && Math.random() < 0.1 && finalMDmg > 0) {
             const reflected = Math.max(1, Math.floor(finalMDmg * 0.3));
             currentMHp -= reflected;
-            turnLogs.push({ type: 'skill', text: `🌿 Thorns Reflected! สะท้อน ${reflected} DMG` } as any);
+            turnLogs.push({
+                type: 'skill',
+                text: t('battleLog.thornsReflected', { dmg: reflected })
+            });
         }
     }
 

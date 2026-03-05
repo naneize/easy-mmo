@@ -63,7 +63,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-01',
         name: 'สไลม์สดใส',
+        nameKey: 'monsters.m-01.name',
         description: 'ก้อนเยลลี่สีฟ้าที่ดูเป็นมิตร แต่ถ้าเผลอก็เจ็บได้',
+        descriptionKey: 'monsters.m-01.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 1,
@@ -76,7 +78,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-02',
         name: 'กระต่ายขี้โมโห',
+        nameKey: 'monsters.m-02.name',
         description: 'พุ่งชนด้วยความเร็วสูงจนโล่สะเทือน',
+        descriptionKey: 'monsters.m-02.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 3,
@@ -89,7 +93,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-04',
         name: 'หนอนลาวา',
+        nameKey: 'monsters.m-04.name',
         description: 'ความร้อนระอุที่ทะลุการป้องกัน',
+        descriptionKey: 'monsters.m-04.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 4,
@@ -105,7 +111,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-03',
         name: 'ผึ้งนักรบ',
+        nameKey: 'monsters.m-03.name',
         description: 'เหล็กไนรัวเร็วที่ต้องใช้ Aegis ป้องกันให้ทัน',
+        descriptionKey: 'monsters.m-03.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 5,
@@ -118,7 +126,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-06',
         name: 'จอมเวทวารี',
+        nameKey: 'monsters.m-06.name',
         description: 'ควบคุมกระแสน้ำเพื่อลดพลังป้องกันและฟื้นฟูตัวเอง',
+        descriptionKey: 'monsters.m-06.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 6,
@@ -131,7 +141,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-05',
         name: 'โกเลมหินผา',
+        nameKey: 'monsters.m-05.name',
         description: 'กำแพงเดินได้ที่การโจมตีธรรมดาแทบไม่ระคายผิว',
+        descriptionKey: 'monsters.m-05.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 7,
@@ -144,7 +156,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-07',
         name: 'สไลม์เพลิงคลั่ง',
+        nameKey: 'monsters.m-07.name',
         description: 'โจมตีด้วยความร้อนแรงที่เผาไหม้ทุกอย่าง',
+        descriptionKey: 'monsters.m-07.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 7,
@@ -157,7 +171,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-09',
         name: 'อัศวินโลหะโบราณ',
+        nameKey: 'monsters.m-09.name',
         description: 'เกราะหนักที่ถูกทิ้งไว้ในซากปรากหักพัง โจมตีช้าแต่รุนแรง',
+        descriptionKey: 'monsters.m-09.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 8,
@@ -172,7 +188,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-10',
         name: 'วิญญาณหลงทาง',
+        nameKey: 'monsters.m-10.name',
         description: 'การโจมตีที่รุนแรงและคาดเดาไม่ได้',
+        descriptionKey: 'monsters.m-10.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 8,
@@ -185,7 +203,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-11',
         name: 'อัศวินศักดิ์สิทธิ์',
+        nameKey: 'monsters.m-11.name',
         description: 'สมดุลทั้งรุกและรับด้วยพลังแห่งแสง',
+        descriptionKey: 'monsters.m-11.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 10,
@@ -200,7 +220,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-12',
         name: 'นักธนูแห่งเงา',
+        nameKey: 'monsters.m-12.name',
         description: 'ยิงศรพิษที่สามารถทะลุเกราะได้',
+        descriptionKey: 'monsters.m-12.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 12,
@@ -213,7 +235,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-13',
         name: 'เสือธาตุ',
+        nameKey: 'monsters.m-13.name',
         description: 'สัตว์อสูรที่เร็วและดุร้ายด้วยพลังลม',
+        descriptionKey: 'monsters.m-13.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 14,
@@ -227,7 +251,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-14',
         name: 'ทหารมังกร',
+        nameKey: 'monsters.m-14.name',
         description: 'ทหารรับจ้างที่ถูกครอบงำด้วยพลังไฟ',
+        descriptionKey: 'monsters.m-14.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 16,
@@ -240,7 +266,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-15',
         name: 'แม่มดน้ำแข็ง',
+        nameKey: 'monsters.m-15.name',
         description: 'ผู้ควบคุมน้ำแข็งที่แช่แข็งทุกสิ่ง',
+        descriptionKey: 'monsters.m-15.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 18,
@@ -253,7 +281,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-16',
         name: 'ยักษ์หิน',
+        nameKey: 'monsters.m-16.name',
         description: 'ยักษ์โบราณที่มีพลังทำลายล้างสูง',
+        descriptionKey: 'monsters.m-16.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 20,
@@ -268,7 +298,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-17',
         name: 'จอมเวทย์แห่งความมืด',
+        nameKey: 'monsters.m-17.name',
         description: 'ผู้ใช้เวทมนตร์ด้านมืดที่ทรงพลัง',
+        descriptionKey: 'monsters.m-17.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 22,
@@ -281,7 +313,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-18',
         name: 'นางพญาพายุ',
+        nameKey: 'monsters.m-18.name',
         description: 'ผู้ควบคุมพายุที่รุนแรง',
+        descriptionKey: 'monsters.m-18.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 24,
@@ -294,7 +328,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-19',
         name: 'ราชาซาลาแมนเดอร์',
+        nameKey: 'monsters.m-19.name',
         description: 'สัตว์อสูรไฟที่เผาไหม้ทุกอย่าง',
+        descriptionKey: 'monsters.m-19.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 26,
@@ -307,7 +343,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-20',
         name: 'ไททันน้ำ',
+        nameKey: 'monsters.m-20.name',
         description: 'ยักษ์น้ำที่มีพลังฟื้นฟูสูง',
+        descriptionKey: 'monsters.m-20.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 28,
@@ -320,7 +358,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-21',
         name: 'เทพผู้พิทักษ์',
+        nameKey: 'monsters.m-21.name',
         description: 'ผู้พิทักษ์โบราณที่มีพลังป้องกันสูง',
+        descriptionKey: 'monsters.m-21.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 30,
@@ -335,7 +375,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-22',
         name: 'จอมเวทย์แห่งความตาย',
+        nameKey: 'monsters.m-22.name',
         description: 'ผู้ใช้เวทมนตร์มรณะที่อันตรายที่สุด',
+        descriptionKey: 'monsters.m-22.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 32,
@@ -348,7 +390,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-23',
         name: 'เทพแห่งสายลม',
+        nameKey: 'monsters.m-23.name',
         description: 'เทพแห่งลมที่เร็วกว่าสายตา',
+        descriptionKey: 'monsters.m-23.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 34,
@@ -361,7 +405,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-24',
         name: 'จอมเวทย์แห่งไฟ',
+        nameKey: 'monsters.m-24.name',
         description: 'ผู้ควบคุมไฟที่เผาทำลายทุกสิ่ง',
+        descriptionKey: 'monsters.m-24.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 36,
@@ -374,7 +420,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-25',
         name: 'ราชามหาสมุทร',
+        nameKey: 'monsters.m-25.name',
         description: 'ผู้ควบคุมมหาสมุทรที่กว้างใหญ่',
+        descriptionKey: 'monsters.m-25.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 38,
@@ -387,7 +435,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-26',
         name: 'ยักษ์พฤกษาโบราณ',
+        nameKey: 'monsters.m-26.name',
         description: 'ยักษ์พฤกษาที่มีพลังป้องกันสูงสุด',
+        descriptionKey: 'monsters.m-26.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 40,
@@ -402,7 +452,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-27',
         name: 'จอมเวทย์แห่งความว่าง',
+        nameKey: 'monsters.m-27.name',
         description: 'ผู้ใช้พลังความว่างที่ทำลายทุกสิ่ง',
+        descriptionKey: 'monsters.m-27.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 42,
@@ -415,7 +467,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-28',
         name: 'เทพแห่งพายุ',
+        nameKey: 'monsters.m-28.name',
         description: 'เทพแห่งพายุที่ควบคุมสภาพอากาศ',
+        descriptionKey: 'monsters.m-28.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 44,
@@ -428,7 +482,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-29',
         name: 'จอมเวทย์แห่งนรก',
+        nameKey: 'monsters.m-29.name',
         description: 'ผู้ควบคุมไฟนรกที่เผาทำลายทุกสิ่ง',
+        descriptionKey: 'monsters.m-29.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 46,
@@ -441,7 +497,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-30',
         name: 'ราชามหาสมุทรลึก',
+        nameKey: 'monsters.m-30.name',
         description: 'ผู้ควบคุมมหาสมุทรลึกที่อุดมสมบูรณ์',
+        descriptionKey: 'monsters.m-30.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 48,
@@ -454,7 +512,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'm-31',
         name: 'ยักษ์พฤกษาศักดิ์สิทธิ์',
+        nameKey: 'monsters.m-31.name',
         description: 'ยักษ์พฤกษาที่มีพลังป้องกันสูงสุด',
+        descriptionKey: 'monsters.m-31.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 50,
@@ -469,7 +529,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'boss-02',
         name: 'จอมเวทย์แห่งความตาย',
+        nameKey: 'monsters.boss-02.name',
         description: 'บอสแห่งความตายที่มีพลังทำลายล้างสูง',
+        descriptionKey: 'monsters.boss-02.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 25,
@@ -482,7 +544,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'boss-03',
         name: 'จอมเวทย์แห่งไฟ',
+        nameKey: 'monsters.boss-03.name',
         description: 'บอสแห่งไฟที่เผาทำลายทุกสิ่ง',
+        descriptionKey: 'monsters.boss-03.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 35,
@@ -495,7 +559,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'boss-04',
         name: 'จอมเวทย์แห่งนรก',
+        nameKey: 'monsters.boss-04.name',
         description: 'บอสแห่งนรกที่อันตรายที่สุด',
+        descriptionKey: 'monsters.boss-04.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 45,
@@ -508,7 +574,9 @@ export const MONSTERS: MonsterData[] = [
     {
         id: 'boss-05',
         name: 'จอมเวทย์แห่งความว่างเปล่า',
+        nameKey: 'monsters.boss-05.name',
         description: 'บอสสุดท้ายที่มีพลังทำลายล้างสูงสุด',
+        descriptionKey: 'monsters.boss-05.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 50,

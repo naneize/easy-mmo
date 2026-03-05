@@ -1,9 +1,13 @@
+import i18next from 'i18next';
 import type { Entity, MonsterData, BattleResult, BattleLogEntry, BattleEffect } from '../../types/game';
-import { BattleLogger as Log } from "../battleLogger";
 import { prepareBattleContext } from './modules/battleSetup';
 import { handlePlayerTurn } from './modules/playerActions';
 import { handleMonsterTurn } from './modules/monsterActions';
 import { initializeMonster } from '../../data/monsters';
+import { BattleLogger as Log } from '../battleLogger';
+
+// Helper สำหรับแปลภาษา
+const t = (key: string, params?: Record<string, any>) => i18next.t(key, params) as string;
 
 export const simulateBattle = (
     player: Entity,
@@ -14,20 +18,24 @@ export const simulateBattle = (
 
     // #region --- [SETUP] ---
     const context = prepareBattleContext(player, monster, equippedSkills, killCount);
-    const { allEffects, bonusStats, baseEffectiveAtk, baseEffectiveDef, baseEffectiveMaxHp, mElementMult, mastery, constantSkillLogs, pElementMult } = context;
+    const {
+        allEffects, bonusStats, baseEffectiveAtk, baseEffectiveDef,
+        baseEffectiveMaxHp, mElementMult, mastery, constantSkillLogs, pElementMult
+    } = context;
 
-    // คำนวณ stats จากระบบใหม่
     const initializedMonster = initializeMonster(monster);
+
+    // เตรียมชื่อมอนสเตอร์จากระบบแปลภาษา (ดึงตาม ID)
+    const translatedMonsterName = t(`monsters.${monster.id}.name`);
 
     let p_hp = player.hp;
     let m_hp = initializedMonster.hp;
     const logs: BattleLogEntry[] = [...constantSkillLogs];
     let turn = 1;
 
-    logs.push(Log.start(monster.name, initializedMonster.hp));
+    // ✅ แก้ไข: ใช้ชื่อที่แปลแล้ว
+    logs.push(Log.start(translatedMonsterName, initializedMonster.hp));
 
-    // ✅ แก้ไข: ส่ง pElementMult พร้อมด้วยธาตุของผู้เล่นและมอนสเตอร์
-    // ตรวจสอบชื่อ property ให้ดี (น่าจะเป็น player.element และ monster.element)
     const elementNotice = Log.elementalNotice(
         pElementMult,
         player.element,
@@ -39,15 +47,13 @@ export const simulateBattle = (
     }
 
     if (mastery.tier > 0) {
-        logs.push({ type: 'synergy', text: `📜 Mastery Lv.${mastery.tier} Active! (+${mastery.value} ${mastery.type.toUpperCase()})` });
+        logs.push(Log.synergy(`Mastery Lv.${mastery.tier} (+${mastery.value} ${mastery.type.toUpperCase()})`));
     }
     // #endregion
 
     // #region --- [BATTLE LOOP] ---
     while (p_hp > 0 && m_hp > 0 && turn <= 50) {
         logs.push(Log.turn(turn));
-
-        console.log(`[Turn Check] Turn ${turn} - Sending ATK: ${baseEffectiveAtk} to PlayerPhase`);
 
         // 1. Player Turn
         const pPhase = handlePlayerTurn(
@@ -57,7 +63,7 @@ export const simulateBattle = (
             allEffects, bonusStats,
             baseEffectiveMaxHp,
             turn,
-            context.playerClass
+            context.playerClass?.id || ""
         );
 
         p_hp = pPhase.p_hp;
@@ -76,7 +82,9 @@ export const simulateBattle = (
             monster,
             allEffects,
             bonusStats,
-            context.playerClass
+            baseEffectiveMaxHp,
+            turn,
+            context.playerClass?.id || ""
         );
 
         p_hp = mPhase.p_hp;
@@ -90,48 +98,36 @@ export const simulateBattle = (
     // #region --- [RESULT] ---
     const won = m_hp <= 0;
 
-    // 💰 --- เริ่มการคำนวณ Gold พร้อม Bonus ---
     let finalGold = 0;
     if (won) {
         const baseGold = monster.gold || 0;
-
-        // ค้นหาสกิล Gold Finder จากรายการสกิลที่ส่งเข้ามา (equippedSkills) 
-        // หรือดึงจาก player.skills ตามโครงสร้างของคุณ
         const goldFinderSkill = equippedSkills.find(s => s.id === 'gold-finder');
-
         finalGold = baseGold;
 
         if (goldFinderSkill && 'level' in goldFinderSkill) {
-            // 1. คำนวณ % ตามเลเวล (Lv.1 = 0.10, Lv.2 = 0.12...)
             const bonusPercent = 0.10 + ((goldFinderSkill.level - 1) * 0.02);
-
-            // 2. คำนวณ "เงินส่วนที่เพิ่มขึ้น" แล้วปัดเศษทิ้ง
             const bonusGold = Math.floor(baseGold * bonusPercent);
-
-            // 3. รวมเงินรางวัลทั้งหมด
             finalGold = baseGold + bonusGold;
         }
     }
-    // 💰 --- จบการคำนวณ ---
 
+    // ✅ แก้ไข: ใช้ชื่อที่แปลแล้วในผลการต่อสู้
     if (!won && p_hp <= 0) {
-        logs.push(Log.lose(monster.name, m_hp));
+        logs.push(Log.lose(translatedMonsterName, m_hp));
     } else if (won) {
-        // ✅ เปลี่ยนจาก monster.gold เป็น finalGold เพื่อให้ Log แสดงค่าที่บวกโบนัสแล้ว
-        logs.push(Log.win(monster.name, finalGold, initializedMonster.exp, p_hp));
+        logs.push(Log.win(translatedMonsterName, finalGold, initializedMonster.exp, p_hp));
     }
 
     return {
         playerHp: Math.max(0, Math.floor(p_hp)),
         monsterHp: Math.max(0, Math.floor(m_hp)),
         logs,
-        totalTurns: turn - 1,
+        totalTurns: Math.min(turn, 50),
         won,
-        // ✅ ส่ง finalGold กลับไปเพื่อให้ Store อัปเดตทองให้ผู้เล่นจริง
         goldEarned: won ? finalGold : 0,
         expEarned: won ? initializedMonster.exp : 0,
         monsterId: monster.id,
-        monsterName: monster.name,
+        monsterName: translatedMonsterName, // ส่งชื่อที่แปลแล้วกลับไปด้วย
     };
     // #endregion
 };

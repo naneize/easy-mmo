@@ -4,17 +4,16 @@ import { MONSTERS } from '../data/monsters';
 
 export interface Achievement {
     id: string;
-    title: string;
-    description: string;
+    titleKey: string;
+    descriptionKey: string;
     icon: string;
     targetValue: number;
     currentValue: number;
     isUnlocked: boolean;
     category: 'combat' | 'gold' | 'mastery';
-    // 🚩 เพิ่มเพื่อระบุเงื่อนไขแบบฉลาด
     condition: {
         type: 'total_kills' | 'specific_monster' | 'gold' | 'kill_all_types';
-        targetId?: string; // ใส่ ID มอนสเตอร์ถ้าเลือกแบบ specific_monster
+        targetId?: string;
     };
 }
 
@@ -30,8 +29,8 @@ export const useAchievementStore = create<AchievementState>()(
             achievements: [
                 {
                     id: 'first_blood',
-                    title: 'First Blood',
-                    description: 'ปราบมอนสเตอร์ตัวแรก',
+                    titleKey: 'achievements.firstBlood.title',
+                    descriptionKey: 'achievements.firstBlood.description',
                     icon: '⚔️',
                     targetValue: 1,
                     currentValue: 0,
@@ -41,8 +40,8 @@ export const useAchievementStore = create<AchievementState>()(
                 },
                 {
                     id: 'gold_miner',
-                    title: 'Gold Miner',
-                    description: 'สะสมเงินครบ 1,000 Gold',
+                    titleKey: 'achievements.goldMiner.title',
+                    descriptionKey: 'achievements.goldMiner.description',
                     icon: '💰',
                     targetValue: 1000,
                     currentValue: 0,
@@ -52,8 +51,8 @@ export const useAchievementStore = create<AchievementState>()(
                 },
                 {
                     id: 'slime_hunter',
-                    title: 'Slime Hunter',
-                    description: 'ปราบ Slime ครบ 50 ตัว',
+                    titleKey: 'achievements.slimeHunter.title',
+                    descriptionKey: 'achievements.slimeHunter.description',
                     icon: '🧪',
                     targetValue: 50,
                     currentValue: 0,
@@ -63,8 +62,8 @@ export const useAchievementStore = create<AchievementState>()(
                 },
                 {
                     id: 'monster_collector',
-                    title: 'Monster Collector',
-                    description: `ปราบมอนสเตอร์ครบทุกสายพันธุ์ (${MONSTERS.length} ชนิด)`,
+                    titleKey: 'achievements.monsterCollector.title',
+                    descriptionKey: 'achievements.monsterCollector.description',
                     icon: '📖',
                     targetValue: MONSTERS.length,
                     currentValue: 0,
@@ -84,7 +83,6 @@ export const useAchievementStore = create<AchievementState>()(
                 const state = get();
                 const newlyUnlocked: string[] = [];
 
-                // คำนวณค่าสถิติล่วงหน้าครั้งเดียว เพื่อประสิทธิภาพ
                 const totalKills = Object.values(monsterKills).reduce((a, b) => a + b, 0);
                 const uniqueMonstersKilled = Object.keys(monsterKills).length;
 
@@ -93,7 +91,6 @@ export const useAchievementStore = create<AchievementState>()(
 
                     let current = 0;
 
-                    // 🚩 ใช้ Switch Case จัดการเงื่อนไขแบบ Dynamic
                     switch (a.condition.type) {
                         case 'total_kills':
                             current = totalKills;
@@ -110,7 +107,7 @@ export const useAchievementStore = create<AchievementState>()(
                     }
 
                     if (current >= a.targetValue) {
-                        newlyUnlocked.push(a.title);
+                        newlyUnlocked.push(a.titleKey);
                         return { ...a, currentValue: current, isUnlocked: true };
                     }
                     return { ...a, currentValue: current };

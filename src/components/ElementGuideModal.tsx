@@ -1,5 +1,6 @@
 import React from 'react';
 import { Swords, X, ShieldAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ElementGuideProps {
     onClose: () => void;
@@ -7,6 +8,7 @@ interface ElementGuideProps {
 }
 
 export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) {
+    const { t } = useTranslation();
     // กรองเอา Neutral ออกเพื่อให้แสดงผลเฉพาะธาตุที่มีระบบแพ้ทาง
     const elements = Object.keys(elementChart).filter((e) => e !== 'Neutral');
 
@@ -28,9 +30,9 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                             <Swords size={20} />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black uppercase tracking-tight">Element Strategy</h3>
+                            <h3 className="text-xl font-black uppercase tracking-tight">{t('elementGuide.title')}</h3>
                             <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest opacity-80">
-                                ตารางความได้เปรียบทางธาตุ (Updated v1.1)
+                                {t('elementGuide.subtitle')}
                             </p>
                         </div>
                     </div>
@@ -80,7 +82,7 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                                                         ) : (
                                                             <ShieldAlert size={14} className="text-slate-400" />
                                                         )}
-                                                        <span className="font-bold text-slate-600 uppercase">vs {target}</span>
+                                                        <span className="font-bold text-slate-600 uppercase">{t('elementGuide.vs')} {target}</span>
                                                     </div>
                                                     <span className={`font-black px-2 py-0.5 rounded-md ${isStrong ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
                                                         {isStrong ? '↑' : '↓'} {percent}%
@@ -101,7 +103,7 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                         onClick={onClose}
                         className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black shadow-lg hover:bg-indigo-600 transition-all active:scale-95"
                     >
-                        รับทราบแผนกลยุทธ์!
+                        {t('elementGuide.closeButton')}
                     </button>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+import i18next from 'i18next'; // 1. นำเข้า i18next
 import type { Entity, MonsterData } from '../types/game';
 
 interface SkillContext {
@@ -22,11 +23,13 @@ interface SkillResult {
     critChance?: number;
     critDamage?: number;
     action?: string;
+    multiplier?: number; // เพิ่มเพื่อให้รองรับ gold-finder
 }
 
+// Helper สำหรับแปลภาษาภายในไฟล์นี้
+const t = (key: string, params?: Record<string, any>) => i18next.t(key, params) as string;
 
 export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> = {
-
 
     // #region --- Active Skills ---
 
@@ -39,7 +42,8 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             chance: chance,
             value: scaledValue,
-            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}⚡ Spark Burst Lv.${level} สายฟ้าฟาด! (Base Dmg: ${scaledValue})`,
+            log: (isSynergy ? t('battleLog.synergyPrefix') : '') +
+                t('skills.spark-burst.log', { level, dmg: scaledValue }),
         };
     },
 
@@ -51,7 +55,8 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             chance: 0.35,
             value: Math.floor(baseValue * finalReduction),
-            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}🛡️ Aegis Guard Lv.${level} ป้องกันความเสียหาย ${Math.round(finalReduction * 100)}%!`,
+            log: (isSynergy ? t('battleLog.synergyPrefix') : '') +
+                t('skills.aegis-guard.log', { level, percent: Math.round(finalReduction * 100) }),
         };
     },
 
@@ -59,11 +64,13 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const isSynergy = player.element === 'Neutral';
         const baseAtkPercent = isSynergy ? 0.35 : 0.20;
         const atkPercent = baseAtkPercent + ((level - 1) * 0.03);
+        const addedAtkValue = Math.floor(player.atk * atkPercent);
 
         return {
             value: 0,
             atkPercent: atkPercent,
-            log: `${isSynergy ? '⚪ [Synergy] ' : ''}⚔️ Blade Dance Lv.${level} ATK +${Math.round(atkPercent * 100)}%`
+            log: (isSynergy ? t('battleLog.synergyPrefix') : '') +
+                t('skills.blade-dance.log', { level, percent: Math.round(atkPercent * 100), atk: addedAtkValue })
         };
     },
 
@@ -72,33 +79,26 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const basePercent = isSynergy ? 0.02 : 0.01;
         const regenPercent = basePercent + ((level - 1) * 0.005);
 
-        // เราไม่คำนวณ healAmt ในนี้แล้ว แต่ส่ง % ออกไปให้ระบบจัดการ
         return {
             value: 0,
-            regen_percent: regenPercent, // ส่งค่า 0.02 หรือ 0.015 ออกไป
-            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}✨ Calm Focus Lv.${level} ฟื้นฟู ${(regenPercent * 100).toFixed(1)}% ของ HP สูงสุด`
+            regen_percent: regenPercent,
+            log: (isSynergy ? t('battleLog.synergyPrefix') : '') +
+                t('skills.calm-focus.log', { level, percent: (regenPercent * 100).toFixed(1) })
         };
     },
-
-    // #endregion
 
     // #region --- Passive Synergy ---
 
     'blazing-soul': ({ player, level }) => {
         const isSynergy = player.element === 'Fire';
         const levelBonus = (level - 1) * 0.015;
-
-        // คำนวณแยก 2 ค่าชัดเจน
-        const normalAtk = 0.10 + levelBonus;
-        const synergyAtk = 0.20 + levelBonus;
-
-        // เลือกใช้ค่าจริงตามเงื่อนไข
-        const bonusMult = isSynergy ? synergyAtk : normalAtk;
+        const bonusMult = isSynergy ? (0.20 + levelBonus) : (0.10 + levelBonus);
 
         return {
             value: 0,
             atkPercent: bonusMult,
-            log: `${isSynergy ? '🔥 [Synergy] ' : ''}🔥 Blazing Soul Lv.${level} ATK +${Math.round(bonusMult * 100)}%`
+            log: (isSynergy ? `🔥 ${t('battleLog.synergyPrefix')} ` : '🔥 ') +
+                t('skills.blazing-soul.log', { level, percent: Math.round(bonusMult * 100) })
         };
     },
 
@@ -108,8 +108,9 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const healAmt = Math.floor(player.maxHp * hpPercent);
 
         return {
-            value: healAmt, // Regen ใช้ค่า flat ในแต่ละเทิร์น
-            log: `${isSynergy ? '💧 [Tidal Synergy]' : '💧 [Tidal Grace]'} Lv.${level} ฟื้นฟู +${healAmt} HP (${(hpPercent * 100).toFixed(1)}%)`
+            value: healAmt,
+            log: (isSynergy ? `💧 ${t('battleLog.synergyPrefix')} ` : '💧 ') +
+                t('skills.tidal-grace.log', { level, heal: healAmt, percent: (hpPercent * 100).toFixed(1) })
         };
     },
 
@@ -121,21 +122,21 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             value: 0,
             defPercent: defPercent,
-            log: `${isSynergy ? '🌱 [Synergy] ' : ''}🛡️ Stone Skin Lv.${level} DEF +${Math.round(defPercent * 100)}%`
+            log: (isSynergy ? `🌱 ${t('battleLog.synergyPrefix')} ` : '🛡️ ') +
+                t('skills.stone-skin.log', { level, percent: Math.round(defPercent * 100) })
         };
     },
 
     'tailwind-strike': ({ player, level }) => {
         const isSynergy = player.element === 'Wind';
         const chance = (isSynergy ? 0.30 : 0.10) + ((level - 1) * 0.01);
-        const displayChance = Math.round(chance * 100);
-        const synergyText = isSynergy ? ' + โบนัสธาตุลม' : '';
 
         return {
             action: 'double-attack',
             value: 0,
             chance: chance,
-            log: `${isSynergy ? '🌪️ [Tailwind Synergy]' : '🌪️ [Tailwind]'} เตรียมโจมตีต่อเนื่อง! (โอกาส ${displayChance}%)`
+            log: (isSynergy ? `🌪️ ${t('battleLog.synergyPrefix')} ` : '🌪️ ') +
+                t('skills.tailwind-strike.log', { chance: Math.round(chance * 100) })
         };
     },
 
@@ -146,7 +147,8 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             chance: 1.0,
             value: dmgReduction,
-            log: `${isSynergy ? '☀️ [Holy Synergy]' : '☀️ [Holy Aura]'} Lv.${level} ลดความเสียหาย ${Math.round(dmgReduction * 100)}%`
+            log: (isSynergy ? `☀️ ${t('battleLog.synergyPrefix')} ` : '☀️ ') +
+                t('skills.holy-aura.log', { level, percent: Math.round(dmgReduction * 100) })
         };
     },
 
@@ -159,13 +161,15 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             value: 0,
             atkPercent: atkPercent,
             defPercent: -defPenaltyPercent,
-            log: `${isSynergy ? '🌙 [Synergy] ' : ''}🌙 Dark Pact Lv.${level} ATK +${Math.round(atkPercent * 100)}%${!isSynergy ? ` (DEF -${Math.round(defPenaltyPercent * 100)}%)` : ''}`
+            log: (isSynergy ? `🌙 ${t('battleLog.synergyPrefix')} ` : '🌙 ') +
+                t('skills.dark-pact.log', {
+                    level,
+                    atk: Math.round(atkPercent * 100),
+                    def: Math.round(defPenaltyPercent * 100),
+                    isSynergy
+                })
         };
     },
-
-    // #endregion
-
-    // #region --- Common Tier Skills ---
 
     'vitality-boost': ({ player, level }) => {
         const isSynergy = player.element === 'Neutral';
@@ -175,37 +179,31 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             value: 0,
             hpPercent: hpPercent,
-            log: `${isSynergy ? '⚪ [Synergy] ' : ''}❤️ Vitality Boost Lv.${level} Max HP +${Math.round(hpPercent * 100)}%`
+            log: (isSynergy ? `⚪ ${t('battleLog.synergyPrefix')} ` : '❤️ ') +
+                t('skills.vitality-boost.log', { level, percent: Math.round(hpPercent * 100) })
         };
     },
 
     'gold-finder': ({ level }) => {
-        // level 1 = 10%, level 2 = 12% ...
         const goldBonusPercent = 0.10 + ((level - 1) * 0.02);
-
         return {
-            // ส่งค่า multiplier ไปเลย (เช่น 1.10) เพื่อเอาไปคูณกับ gold ได้ทันที
             multiplier: 1 + goldBonusPercent,
-            value: Math.round(goldBonusPercent * 100), // ส่งค่า 10, 12 ไปโชว์ใน UI
-            log: `⭐ Gold Finder Lv.${level}: รับทองเพิ่ม +${Math.round(goldBonusPercent * 100)}%`
+            value: Math.round(goldBonusPercent * 100),
+            log: `⭐ ` + t('skills.gold-finder.log', { level, percent: Math.round(goldBonusPercent * 100) })
         };
     },
-
-    // #endregion
-
-    // #region --- Rare Tier Skills ---
 
     'fire-ember': ({ player, level }) => {
         const isSynergy = player.element === 'Fire';
         const baseChance = isSynergy ? 0.25 : 0.15;
         const chance = baseChance + ((level - 1) * 0.02);
-        const dmgMultiplier = 0.50;
-        const bonusDamage = Math.floor(player.atk * dmgMultiplier);
+        const bonusDamage = Math.floor(player.atk * 0.50);
 
         return {
             chance: chance,
             value: bonusDamage,
-            log: `${isSynergy ? '🔥 [Fire Synergy]' : '🔥 [Fire Ember]'} Lv.${level} โอกาส ${Math.round(chance * 100)}% ทำความเสียหายเพิ่ม +${bonusDamage}`
+            log: (isSynergy ? `🔥 ${t('battleLog.synergyPrefix')} ` : '🔥 ') +
+                t('skills.fire-ember.log', { level, chance: Math.round(chance * 100), dmg: bonusDamage })
         };
     },
 
@@ -216,7 +214,8 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
 
         return {
             value: healAmount,
-            log: `${isSynergy ? '💧 [Synergy] ' : ''}💧 Water Purify Lv.${level} ฟื้นฟู +${healAmount} HP (${Math.round(healPercent * 100)}%) และลบสถานะผิดปกติ`
+            log: (isSynergy ? `💧 ${t('battleLog.synergyPrefix')} ` : '💧 ') +
+                t('skills.water-purify.log', { level, heal: healAmount, percent: Math.round(healPercent * 100) })
         };
     },
 
@@ -229,21 +228,27 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             value: 0,
             defPercent: defPercent,
             atkPercent: -atkPenaltyPercent,
-            log: `${isSynergy ? '🌱 [Synergy] ' : ''}🛡️ Earth Wall Lv.${level} DEF +${Math.round(defPercent * 100)}%${!isSynergy ? ` (ATK -${Math.round(atkPenaltyPercent * 100)}%)` : ''}`
+            log: (isSynergy ? `🌱 ${t('battleLog.synergyPrefix')} ` : '🛡️ ') +
+                t('skills.earth-wall.log', {
+                    level,
+                    def: Math.round(defPercent * 100),
+                    atk: Math.round(atkPenaltyPercent * 100),
+                    isSynergy
+                })
         };
     },
 
     'wind-dash': ({ player, level }) => {
         const isSynergy = player.element === 'Wind';
-        const baseChance = isSynergy ? 0.30 : 0.20;
-        const chance = baseChance + ((level - 1) * 0.02);
+        const chance = (isSynergy ? 0.30 : 0.20) + ((level - 1) * 0.02);
         const counterDamagePercent = 0.50;
 
         return {
             action: 'counter',
             chance: chance,
             value: counterDamagePercent * 100,
-            log: `${isSynergy ? '🌪️ [Synergy] ' : ''}💨 Wind Dash Lv.${level} โอกาสหลบ ${Math.round(chance * 100)}% | สวนกลับ ${Math.round(counterDamagePercent * 100)}% ATK`
+            log: (isSynergy ? `🌪️ ${t('battleLog.synergyPrefix')} ` : '💨 ') +
+                t('skills.wind-dash.log', { level, chance: Math.round(chance * 100), counter: Math.round(counterDamagePercent * 100) })
         };
     },
 
@@ -256,7 +261,8 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             value: healAmount,
             atkPercent: atkPercent,
-            log: `${isSynergy ? '☀️ [Synergy] ' : ''}☀️ Light Blessing Lv.${level} ฟื้นฟู +${healAmount} HP/เทิร์น ATK +${Math.round(atkPercent * 100)}%`
+            log: (isSynergy ? `☀️ ${t('battleLog.synergyPrefix')} ` : '☀️ ') +
+                t('skills.light-blessing.log', { level, heal: healAmount, atk: Math.round(atkPercent * 100) })
         };
     },
 
@@ -268,19 +274,21 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             value: -enemyDefReduction * 100,
             hpPercent: -hpPenaltyPercent,
-            log: `${isSynergy ? '🌙 [Synergy] ' : ''}🌙 Dark Corruption Lv.${level} ลด DEF ศัตรู ${Math.round(enemyDefReduction * 100)}%${!isSynergy ? ` (เสีย HP -${Math.round(hpPenaltyPercent * 100)}%/เทิร์น)` : ''}`
+            log: (isSynergy ? `🌙 ${t('battleLog.synergyPrefix')} ` : '🌙 ') +
+                t('skills.dark-corruption.log', {
+                    level,
+                    def: Math.round(enemyDefReduction * 100),
+                    hp: Math.round(hpPenaltyPercent * 100),
+                    isSynergy
+                })
         };
     },
-
-    // #endregion
-
-    // #region --- Epic Tier Skills ---
 
     'critical-strike': ({ level }) => {
         const chance = 0.08 + ((level - 1) * 0.01);
         return {
             value: chance * 100,
-            log: `🎯 Critical Strike Lv.${level} โอกาส ${Math.round(chance * 100)}% ทำความเสียหาย 200%`
+            log: `🎯 ` + t('skills.critical-strike.log', { level, chance: Math.round(chance * 100) })
         };
     },
 
@@ -288,18 +296,19 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const damageBonus = 0.20 + ((level - 1) * 0.05);
         return {
             value: damageBonus * 100,
-            log: `⚡ Critical Mastery Lv.${level} เพิ่มความเสียหาย Critical +${Math.round(damageBonus * 100)}%`
+            log: `⚡ ` + t('skills.critical-mastery.log', { level, bonus: Math.round(damageBonus * 100) })
         };
     },
 
-    'lifesteal-vamp': ({ level }) => {
+    'lifesteal-vamp': ({ player, level }) => {
         const lifestealPercent = 0.15 + ((level - 1) * 0.02);
         const triggerChance = 0.30;
+        const estHeal = Math.floor(player.atk * lifestealPercent);
 
         return {
             chance: triggerChance,
             value: lifestealPercent * 100,
-            log: `🩸 Vampiric Touch Lv.${level} (โอกาส ${triggerChance * 100}%) ดูดเลือดคืน ${Math.round(lifestealPercent * 100)}%`
+            log: `🩸 ` + t('skills.lifesteal-vamp.log', { level, chance: triggerChance * 100, percent: Math.round(lifestealPercent * 100), heal: estHeal })
         };
     },
 
@@ -310,18 +319,11 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             value: penetrationPercent * 100,
             atkPercent: -atkPenaltyPercent,
-            log: `⚔️ Armor Penetration Lv.${level} ทะลุ DEF ${Math.round(penetrationPercent * 100)}% (ATK -${Math.round(atkPenaltyPercent * 100)}%)`
+            log: `⚔️ ` + t('skills.armor-penetration.log', { level, pen: Math.round(penetrationPercent * 100), atk: Math.round(atkPenaltyPercent * 100) })
         };
     },
 
-    // #endregion
-
-    // #region --- Legendary Tier Skills ---
-
     'elemental-mastery': ({ player, level }) => {
-        const atkPercent = 0.25 + ((level - 1) * 0.03);
-        const defPercent = 0.20 + ((level - 1) * 0.02);
-        const hpPercent = 0.15 + ((level - 1) * 0.02);
         const hasElementalAffinity = player.element !== 'Neutral';
 
         if (!hasElementalAffinity) {
@@ -329,23 +331,17 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             const nDef = 0.25 + ((level - 1) * 0.03);
             const nHp = 0.20 + ((level - 1) * 0.03);
             return {
-                value: 0,
-                atkPercent: nAtk,
-                defPercent: nDef,
-                hpPercent: nHp,
-                log: `👑[Elemental Mastery] (Neutral): พลังไร้ธาตุขั้นสุดยอด!(ATK + ${Math.round(nAtk * 100)} % / DEF +${Math.round(nDef * 100)}% / HP + ${Math.round(nHp * 100)} %)`
+                atkPercent: nAtk, defPercent: nDef, hpPercent: nHp,
+                log: `👑 ` + t('skills.elemental-mastery.neutralLog', { atk: Math.round(nAtk * 100), def: Math.round(nDef * 100), hp: Math.round(nHp * 100) })
             };
         }
 
+        const atk = 0.25 + ((level - 1) * 0.03);
+        const def = 0.20 + ((level - 1) * 0.02);
+        const hp = 0.15 + ((level - 1) * 0.02);
         return {
-            value: 0,
-            atkPercent: atkPercent,
-            defPercent: defPercent,
-            hpPercent: hpPercent,
-            log: `👑[Elemental Mastery](${player.element}): ATK + ${Math.round(atkPercent * 100)}% | DEF + ${Math.round(defPercent * 100)}% | HP + ${Math.round(hpPercent * 100)}% `
+            atkPercent: atk, defPercent: def, hpPercent: hp,
+            log: `👑 ` + t('skills.elemental-mastery.elementalLog', { element: player.element, atk: Math.round(atk * 100), def: Math.round(def * 100), hp: Math.round(hp * 100) })
         };
     },
-
-    // #endregion
-}; // <-- ตรวจสอบให้แน่ใจว่ามีปีกกาปิดอันนี้อยู่ที่ท้ายไฟล์สุดๆ
-
+};

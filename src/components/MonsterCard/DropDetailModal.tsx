@@ -1,7 +1,7 @@
-import { X } from 'lucide-react';
-import type { MonsterData } from '../../types/game';
+import { X, Gift, Coins, Sparkles } from 'lucide-react'
+import type { MonsterData } from '../../types/game'
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../store/useGameStore';
-import { Gift as GiftIcon } from 'lucide-react';
 
 interface Props {
     monster: MonsterData;
@@ -10,6 +10,7 @@ interface Props {
 
 export function DropDetailModal({ monster, onClose }: Props) {
     const { ownedSkills } = useGameStore();
+    const { t } = useTranslation();
 
     // ดึงข้อมูลสกิลจาก ID ที่มอนสเตอร์ดรอปได้
     const droppedSkills = (monster.droppedSkills || []).map(id =>
@@ -22,11 +23,11 @@ export function DropDetailModal({ monster, onClose }: Props) {
                 <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-amber-100 rounded-2xl text-amber-600">
-                            <GiftIcon size={20} />
+                            <Gift size={20} />
                         </div>
                         <div>
-                            <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">Drop Rewards</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{monster.name}</p>
+                            <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">{t('dropDetail.title')}</h3>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{t(monster.nameKey)}</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-white rounded-full transition-colors text-slate-400">
@@ -46,12 +47,12 @@ export function DropDetailModal({ monster, onClose }: Props) {
                                     <div className="text-[10px] text-slate-400 font-medium leading-tight">{skill?.description}</div>
                                 </div>
                                 <div className="text-[10px] font-black text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">
-                                    3-5%
+                                    {t('dropDetail.dropRate')}
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p className="text-center py-10 text-slate-400 font-bold uppercase text-xs">No special drops found</p>
+                        <p className="text-center py-10 text-slate-400 font-bold uppercase text-xs">{t('dropDetail.noDrops')}</p>
                     )}
                 </div>
             </div>

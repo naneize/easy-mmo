@@ -4,6 +4,7 @@ import type { MonsterData } from '../../types/game'
 import { useGameStore } from '../../store/useGameStore'
 import { getMasteryBonus } from '../../utils/gameHelpers'
 import { initializeMonster } from '../../data/monsters'
+import { useTranslation } from 'react-i18next'
 import { StatItem } from './StatItem'
 import { MasteryDetailsModal } from './MasteryDetailsModal'
 import { DropDetailModal } from './DropDetailModal';
@@ -26,6 +27,7 @@ interface MonsterCardProps {
 
 export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProps) {
     const { monsterKills } = useGameStore()
+    const { t } = useTranslation()
     const [showMasteryModal, setShowMasteryModal] = useState(false)
     const [showDropModal, setShowDropModal] = useState(false);
 
@@ -100,7 +102,7 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                 <div className="flex justify-between items-start mb-4 relative z-10">
                     <div>
                         <h4 className="font-black text-slate-800 text-lg group-hover:text-indigo-600 transition-colors">
-                            {monster.name}
+                            {t(monster.nameKey)}
                         </h4>
                         <div className="flex items-center gap-2 mt-1.5">
                             <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase border shadow-sm ${ELEMENT_COLORS[monster.element]}`}>
@@ -193,11 +195,13 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                             {/* Action Gauge พื้นหลัง */}
                             <div className="absolute inset-0 bg-indigo-500/30 animate-battle-progress origin-left" />
                             <span className="relative z-10 flex items-center gap-2 italic">
-                                ⚔️ กำลังตะลุมบอน...
+                                ⚔️ {t('ui.battle_processing', 'กำลังตะลุมบอน...')}
                             </span>
                         </>
                     ) : (
-                        <span className="flex items-center gap-2">เริ่มการต่อสู้ ⚔️</span>
+                        <span className="flex items-center gap-2">
+                            {t('ui.startBattle')} ⚔️
+                        </span>
                     )}
                 </button>
             </div>

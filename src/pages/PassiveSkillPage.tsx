@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { SkillEquipView } from '../components/passive/SkillEquipView';
 import { SkillUpgradeView } from '../components/passive/SkillUpgradeView';
 import { LayoutGrid, TrendingUp } from 'lucide-react';
+import { t } from 'i18next';
 
 export function PassiveSkillPage() {
   const [viewMode, setViewMode] = useState<'equip' | 'upgrade'>('equip');
@@ -18,7 +19,7 @@ export function PassiveSkillPage() {
               ${viewMode === 'equip' ? 'bg-white text-indigo-600 shadow-md scale-105' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <LayoutGrid size={14} />
-            Equip Skills
+            {t('ui.equip')} {t('ui.skills')}
           </button>
           <button
             onClick={() => setViewMode('upgrade')}
@@ -26,7 +27,7 @@ export function PassiveSkillPage() {
               ${viewMode === 'upgrade' ? 'bg-indigo-600 text-white shadow-md scale-105' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <TrendingUp size={14} />
-            Upgrade SkillS
+            {t('ui.upgrade')} {t('ui.skills')}
           </button>
         </div>
       </div>

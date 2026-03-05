@@ -1,3 +1,4 @@
+import i18n from 'i18next';
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Entity, MonsterData, ElementType, BattleLogEntry, GameItem, BattleEffect } from '../types/game'
@@ -10,6 +11,7 @@ import { INITIAL_SKILLS, reconstructSkill } from './skills'
 import type { Skill } from './skills'
 import type { SkillTier } from '../types/game';
 import { SKILL_EFFECTS } from '../logic/skillEffects';
+import { useTranslation } from 'react-i18next';
 
 // #region --- Interfaces ---
 interface BattleResultSummary {
@@ -169,7 +171,7 @@ export const useGameStore = create<GameState>()(
       equippedSkills: ['blade-dance', 'critical-strike', 'lifesteal-vamp', 'armor-penetration'].map(id => {
         const skill = INITIAL_SKILLS.find(s => s.id === id);
         return skill ? { ...skill, level: 1, unlocked: true } : null;
-      }).filter(Boolean) as Skill[], // เริ่มต้นมี 4 สกิลของ Berserker ใส่อยู่แล้ว
+      }).filter(Boolean) as Skill[],
       unlockedSkills: ['blade-dance', 'critical-strike', 'lifesteal-vamp', 'armor-penetration'] as string[],
       battleLogs: [],
       lastBattleResult: null as BattleResultSummary | null,
@@ -493,12 +495,21 @@ export const useGameStore = create<GameState>()(
               }
             }
 
+
+
             if (isLevelUp) {
-              currentLogs.push({ type: 'levelup', text: `🎊 เลเวลอัป! (+${lvl.levelGained} LV)` });
+              // ใช้ i18n.t แทน t ปกติ
+              // และใช้ tempPlayer.level แทน lvl.newLevel เพราะ TS แจ้งว่า lvl ไม่มีค่านี้
+              currentLogs.push({
+                type: 'levelup',
+                text: i18n.t('battleLog.levelUp', { level: tempPlayer.level })
+              });
+
               currentLogs.push(BattleLogger.statBonus(
                 lvl.statsGained.hp,
                 lvl.statsGained.atk,
-                lvl.statsGained.def
+                lvl.statsGained.def,
+
               ));
             }
           }

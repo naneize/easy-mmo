@@ -4,6 +4,7 @@ import { CLASS_DEFINITIONS } from '../data/classes'
 import { INITIAL_SKILLS } from '../store/skills'
 import { useGameStore } from '../store/useGameStore'
 import { calculatePlayerClass } from '../utils/gameHelpers'
+import { useTranslation } from 'react-i18next'
 
 function formatBonusValue(key: string, value: number): string {
   if (key.endsWith('_percent')) {
@@ -15,33 +16,43 @@ function formatBonusValue(key: string, value: number): string {
   return `${value}`
 }
 
-function formatBonusName(key: string): string {
-  const map: Record<string, string> = {
-    atk_flat: 'ATK',
-    atk_percent: 'ATK%',
-    def_flat: 'DEF',
-    def_percent: 'DEF%',
-    hp_mod: 'HP',
-    hp_percent: 'HP%',
-    lifesteal_percent: 'Lifesteal',
-    crit_chance: 'Crit Chance',
-    crit_multi: 'Crit DMG',
-    armor_pen: 'Armor Pen',
-    dmgReduction: 'DMG Reduction',
+function formatBonusName(key: string, t: (key: string) => string): string {
+  const globalKeyMap: Record<string, string> = {
+    atk_flat: 'global.atk',
+    atk_percent: 'global.atk',
+    def_flat: 'global.def',
+    def_percent: 'global.def',
+    hp_mod: 'global.hp',
+    hp_percent: 'global.hp',
+    lifesteal_percent: 'global.lifesteal',
+    crit_chance: 'global.critChance',
+    crit_multi: 'global.critDamage',
+    armor_pen: 'global.armorPen',
+    dmgReduction: 'global.hp', // Using HP as placeholder since there's no direct dmgReduction in global
   }
-  return map[key] || key
+
+  const suffix = key.endsWith('_percent') ? '%' : key.endsWith('_flat') ? '' : '';
+  const baseKey = globalKeyMap[key] || key;
+
+  try {
+    const translatedName = t(baseKey);
+    return translatedName + suffix;
+  } catch {
+    return key + suffix;
+  }
 }
 
 export function ClassesPage() {
+  const { t } = useTranslation()
   const { getEquippedSkillsWithIcons, unlockedClasses } = useGameStore()
 
   const equippedSkills = getEquippedSkillsWithIcons()
   const activeClass = calculatePlayerClass(equippedSkills)
 
   const skillMap = useMemo(() => {
-    const map = new Map<string, { name: string; description: string }>()
+    const map = new Map<string, { nameKey: string; descriptionKey: string }>()
     for (const s of INITIAL_SKILLS) {
-      map.set(s.id, { name: s.name, description: s.description })
+      map.set(s.id, { nameKey: s.nameKey, descriptionKey: s.descriptionKey })
     }
     return map
   }, [])
@@ -59,16 +70,16 @@ export function ClassesPage() {
               <Users className="text-indigo-200" size={32} />
             </div>
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-tight">Classes</h2>
+              <h2 className="text-3xl font-black uppercase tracking-tight">{t('classes.title')}</h2>
               <p className="text-indigo-100 text-xs font-bold uppercase tracking-[0.2em] opacity-80">
-                สวมใส่สกิลให้ครบ 4 ช่องตามเซต เพื่อปลดล็อคอาชีพ
+                {t('classUnlockHint')}
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <div className={`px-3 py-2 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest shadow-sm ${activeClass ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
-              Current Class: {activeClass ? activeClass.name : 'Novice'}
+              Current Class: {activeClass ? t(activeClass.nameKey) : t('classes.novice')}
             </div>
             <div className="px-3 py-2 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest shadow-sm bg-white/10 border-white/20 text-indigo-100">
               Unlocked: {unlockedClasses.length} / {CLASS_DEFINITIONS.length}
@@ -89,37 +100,37 @@ export function ClassesPage() {
             >
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Class</div>
-                  <div className="text-xl font-black text-slate-900 tracking-tight">{cls.name}</div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{t('classes.class')}</div>
+                  <div className="text-xl font-black text-slate-900 tracking-tight">{t(cls.nameKey)}</div>
                   <div className="mt-2 flex items-center gap-2">
                     {isUnlocked ? (
                       <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 text-[10px] font-black uppercase tracking-widest">
                         <CheckCircle2 size={14} />
-                        Unlocked
+                        {t('classes.unlocked')}
                       </div>
                     ) : (
                       <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 text-slate-500 border border-slate-200 px-3 py-1 text-[10px] font-black uppercase tracking-widest">
                         <Lock size={14} />
-                        Locked
+                        {t('classes.locked')}
                       </div>
                     )}
 
                     {isActive && (
                       <div className="inline-flex items-center gap-1.5 rounded-full bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-200 px-3 py-1 text-[10px] font-black uppercase tracking-widest">
-                        Active
+                        {t('classes.active')}
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Unlock</div>
-                  <div className="text-[10px] font-bold text-slate-500">ใส่สกิลครบ 4 ชิ้น</div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{t('classes.unlock')}</div>
+                  <div className="text-[10px] font-bold text-slate-500">{t('classes.unlockRequirement')}</div>
                 </div>
               </div>
 
               <div className="rounded-[2rem] bg-slate-50 border border-slate-100 p-4">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3">Required Skills</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3">{t('classes.requiredSkills')}</div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {cls.requiredSkills.map((skillId) => {
@@ -132,7 +143,7 @@ export function ClassesPage() {
                       >
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="truncate text-[11px] font-black text-slate-800">{info?.name ?? skillId}</div>
+                            <div className="truncate text-[11px] font-black text-slate-800">{info?.nameKey ? t(info.nameKey) : skillId}</div>
                             <div className="truncate text-[9px] font-bold text-slate-400 uppercase tracking-wider">{skillId}</div>
                           </div>
                           {equipped ? (
@@ -141,9 +152,9 @@ export function ClassesPage() {
                             <Lock className="text-slate-400" size={18} />
                           )}
                         </div>
-                        {info?.description && (
+                        {info?.descriptionKey && (
                           <div className="mt-2 text-[10px] font-bold text-slate-500 leading-snug">
-                            {info.description}
+                            {t(info.descriptionKey)}
                           </div>
                         )}
                       </div>
@@ -156,7 +167,7 @@ export function ClassesPage() {
               <div className="rounded-[2rem] bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 p-4 mt-4">
                 <div className="flex items-center gap-2 mb-3">
                   <TrendingUp className="text-indigo-600" size={16} />
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">Class Bonuses</div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">{t('classes.classBonuses')}</div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {Object.entries(cls.bonus).map(([key, value]) => (
@@ -168,7 +179,7 @@ export function ClassesPage() {
                         }`}
                     >
                       <div className="text-[10px] font-bold uppercase tracking-wider">
-                        {formatBonusName(key)}
+                        {formatBonusName(key, t)}
                       </div>
                       <div className="text-lg font-black">
                         {formatBonusValue(key, value)}
@@ -183,11 +194,11 @@ export function ClassesPage() {
                 <div className="rounded-[2rem] bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-4 mt-4">
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="text-amber-600" size={16} />
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600">Special Effect</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-600">{t('classes.specialEffect')}</div>
                   </div>
                   <div className="bg-white rounded-2xl border border-amber-100 p-3">
-                    <div className="text-[11px] font-black text-amber-800 uppercase tracking-wider">{cls.specialEffect.name}</div>
-                    <div className="mt-1 text-[12px] font-bold text-slate-700 leading-snug">{cls.specialEffect.description}</div>
+                    <div className="text-[11px] font-black text-amber-800 uppercase tracking-wider">{t(cls.specialEffect.nameKey)}</div>
+                    <div className="mt-1 text-[12px] font-bold text-slate-700 leading-snug">{t(cls.specialEffect.descriptionKey)}</div>
                   </div>
                 </div>
               )}
@@ -197,13 +208,13 @@ export function ClassesPage() {
                 <div className="rounded-[2rem] bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-100 p-4 mt-4">
                   <div className="flex items-center gap-2 mb-3">
                     <Shield className="text-cyan-600" size={16} />
-                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-600">Element Affinity</div>
+                    <div className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-600">{t('classes.elementAffinity')}</div>
                   </div>
                   <div className="space-y-2">
                     {typeof cls.elementAffinity.advantageMultiplier === 'number' && (
                       <div className="bg-indigo-50 rounded-2xl border border-indigo-100 px-4 py-3">
                         <div className="flex items-center justify-between">
-                          <div className="text-[11px] font-black text-indigo-800 uppercase tracking-wider">โบนัสเมื่อชนะทาง</div>
+                          <div className="text-[11px] font-black text-indigo-800 uppercase tracking-wider">{t('classes.advantageBonus')}</div>
                           <div className="text-[12px] font-black text-indigo-800">x{cls.elementAffinity.advantageMultiplier.toFixed(2)}</div>
                         </div>
                       </div>
@@ -211,7 +222,7 @@ export function ClassesPage() {
                     {typeof cls.elementAffinity.disadvantageDamageTakenMultiplier === 'number' && (
                       <div className="bg-emerald-50 rounded-2xl border border-emerald-100 px-4 py-3">
                         <div className="flex items-center justify-between">
-                          <div className="text-[11px] font-black text-emerald-800 uppercase tracking-wider">ลดความเสียหายเมื่อแพ้ทาง</div>
+                          <div className="text-[11px] font-black text-emerald-800 uppercase tracking-wider">{t('classes.disadvantageReduction')}</div>
                           <div className="text-[12px] font-black text-emerald-800">x{cls.elementAffinity.disadvantageDamageTakenMultiplier.toFixed(2)}</div>
                         </div>
                       </div>

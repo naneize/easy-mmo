@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Trophy, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface AchievementToastProps {
     title: string;
@@ -9,6 +10,7 @@ interface AchievementToastProps {
 }
 
 export function AchievementToast({ title, description, onClose, badgeText }: AchievementToastProps) {
+    const { t } = useTranslation();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -52,7 +54,7 @@ export function AchievementToast({ title, description, onClose, badgeText }: Ach
                     {/* Text Section */}
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em] mb-0.5">{badgeText ?? 'Achievement Unlocked'}</span>
+                            <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em] mb-0.5">{badgeText ?? t('achievementToast.unlocked')}</span>
                         </div>
                         <h4 className="text-white font-black text-lg leading-tight tracking-tight uppercase">
                             {title}
@@ -65,7 +67,7 @@ export function AchievementToast({ title, description, onClose, badgeText }: Ach
 
                 {/* Loading/Progress Bar ด้านล่างที่ค่อยๆ ลดลง */}
                 <div className="h-1 bg-amber-400/20 w-full overflow-hidden">
-                    <div className={`h-full bg-amber-400 transition-all duration-[4000ms] ease-linear ${isVisible ? 'w-0' : 'w-full'}`} />
+                    <div className={`h-full bg-amber-400 transition-all duration-[4000ms] ease-linear ${isVisible ? 'w-full' : 'w-0'}`} />
                 </div>
             </div>
         </div>

@@ -1,9 +1,11 @@
 import { X, Award } from 'lucide-react';
 import { useAchievementStore } from '../../store/useAchievementStore';
 import { AchievementItem } from './AchievementItem';
+import { useTranslation } from 'react-i18next';
 
 export function AchievementModal({ onClose }: { onClose: () => void }) {
     const { achievements } = useAchievementStore();
+    const { t } = useTranslation();
 
     return (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
@@ -14,8 +16,8 @@ export function AchievementModal({ onClose }: { onClose: () => void }) {
                     <div className="flex items-center gap-3">
                         <Award className="text-amber-400" size={32} />
                         <div>
-                            <h3 className="text-2xl font-black uppercase tracking-tight">Achievements</h3>
-                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">เป้าหมายและความสำเร็จของคุณ</p>
+                            <h3 className="text-2xl font-black uppercase tracking-tight">{t('achievement.title')}</h3>
+                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">{t('achievement.subtitle')}</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all">
@@ -28,7 +30,7 @@ export function AchievementModal({ onClose }: { onClose: () => void }) {
                 </div>
 
                 <div className="p-6 bg-slate-50 border-t border-slate-100 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    ปลดล็อกความสำเร็จเพื่อรับรางวัลพิเศษในอนาคต
+                    {t('achievement.footer')}
                 </div>
             </div>
         </div>

@@ -1,7 +1,9 @@
 import { Trophy, Lock } from 'lucide-react';
 import type { Achievement } from '../../store/useAchievementStore';
+import { useTranslation } from 'react-i18next';
 
 export function AchievementItem({ data }: { data: Achievement }) {
+    const { t } = useTranslation();
     const progress = Math.min((data.currentValue / data.targetValue) * 100, 100);
 
     return (
@@ -17,15 +19,15 @@ export function AchievementItem({ data }: { data: Achievement }) {
 
                 <div className="flex-1">
                     <h4 className="font-black text-slate-800 text-sm flex items-center gap-2">
-                        {data.title}
+                        {t(data.titleKey)}
                         {data.isUnlocked && <Trophy size={14} className="text-amber-500" />}
                     </h4>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-tight">{data.description}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-tight">{t(data.descriptionKey)}</p>
 
                     {!data.isUnlocked && (
                         <div className="mt-3">
                             <div className="flex justify-between text-[9px] font-black text-slate-400 mb-1">
-                                <span>PROGRESS</span>
+                                <span>{t('achievement.progress')}</span>
                                 <span>{data.currentValue} / {data.targetValue}</span>
                             </div>
                             <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
