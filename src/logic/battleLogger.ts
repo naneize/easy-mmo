@@ -20,8 +20,8 @@ export const BattleLogger = {
         if (mult !== 1) {
             return {
                 type: 'elemental',
-                playerElem: playerType, // ✅ ตอนนี้ TS จะไม่ด่าแล้ว
-                monsterElem: monsterType, // ✅ เพราะเราลงทะเบียนไว้ใน Interface แล้ว
+                playerElem: playerType, // 
+                monsterElem: monsterType, // 
                 text: `ธาตุ ${playerType} ${mult > 1 ? 'ได้เปรียบ' : 'เสียเปรียบ'} ${monsterType}! Damage x${mult}`
             };
         }
@@ -48,7 +48,7 @@ export const BattleLogger = {
 
     attack: (attacker: string, target: string, dmg: number, hpLeft: number): BattleLogEntry => ({
         type: 'attack',
-        text: `${attacker} โจมตี ${target}: -${Math.floor(dmg).toLocaleString()} HP (เหลือ ${Math.max(0, Math.floor(hpLeft)).toLocaleString()})`
+        text: `${attacker} โจมตี ${target} สร้างความเสียหาย ${Math.floor(dmg).toLocaleString()} หน่วย (เหลือ ${Math.max(0, Math.floor(hpLeft)).toLocaleString()} HP)`
     }),
 
     // เพิ่มฟังก์ชันสำหรับเช็คเลือดผู้เล่นแบบเจาะจง (ใช้เรียกตอนจบเทิร์นได้)
@@ -71,7 +71,8 @@ export const BattleLogger = {
     // --- ระบบ Critical (เพิ่มใหม่) ---
     critical: (attacker: string, target: string, dmg: number, mult: number, hpLeft: number): BattleLogEntry => ({
         type: 'critical',
-        text: `💥 CRITICAL HIT! 💥 ${attacker} ระเบิดพลังโจมตีใส่ ${target} อย่างรุนแรง x${mult} เท่า!! สร้างความเสียหาย -${Math.floor(dmg).toLocaleString()} HP (เหลือ ${Math.max(0, Math.floor(hpLeft)).toLocaleString()})`
+        text: `${attacker} � CRITICAL HIT! โจมตี ${target} รุนแรงถึง ${Math.floor(dmg).toLocaleString()} หน่วย! (x${mult}) (เหลือ ${Math.max(0, Math.floor(hpLeft)).toLocaleString()} HP)`,
+        isCrit: true
     }),
 
     doubleAttack: (attacker: string, target: string, dmg: number, hpLeft: number): BattleLogEntry => ({

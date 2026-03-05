@@ -45,9 +45,9 @@ export function MasteryDetailsModal({ monster, kills, onClose }: MasteryModalPro
 
                         <div className="space-y-2">
                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 mb-3 italic">Reward Milestones</h4>
-                            <MilestoneItem goal={10} currentKills={kills} monster={monster} tierMultiplier={1} />
-                            <MilestoneItem goal={50} currentKills={kills} monster={monster} tierMultiplier={5} />
-                            <MilestoneItem goal={100} currentKills={kills} monster={monster} tierMultiplier={10} />
+                            <MilestoneItem goal={10} currentKills={kills} monster={monster} />
+                            <MilestoneItem goal={50} currentKills={kills} monster={monster} />
+                            <MilestoneItem goal={100} currentKills={kills} monster={monster} />
                         </div>
                     </div>
                     <button onClick={onClose} className="w-full mt-8 py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-lg hover:bg-indigo-700 transition-all active:scale-95">

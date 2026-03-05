@@ -26,7 +26,7 @@ export function PassiveSkillPage() {
               ${viewMode === 'upgrade' ? 'bg-indigo-600 text-white shadow-md scale-105' : 'text-slate-500 hover:text-slate-700'}`}
           >
             <TrendingUp size={14} />
-            Buy & Upgrade
+            Upgrade SkillS
           </button>
         </div>
       </div>

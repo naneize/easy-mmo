@@ -1,6 +1,6 @@
 import React from 'react'
 // เปลี่ยน Backpack เป็น Trophy
-import { Home, Package, Sparkles, Store, Sword, Trophy } from 'lucide-react'
+import { Home, Package, Sparkles, Store, Sword, Trophy, Users } from 'lucide-react'
 import { useNavigationStore, type GameTabId } from '../store/navigation'
 import { useGameStore } from '../store/useGameStore'
 
@@ -14,6 +14,7 @@ const tabs: TabConfig[] = [
   { id: 'dashboard', label: 'Home', Icon: Home },
   { id: 'inventory', label: 'Inventory', Icon: Package },
   { id: 'skills', label: 'Skills', Icon: Sparkles },
+  { id: 'classes', label: 'Classes', Icon: Users },
   { id: 'adventure', label: 'Adventure', Icon: Sword },
   { id: 'achievements', label: 'Achievements', Icon: Trophy },
   { id: 'market', label: 'Market', Icon: Store },
@@ -32,10 +33,7 @@ export function GameNavigation() {
           <div className="grid h-9 w-9 place-items-center rounded-xl bg-sky-500 text-white shadow-lg shadow-sky-100">
             <Sword className="h-5 w-5" />
           </div>
-          <div className="leading-tight">
-            <div className="text-sm font-bold text-slate-900 italic tracking-tight">FANTASY MMO</div>
-            <div className="text-[10px] font-bold text-sky-500 uppercase tracking-widest">Easy Mode</div>
-          </div>
+
         </div>
 
         <nav className="flex-1 px-3 py-3">

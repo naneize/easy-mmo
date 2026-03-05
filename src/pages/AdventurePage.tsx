@@ -6,20 +6,28 @@ import { useAchievementStore } from '../store/useAchievementStore'
 import { useToastStore } from '../store/useToastStore'
 import { ChevronLeft, Info } from 'lucide-react'
 import { BattleLog } from '../logic/BattleLog'
+
 import { MapSelection } from '../components/MapSelection'
 import { MonsterCard } from '../components/MonsterCard'
 import { BattleResultModal } from '../components/BattleResultModal'
-import { AchievementToast } from '../components/Achievements/AchievementToast'
 import { MONSTERS } from '../data/monsters'
 import { ElementGuideModal } from '../components/ElementGuideModal';
 import { ELEMENT_CHART } from '../logic/elementalLogic'
+import { calculatePlayerClass } from '../utils/gameHelpers'
+
 
 export function AdventurePage() {
+
     const [selectedMap, setSelectedMap] = useState<GameMap | null>(null)
-    const [showElementGuide, setShowElementGuide] = useState(false) // 🚩 State สำหรับเปิด/ปิด Modal
-    const { player, processBattle, battleLogs, resetBattle } = useGameStore()
-    const { setActiveToast, activeToast } = useToastStore()
+    const [showElementGuide, setShowElementGuide] = useState(false) // State สำหรับเปิด/ปิด Modal
+    const { player, processBattle, battleLogs, resetBattle, getEquippedSkillsWithIcons } = useGameStore()
+
+    const { setActiveToast } = useToastStore()
     const [processingId, setProcessingId] = useState<string | null>(null);
+
+
+    const equippedSkills = getEquippedSkillsWithIcons();
+    const playerClass = calculatePlayerClass(equippedSkills);
 
     const handleStartBattle = async (monster: MonsterData) => {
         if (processingId) return;
@@ -51,7 +59,8 @@ export function AdventurePage() {
                 if (achievement) {
                     setActiveToast({
                         title: achievement.title,
-                        desc: achievement.description
+                        desc: achievement.description,
+                        badgeText: 'Achievement Unlocked'
                     });
                 }
             }
@@ -81,15 +90,6 @@ export function AdventurePage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500 pb-20">
             <BattleResultModal />
 
-            {/* Achievement Toast */}
-            {activeToast && (
-                <AchievementToast
-                    title={activeToast.title}
-                    description={activeToast.desc}
-                    onClose={() => setActiveToast(null)}
-                />
-            )}
-
             {/* แสดง Modal เมื่อ State เป็น true */}
             {showElementGuide && <ElementGuideModal onClose={() => setShowElementGuide(false)} elementChart={ELEMENT_CHART} />}
 
@@ -101,6 +101,10 @@ export function AdventurePage() {
                     <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                     BACK TO WORLD MAP
                 </button>
+
+                <div className={`px-3 py-2 rounded-2xl border-2 font-black text-[10px] uppercase tracking-widest shadow-sm ${playerClass ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                    Current Class: {playerClass ? playerClass.name : 'Novice'}
+                </div>
 
                 {/* ปุ่มกดดู Guide แบบประหยัดพื้นที่ */}
                 <button

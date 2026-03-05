@@ -4,6 +4,7 @@ import { PassiveSkillPage } from './pages/PassiveSkillPage'
 import { AdventurePage } from './pages/AdventurePage'
 import { DashboardPage } from './pages/DashboardPage'
 import { InventoryPage } from './pages/InventoryPage.tsx';
+import { ClassesPage } from './pages/ClassesPage'
 import { useNavigationStore } from './store/navigation'
 import { useGameStore } from './store/useGameStore' // เพิ่มการดึง GameStore
 import AchievementPage from './pages/AchievementPage.tsx'
@@ -14,7 +15,7 @@ function App() {
   // ดึงฟังก์ชัน regenHP มาจาก Store
   const regenHP = useGameStore((state) => state.regenHP)
 
-  
+
 
   // 🚩 สร้าง Loop การฟื้นฟูเลือด
   useEffect(() => {
@@ -37,6 +38,8 @@ function App() {
 
       {/* --- 3. หน้าผจญภัยสู้กับมอนสเตอร์ --- */}
       {activeTab === 'adventure' && <AdventurePage />}
+
+      {activeTab === 'classes' && <ClassesPage />}
 
       {activeTab === 'achievements' && <AchievementPage />}
 

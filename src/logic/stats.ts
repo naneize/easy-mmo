@@ -1,6 +1,6 @@
 import { ITEMS } from '../data/items';
 import { MONSTERS } from '../data/monsters';
-import { getMasteryBonus } from '../utils/gameHelpers';
+import { getMasteryBonus, calculatePlayerClass } from '../utils/gameHelpers';
 import type { Entity, Skill } from '../types/game';
 import { SKILL_EFFECTS } from './skillEffects';
 
@@ -15,19 +15,28 @@ export const calculateFinalStats = (
     equippedSkills: Skill[] = []
 ) => {
 
+    const playerClass = calculatePlayerClass(equippedSkills);
+    const classBonus = playerClass?.bonus || {};
+
     const baseAtk = player.atk;
     const baseDef = player.def;
     const baseMaxHp = player.maxHp;
+    const baseCritChance = player.critChance || 0.05; // Default 5%
+    const baseCritDamage = player.critDamage || 1.5; // Default 1.5x
 
     // 1. ตัวแปรเก็บค่าสะสม (Accumulators)
     let atkFlat = player.atk;
     let defFlat = player.def;
     let maxHpFlat = player.maxHp;
+    let critChanceFlat = baseCritChance;
+    let critDamageFlat = baseCritDamage;
 
     let atkPercent = 0; // เก็บเป็นส่วนต่าง เช่น 0.1 = +10%
     let defPercent = 0;
     let maxHpPercent = 0;
     let lifesteal = 0;
+    let critChancePercent = 0;
+    let critDamagePercent = 0;
 
     let skillAtkMod = 0;
     let skillDefMod = 0;
@@ -63,8 +72,28 @@ export const calculateFinalStats = (
             if (p.target === 'maxHp_percent') maxHpPercent += (val / 100);
 
             if (p.target === 'lifesteal') lifesteal += (val / 100);
+
+            // Critical Strike support
+            if (p.target === 'crit_chance') critChanceFlat += (val / 100);
+            if (p.target === 'crit_multi') critDamageFlat += (val / 100);
         }
     });
+
+    // 5. คำนวณจาก Class Bonus
+    atkFlat += classBonus.atk_flat || 0;
+    atkPercent += classBonus.atk_percent || 0;
+
+    defFlat += classBonus.def_flat || 0;
+    defPercent += classBonus.def_percent || 0;
+
+    maxHpFlat += classBonus.hp_mod || 0;
+    maxHpPercent += classBonus.hp_percent || 0;
+
+    lifesteal += classBonus.lifesteal_percent || 0;
+
+    // Critical Strike class bonuses
+    critChanceFlat += classBonus.crit_chance || 0;
+    critDamageFlat += classBonus.crit_multi || 0;
 
     // 3. คำนวณจาก Mastery (โบนัสถาวรจากการล่ามอนสเตอร์)
     Object.entries(monsterKills).forEach(([monsterId, kills]) => {
@@ -76,9 +105,6 @@ export const calculateFinalStats = (
             if (bonus.type === 'maxHp') maxHpFlat += bonus.value;
         }
     });
-
-
-
 
     // 4. คำนวณจาก Passive Skills
     equippedSkills.forEach(skill => {
@@ -96,17 +122,17 @@ export const calculateFinalStats = (
             });
 
             if (result.value !== undefined) {
-                // --- ⚔️ ATK Group ---
+                // --- ATK Group ---
                 if (skill.targetStat === 'atk_flat' || skill.targetStat === 'atk_percent') {
                     skillAtkMod += result.value;
                 }
 
-                // --- 🛡️ DEF Group ---
+                // --- DEF Group ---
                 if (skill.targetStat === 'def_flat' || skill.targetStat === 'def_percent') {
                     skillDefMod += result.value;
                 }
 
-                // --- ❤️ HP Group ---
+                // --- HP Group ---
                 if (skill.targetStat === 'maxHp_flat' || skill.targetStat === 'maxHp_percent') {
                     skillMaxHpMod += result.value;
                 }
@@ -114,7 +140,7 @@ export const calculateFinalStats = (
                 appliedFromEffect = true;
             }
 
-            // 🚩 ห้ามลืม! รับค่า Modifiers แฝง (เช่น Dark Pact ที่ลด DEF หรือระบบ Percent ใหม่)
+            // รับค่า Modifiers แฝง (เช่น Dark Pact ที่ลด DEF หรือระบบ Percent ใหม่)
             if (result.atkMod) { skillAtkMod += result.atkMod; appliedFromEffect = true; }
             if (result.defMod) { skillDefMod += result.defMod; appliedFromEffect = true; }
             if (result.hpMod) { skillMaxHpMod += result.hpMod; appliedFromEffect = true; }
@@ -126,24 +152,31 @@ export const calculateFinalStats = (
 
             // 3. รับค่าสถานะพิเศษอื่นๆ
             if (result.lifesteal) lifesteal += result.lifesteal;
+            if (result.critChance) critChanceFlat += result.critChance;
+            if (result.critDamage) critDamageFlat += result.critDamage;
         }
     });
 
-    // 🚩 ผลลัพธ์สุดท้าย (Final Calculation)
     // สูตร: (Base + FlatSkill) * (1 + PercentSum)
     const finalAtk = Math.max(0, Math.floor((atkFlat + skillAtkMod) * (1 + atkPercent)));
     const finalDef = Math.max(0, Math.floor((defFlat + skillDefMod) * (1 + defPercent)));
     const finalMaxHp = Math.max(1, Math.floor((maxHpFlat + skillMaxHpMod) * (1 + maxHpPercent)));
+    const finalCritChance = Math.min(1, Math.max(0, critChanceFlat + critChancePercent)); // Cap between 0-100%
+    const finalCritDamage = Math.max(1, critDamageFlat + critDamagePercent); // Minimum 1x
 
     return {
         atk: finalAtk,
         def: finalDef,
         maxHp: finalMaxHp,
+        critChance: finalCritChance,
+        critDamage: finalCritDamage,
 
-        // ✨ เพิ่ม Property ใหม่เพื่อรองรับ Dashboard StatCard
+        // เพิ่ม Property ใหม่เพื่อรองรับ Dashboard StatCard
         baseAtk: baseAtk,
         baseDef: baseDef,
         baseMaxHp: baseMaxHp,
+        baseCritChance: baseCritChance,
+        baseCritDamage: baseCritDamage,
 
         lifesteal: Math.min(0.5, lifesteal), // ไม่ให้เกิน 100%
 
@@ -151,6 +184,8 @@ export const calculateFinalStats = (
         bonusAtk: finalAtk - baseAtk,
         bonusDef: finalDef - baseDef,
         bonusHp: finalMaxHp - baseMaxHp,
+        bonusCritChance: finalCritChance - baseCritChance,
+        bonusCritDamage: finalCritDamage - baseCritDamage,
 
         isAtkReduced: skillAtkMod < 0 || atkPercent < 0,
         isDefReduced: skillDefMod < 0 || defPercent < 0,

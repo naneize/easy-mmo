@@ -102,13 +102,13 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'calm-focus',
     name: 'Calm Focus',
-    description: 'ฟื้นฟู 5 HP ต่อเทิร์น (เพิ่มเป็น 10 HP หากผู้เล่นเป็นธาตุ Neutral) โดยจะเพิ่มขึ้น 2 HP ต่อ LV',
+    description: 'ฟื้นฟู 1% ของ HP สูงสุดต่อเทิร์น (เพิ่มเป็น 2% หากเป็นธาตุ Neutral) +0.5% ต่อ LV',
     type: 'constant',
     tier: 'common',
-    targetStat: 'regen_flat',
+    targetStat: 'regen_percent',
     Icon: Sparkles,
     element: 'Neutral',
-    value: 5,
+    value: 0.01,
     level: 1,
     maxLevel: 10,
     unlocked: false
@@ -136,7 +136,7 @@ export const INITIAL_SKILLS: Skill[] = [
     description: 'ฟื้นฟู HP 2% (5% หากผู้เล่นเป็นธาตุ Water) ของ Max HP ทุกเทิร์น (+0.3% ต่อ LV)',
     type: 'constant',
     tier: 'common',
-    targetStat: 'regen_flat',
+    targetStat: 'regen_percent',
     Icon: Droplets,
     element: 'Water',
     value: 0.02,
@@ -147,7 +147,7 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'stone-skin',
     name: 'Stone Skin',
-    description: 'เพิ่ม DEF 10 หน่วย (25 หากผู้เล่นเป็นธาตุ Earth) และเพิ่มขึ้น 4 หน่วย ต่อ LV',
+    description: 'เพิ่ม DEF 10% (25% หากผู้เล่นเป็นธาตุ Earth) และเพิ่มขึ้น 3% ต่อ LV',
     type: 'constant',
     tier: 'common',
     targetStat: 'def_flat',
@@ -190,7 +190,7 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'dark-pact',
     name: 'Dark Pact',
-    description: 'เพิ่ม ATK 30 (+5/LV) แต่ลด DEF 10 (+2/LV) หากผู้เล่นเป็นธาตุ Dark จะไม่เสีย DEF',
+    description: 'เพิ่ม ATK 30% (เพิ่มขึ้น 3% ต่อ LV) แต่ลด DEF 10% (เพิ่มขึ้น 2% ต่อ LV) หากผู้เล่นเป็นธาตุ Dark จะไม่เสีย DEF',
     type: 'constant',
     tier: 'rare',
     targetStat: 'atk_flat',
@@ -207,7 +207,7 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'vitality-boost',
     name: 'Vitality Boost',
-    description: "เพิ่ม Max HP 15 หน่วย (+10 ต่อ Lv) หากผู้เล่นเป็นธาตุ Neutral ผลของสกิลจะเพิ่มเป็น 2 เท่า",
+    description: 'เพิ่ม Max HP 15% (+2% ต่อ Lv) หากผู้เล่นเป็นธาตุ Neutral ผลของสกิลจะเพิ่มเป็น 2 เท่า',
     type: 'constant',
     tier: 'common',
     targetStat: 'maxHp_flat',
@@ -310,7 +310,7 @@ export const INITIAL_SKILLS: Skill[] = [
   {
     id: 'dark-corruption',
     name: 'Dark Corruption',
-    description: 'ลด DEF ศัตรู 15% แต่ลด HP ผู้ใช้ 3% ต่อเทิร์น (ไม่เสีย HP หากผู้เล่นเป็นธาตุ Dark) และเพิ่มขึ้น 1% ต่อ LV',
+    description: 'ลด DEF ศัตรู 15% (เพิ่มขึ้น 1% ต่อ LV) แต่ลด HP ผู้ใช้ 3% ต่อเทิร์น (ไม่เสีย HP หากผู้เล่นเป็นธาตุ Dark)',
     type: 'constant',
     tier: 'rare',
     targetStat: 'def_percent',
@@ -334,6 +334,20 @@ export const INITIAL_SKILLS: Skill[] = [
     Icon: Target,
     element: 'Neutral',
     value: 8,
+    level: 1,
+    maxLevel: 10,
+    unlocked: false
+  },
+  {
+    id: 'critical-mastery',
+    name: 'Critical Mastery',
+    description: 'เพิ่มความเสียหาย Critical 20% (เพิ่มขึ้น 5% ต่อ LV)',
+    type: 'constant',
+    tier: 'epic',
+    targetStat: 'crit_multi',
+    Icon: Zap,
+    element: 'Neutral',
+    value: 20,
     level: 1,
     maxLevel: 10,
     unlocked: false

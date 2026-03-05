@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Heart, Swords, Shield, Coins, Sparkles, Trophy, Gift } from 'lucide-react'
+import { Heart, Swords, Shield, Coins, Sparkles, Trophy, Gift, Target, Zap } from 'lucide-react'
 import type { MonsterData } from '../../types/game'
 import { useGameStore } from '../../store/useGameStore'
 import { getMasteryBonus } from '../../utils/gameHelpers'
@@ -34,6 +34,14 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
     const nextGoal = kills < 10 ? 10 : kills < 50 ? 50 : 100
     const progress = Math.min((kills / nextGoal) * 100, 100)
     const bonusType = monster.masteryBonus?.type ?? 'Stat'
+
+    const formatType = (type: string) => (type === 'maxHp' ? 'HP' : type.toUpperCase());
+    const formatBonus = (value: number, isPercent: boolean) => {
+        if (isPercent) {
+            return `${(value * 100).toFixed(1)}%`
+        }
+        return value.toString()
+    }
 
     // คำนวณ stats จากระบบใหม่
     const initializedMonster = initializeMonster(monster)
@@ -139,10 +147,15 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
 
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-2 mb-4 relative z-10">
+                <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
                     <StatItem icon={<Heart size={14} className="text-rose-500" />} label="HP" value={initializedMonster.hp} color="bg-rose-50/50" />
                     <StatItem icon={<Swords size={14} className="text-slate-600" />} label="ATK" value={initializedMonster.atk} color="bg-slate-50/50" />
                     <StatItem icon={<Shield size={14} className="text-blue-500" />} label="DEF" value={initializedMonster.def} color="bg-blue-50/50" />
+                    <StatItem icon={<Target size={14} className="text-purple-500" />} label="CRIT" value={`${(initializedMonster.critChance * 100).toFixed(1)}%`} color="bg-purple-50/50" />
+                    <div className="col-span-2 grid grid-cols-2 gap-2">
+                        <StatItem icon={<Zap size={14} className="text-yellow-500" />} label="CRIT DMG" value={`${initializedMonster.critDamage.toFixed(1)}x`} color="bg-yellow-50/50" />
+
+                    </div>
                 </div>
 
                 {/* Mastery Progress */}
@@ -160,7 +173,7 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                                 {bonusType === 'atk' ? <Swords size={10} /> : bonusType === 'def' ? <Shield size={10} /> : <Heart size={10} />}
                             </div>
                             <span className={`text-[10px] font-black ${mastery.tier > 0 ? 'text-indigo-600' : 'text-slate-400'}`}>
-                                Bonus: +{mastery.value} {bonusType.toUpperCase()}
+                                Bonus: +{formatBonus(mastery.value, mastery.isPercent)} {formatType(bonusType)}
                             </span>
                         </div>
                     )}

@@ -8,9 +8,12 @@ export const WORLD_MAPS: GameMap[] = [
         description: 'พื้นที่สำหรับนักผจญภัยหน้าใหม่',
         minLevel: 1,
         bgEmoji: '🌱',
-        monsters: MONSTERS
-            .filter(m => m.level <= 4)
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-01'),
+            MONSTERS.find(m => m.id === 'm-02'),
+            MONSTERS.find(m => m.id === 'm-03'),
+            MONSTERS.find(m => m.id === 'm-04')
+        ].filter(Boolean),
     },
     {
         id: 'whispering-forest',
@@ -18,9 +21,11 @@ export const WORLD_MAPS: GameMap[] = [
         description: 'ป่าลึกที่เริ่มมีมอนสเตอร์ที่ดุร้ายและรวดเร็ว',
         minLevel: 5,
         bgEmoji: '🌲',
-        monsters: MONSTERS
-            .filter(m => m.level >= 5 && m.level <= 11)
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-05'),
+            MONSTERS.find(m => m.id === 'm-06'),
+            MONSTERS.find(m => m.id === 'm-07')
+        ].filter(Boolean),
     },
     {
         id: 'shadow-plains',
@@ -28,9 +33,13 @@ export const WORLD_MAPS: GameMap[] = [
         description: 'ทุ่งกว้างที่เต็มไปด้วยนักธนูและสัตว์อสูร',
         minLevel: 12,
         bgEmoji: '🏜️',
-        monsters: MONSTERS
-            .filter(m => m.level >= 12 && m.level <= 20)
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-09'),
+            MONSTERS.find(m => m.id === 'm-10'),
+            MONSTERS.find(m => m.id === 'm-11'),
+            MONSTERS.find(m => m.id === 'm-12'),
+            MONSTERS.find(m => m.id === 'm-13')
+        ].filter(Boolean),
     },
     {
         id: 'crystal-mountains',
@@ -38,9 +47,13 @@ export const WORLD_MAPS: GameMap[] = [
         description: 'ภูเขาสูงที่เต็มไปด้วยจอมเวทย์และสัตว์อสูรที่ทรงพลัง',
         minLevel: 21,
         bgEmoji: '⛰️',
-        monsters: MONSTERS
-            .filter(m => m.level >= 21 && m.level <= 30)
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-14'),
+            MONSTERS.find(m => m.id === 'm-15'),
+            MONSTERS.find(m => m.id === 'm-16'),
+            MONSTERS.find(m => m.id === 'm-17'),
+            MONSTERS.find(m => m.id === 'm-18')
+        ].filter(Boolean),
     },
     {
         id: 'inferno-wastelands',
@@ -48,9 +61,13 @@ export const WORLD_MAPS: GameMap[] = [
         description: 'ดินแดนที่ถูกเผาทำลายด้วยไฟและพลังมืด',
         minLevel: 31,
         bgEmoji: '🔥',
-        monsters: MONSTERS
-            .filter(m => m.level >= 31 && m.level <= 40)
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-19'),
+            MONSTERS.find(m => m.id === 'm-20'),
+            MONSTERS.find(m => m.id === 'm-21'),
+            MONSTERS.find(m => m.id === 'm-22'),
+            MONSTERS.find(m => m.id === 'm-23')
+        ].filter(Boolean),
     },
     {
         id: 'celestial-realm',
@@ -58,28 +75,37 @@ export const WORLD_MAPS: GameMap[] = [
         description: 'ดินแดนศักดิ์สิทธิ์ที่เต็มไปด้วยเทพและสัตว์อสูรสูงสุด',
         minLevel: 41,
         bgEmoji: '✨',
-        monsters: MONSTERS
-            .filter(m => m.level >= 41 && m.level <= 50)
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-24'),
+            MONSTERS.find(m => m.id === 'm-25'),
+            MONSTERS.find(m => m.id === 'm-26'),
+            MONSTERS.find(m => m.id === 'm-27'),
+            MONSTERS.find(m => m.id === 'm-28')
+        ].filter(Boolean),
     },
     {
-        id: 'ancient-ruins',
-        name: 'ซากปรักหักพังโบราณ',
-        description: 'สถานที่ลึกลับที่เต็มไปด้วยพลังงานด้านมืด',
-        minLevel: 50,
-        bgEmoji: '🏛️',
-        monsters: MONSTERS
-            .filter(m => (m.element === 'Dark' || m.element === 'Light') && !m.id.startsWith('boss'))
-            .sort((a, b) => a.level - b.level),
+        id: 'eternal-peaks',
+        name: 'ยอดเขานิรันดร์',
+        description: 'จุดสิ้นสุดของการผจญภัยที่เต็มไปด้วยความท้าทายสูงสุด',
+        minLevel: 46,
+        bgEmoji: '🏔️',
+        monsters: [
+            MONSTERS.find(m => m.id === 'm-29'),
+            MONSTERS.find(m => m.id === 'm-30'),
+            MONSTERS.find(m => m.id === 'm-31')
+        ].filter(Boolean),
     },
     {
         id: 'wizard-tower',
         name: 'วิหารจอมเวทย์',
-        description: 'ที่อยู่ของเหล่าจอมเวทย์',
-        minLevel: 30,
+        description: 'ที่อยู่ของเหล่าจอมเวทย์และบอสที่ทรงพลัง',
+        minLevel: 25,
         bgEmoji: '👑',
-        monsters: MONSTERS
-            .filter(m => m.id.startsWith('boss'))
-            .sort((a, b) => a.level - b.level),
+        monsters: [
+            MONSTERS.find(m => m.id === 'boss-02'),
+            MONSTERS.find(m => m.id === 'boss-03'),
+            MONSTERS.find(m => m.id === 'boss-04'),
+            MONSTERS.find(m => m.id === 'boss-05')
+        ].filter(Boolean),
     }
 ];

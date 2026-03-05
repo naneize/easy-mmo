@@ -1,7 +1,6 @@
 import { BattleLogger as Log } from "../../battleLogger";
 import { processTriggerSkills } from '../skillProcessor';
 import { initializeMonster } from '../../../data/monsters';
-import { getElementMultiplier } from '../../elementalLogic'; // อย่าลืม Import ฟังก์ชันธาตุมานะครับ
 import type { BattleLogEntry } from '../../../types/game';
 
 export const handlePlayerTurn = (
@@ -12,7 +11,9 @@ export const handlePlayerTurn = (
     monster: any,
     allEffects: any[],
     bonusStats: any,
-    maxHp: number
+    maxHp: number,
+    turn: number,
+    playerClass: any
 ) => {
     const turnLogs: BattleLogEntry[] = [];
     let currentPHp = p_hp;
@@ -20,11 +21,18 @@ export const handlePlayerTurn = (
 
     const initializedMonster = initializeMonster(monster);
 
-    // 1. Regen
-    if (bonusStats.regen_flat > 0 && currentPHp < maxHp) {
-        const heal = Math.min(maxHp - currentPHp, bonusStats.regen_flat);
-        currentPHp += heal;
-        turnLogs.push(Log.regen(heal, currentPHp));
+    // 1. Regen (ระบบใหม่ % Max HP)
+    const regenRate = bonusStats.regen_percent || 0;
+    if (regenRate > 0 && currentPHp < maxHp) {
+        // คำนวณเลือดที่จะฮีลจาก % ของ Max HP
+        const healAmt = Math.floor(maxHp * regenRate);
+        const actualHeal = Math.min(maxHp - currentPHp, healAmt);
+
+        if (actualHeal > 0) {
+            currentPHp += actualHeal;
+            // ใช้ Log.regen เหมือนเดิม หรือเขียน Text เองก็ได้ครับ
+            turnLogs.push(Log.regen(actualHeal, currentPHp));
+        }
     }
 
     // 2. Trigger Skills (on-hit)
@@ -32,19 +40,32 @@ export const handlePlayerTurn = (
         processTriggerSkills('on-hit', allEffects, player, monster, currentAtk);
     turnLogs.push(...triggerLogs);
 
+    const bloodlustActive = playerClass?.specialEffect?.id === 'bloodlust' && (currentPHp / Math.max(1, maxHp)) < 0.3;
+    const bloodlustAtk = bloodlustActive ? (currentAtk * 0.2) : 0;
+    if (bloodlustActive) {
+        turnLogs.push({ type: 'skill', text: `🔥 Bloodlust Activated! ATK +20%` } as any);
+    }
+
     // 3. Damage Calculation & Elemental System
     // 🎲 เพิ่ม Damage Variance ±10%
     const getVariance = () => 0.9 + (Math.random() * 0.2);
-    const elementMult = getElementMultiplier(player.element, monster.element);
+    const elementMult = 1;
 
     const effectiveMonsterDef = Math.floor(initializedMonster.def * (1 - bonusStats.armor_pen));
-    const rawDmg = Math.max((currentAtk + pExtraAtk) - effectiveMonsterDef, 1);
+    const rawDmg = Math.max(((currentAtk + bloodlustAtk) + pExtraAtk) - effectiveMonsterDef, 1);
 
-    // คำนวณดาเมจพื้นฐานที่รวมธาตุและ Variance แล้ว
+    // คำนวณดาเมจพื้นฐานที่รวม Variance แล้ว
     const calculateFinalHit = () => Math.floor(rawDmg * elementMult * getVariance());
 
     let pDmg = calculateFinalHit();
     const baseDmgForDouble = pDmg; // เก็บค่าไว้สำหรับ Double Attack (หรือจะสุ่มใหม่ก็ได้)
+
+    const arcaneEchoActive = playerClass?.specialEffect?.id === 'arcane-echo' && turn % 3 === 0;
+    const arcaneEchoMult = 1.3;
+    if (arcaneEchoActive) {
+        pDmg = Math.max(1, Math.floor(pDmg * arcaneEchoMult));
+        turnLogs.push({ type: 'skill', text: `✨ Arcane Echo Damage! (x${arcaneEchoMult})` } as any);
+    }
 
     // 4. Critical
     let isCrit = Math.random() < bonusStats.crit_chance;
@@ -59,7 +80,7 @@ export const handlePlayerTurn = (
 
     // 5. Life Steal (อิงจากดาเมจจริงที่ทำได้)
     if (bonusStats.lifesteal_percent > 0 && Math.random() <= (bonusStats.lifesteal_chance || 0)) {
-        const heal = Math.round(pDmg * (bonusStats.lifesteal_percent / 100));
+        const heal = Math.round(pDmg * bonusStats.lifesteal_percent);
         const actualHeal = Math.min(heal, maxHp - currentPHp);
         currentPHp += actualHeal;
         if (actualHeal > 0) {

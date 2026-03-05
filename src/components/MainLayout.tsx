@@ -1,14 +1,19 @@
 import type { ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigationStore } from '../store/navigation'
 import { GameNavigation } from './GameNavigation'
-import { ChevronRight, Heart, LayoutGrid, RotateCcw } from 'lucide-react' // 🚩 เพิ่ม RotateCcw
+import { RotateCcw } from 'lucide-react' // 🚩 เพิ่ม RotateCcw
 import { useGameStore } from '../store/useGameStore'
+import { useToastStore } from '../store/useToastStore'
+import { AchievementToast } from '../components/Achievements/AchievementToast'
+import { calculatePlayerClass } from '../utils/gameHelpers'
 
 
 const tabTitle: Record<string, string> = {
-  dashboard: 'Home Dashboard',
+  dashboard: 'Player Profile',
   adventure: 'World Adventure',
   skills: 'Passive Skills',
+  classes: 'Classes & Unlocks',
   achievements: 'Hall of Fame', // 🚩 ปรับให้ตรงกับ Achievement
   market: 'Trading Market',
   inventory: 'Equipment & Items',
@@ -17,7 +22,34 @@ const tabTitle: Record<string, string> = {
 export function MainLayout(props: { children?: ReactNode }) {
   const activeTab = useNavigationStore((s) => s.activeTab)
 
-  const { player, purchaseItem } = useGameStore();
+  const player = useGameStore((s) => s.player)
+  const purchaseItem = useGameStore((s) => s.purchaseItem)
+  const unlockedClasses = useGameStore((s) => s.unlockedClasses)
+  const markClassUnlocked = useGameStore((s) => s.markClassUnlocked)
+  const equippedSkills = useGameStore((s) => s.equippedSkills)
+  const { activeToast, setActiveToast } = useToastStore();
+
+  const prevClassIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const playerClass = calculatePlayerClass(equippedSkills);
+    const nextId = playerClass?.id ?? null;
+    const prevId = prevClassIdRef.current;
+    prevClassIdRef.current = nextId;
+
+    if (!nextId) return;
+    if (unlockedClasses.includes(nextId)) return;
+
+    markClassUnlocked(nextId);
+
+    if (prevId !== nextId) {
+      setActiveToast({
+        title: `ปลดล็อคอาชีพ: ${playerClass?.name ?? nextId}`,
+        desc: `สวมใส่สกิลครบเซตของอาชีพนี้แล้ว! ไปดูรายละเอียดที่หน้า Classes ได้เลย`,
+        badgeText: 'Class Unlocked'
+      });
+    }
+  }, [equippedSkills, markClassUnlocked, setActiveToast, unlockedClasses]);
   // --- START: DEBUG RESET FUNCTION (ลบส่วนนี้ออกได้เมื่อจบการพัฒนา) ---
   const handleDebugReset = () => {
     if (window.confirm('คุณต้องการรีเซ็ตข้อมูลเกมทั้งหมด (Gold, Level, Achievements) หรือไม่?')) {
@@ -31,18 +63,22 @@ export function MainLayout(props: { children?: ReactNode }) {
     <div className="min-h-dvh bg-slate-50/50">
       <GameNavigation />
 
+      {activeToast && (
+        <AchievementToast
+          title={activeToast.title}
+          description={activeToast.desc}
+          onClose={() => setActiveToast(null)}
+          badgeText={activeToast.badgeText}
+        />
+      )}
+
       <main className="transition-all duration-300 sm:pl-64">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-8">
 
           {/* --- Page Header Section --- */}
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                <LayoutGrid size={12} />
-                <span>Fantasy Engine v1.0</span>
-                <ChevronRight size={10} />
-                <span className="text-sky-500">{activeTab}</span>
-              </div>
+
               <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
                 {tabTitle[activeTab] ?? activeTab}
               </h1>

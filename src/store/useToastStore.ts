@@ -3,6 +3,7 @@ import { create } from 'zustand';
 interface ToastData {
     title: string;
     desc: string;
+    badgeText?: string;
 }
 
 interface ToastState {

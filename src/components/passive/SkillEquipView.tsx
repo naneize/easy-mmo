@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Plus, X, Sparkles, Filter, Activity, Swords, Shield } from 'lucide-react';
 import { useGameStore } from '../../store/useGameStore';
 import { SkillCard } from './SkillCard';
+import { calculatePlayerClass } from '../../utils/gameHelpers';
 
 export function SkillEquipView() {
     const { player, equipSkill, unequipSkill, getOwnedSkillsWithIcons, getEquippedSkillsWithIcons, unlockedSkills } = useGameStore();
@@ -11,6 +12,8 @@ export function SkillEquipView() {
     // Reconstruct skills with proper Icons
     const ownedSkillsWithIcons = getOwnedSkillsWithIcons();
     const equippedSkillsWithIcons = getEquippedSkillsWithIcons();
+
+    const playerClass = calculatePlayerClass(equippedSkillsWithIcons);
 
     const tabs = ['All', 'Fire', 'Water', 'Earth', 'Wind', 'Light', 'Dark', 'Neutral'];
 
@@ -41,11 +44,14 @@ export function SkillEquipView() {
             {/* Active Slots */}
             <div>
                 <div className="mb-6 text-sm font-black text-slate-800 flex items-center gap-2 uppercase tracking-widest">
-                    <div className="bg-indigo-500 w-2 h-6 rounded-full"></div> Active Slots (3 Max)
+                    <div className="bg-indigo-500 w-2 h-6 rounded-full"></div> Active Slots (4 Max)
+                    <div className={`ml-auto px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm ${playerClass ? 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                        Class: {playerClass ? playerClass.name : 'Novice'}
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                    {[0, 1, 2].map((idx) => {
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    {[0, 1, 2, 3].map((idx) => {
                         const skill = equippedSkillsWithIcons[idx];
 
                         // --- 1. กรณีสล็อตว่าง (Empty Slot) ---
@@ -142,7 +148,7 @@ export function SkillEquipView() {
                             skill={skill}
                             isSynergy={player.element === skill.element}
                             isEquipped={equippedSkillsWithIcons.some(s => s.id === skill.id)}
-                            disabled={equippedSkillsWithIcons.some(s => s.id === skill.id) || equippedSkillsWithIcons.length >= 3}
+                            disabled={equippedSkillsWithIcons.some(s => s.id === skill.id) || equippedSkillsWithIcons.length >= 4}
                             onClick={() => equipSkill(skill.id)}
                         />
                     ))}

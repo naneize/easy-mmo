@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 interface StatItemProps {
     icon: ReactNode;
     label: string;
-    value: number;
+    value: number | string;
     color: string;
 }
 

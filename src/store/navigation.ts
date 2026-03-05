@@ -4,6 +4,7 @@ export type GameTabId =
   | 'dashboard'
   | 'adventure'
   | 'skills'
+  | 'classes'
   | 'achievements'
   | 'market'
   | 'inventory';

@@ -39,6 +39,9 @@ interface GameState {
   lastBattleResult: BattleResultSummary | null
   monsterKills: Record<string, number>
 
+  unlockedClasses: string[]
+  markClassUnlocked: (classId: string) => void
+
   // --- Actions ---
   setElement: (newElement: ElementType) => void
   purchaseItem: (itemId: string) => void
@@ -139,10 +142,10 @@ export const useGameStore = create<GameState>()(
   persist(
     (set, get): GameState => ({
       player: {
-        hp: 100,
-        maxHp: 100,
-        atk: 15, // 15
-        def: 10, // 10
+        hp: 350,
+        maxHp: 350,
+        atk: 35, // 15
+        def: 20, // 10
         level: 1,
         lastElementChange: 0,
         gold: 1000,
@@ -156,16 +159,29 @@ export const useGameStore = create<GameState>()(
           armor: null,
           accessory: null,
         },
+        critChance: 0.05, // Default 5%
+        critDamage: 1.5, // Default 1.5x
       },
       monster: null as MonsterData | null,
       inventory: ['w_wooden_sword', 'a_leather_armor'] as string[],
       equipped: { weapon: null, armor: null, accessory: null } as GameState['equipped'],
       ownedSkills: INITIAL_SKILLS.map(s => ({ ...s, level: 1 })),
-      equippedSkills: [],
-      unlockedSkills: [] as string[],
+      equippedSkills: ['blade-dance', 'critical-strike', 'lifesteal-vamp', 'armor-penetration'].map(id => {
+        const skill = INITIAL_SKILLS.find(s => s.id === id);
+        return skill ? { ...skill, level: 1, unlocked: true } : null;
+      }).filter(Boolean) as Skill[], // เริ่มต้นมี 4 สกิลของ Berserker ใส่อยู่แล้ว
+      unlockedSkills: ['blade-dance', 'critical-strike', 'lifesteal-vamp', 'armor-penetration'] as string[],
       battleLogs: [],
       lastBattleResult: null as BattleResultSummary | null,
       monsterKills: {},
+
+      unlockedClasses: [],
+      markClassUnlocked: (classId) => {
+        set((state) => {
+          if (state.unlockedClasses.includes(classId)) return state;
+          return { unlockedClasses: [...state.unlockedClasses, classId] };
+        });
+      },
 
       // #region --- Computed Stats ---
       getDerivedStats: () => {
@@ -312,7 +328,8 @@ export const useGameStore = create<GameState>()(
       equipSkill: (skillId) => {
         const { equippedSkills, ownedSkills } = get()
         if (equippedSkills.some((s) => s.id === skillId)) return
-        if (equippedSkills.length >= 3) return
+        if (equippedSkills.length >= 4) return
+
         const skill = ownedSkills.find((s) => s.id === skillId)
         if (skill) set({ equippedSkills: [...equippedSkills, skill] })
       },
@@ -564,6 +581,7 @@ export const useGameStore = create<GameState>()(
         ownedSkills: state.ownedSkills,
         equippedSkills: state.equippedSkills,
         unlockedSkills: state.unlockedSkills,
+        unlockedClasses: state.unlockedClasses,
         monsterKills: state.monsterKills,
         lastBattleResult: state.lastBattleResult
       }),

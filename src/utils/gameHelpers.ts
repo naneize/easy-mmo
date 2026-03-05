@@ -1,21 +1,49 @@
 import type { MonsterData } from '../types/game';
+import { CLASS_DEFINITIONS } from '../data/classes';
+
 export const getMasteryBonus = (monster: MonsterData, killCount: number) => {
-    // บังคับให้ killCount เป็นตัวเลขแน่นอน
     const kills = Number(killCount || 0);
     const config = monster?.masteryBonus;
 
-    if (!config) return { type: 'none' as const, value: 0, tier: 0 };
+    if (!config) return { type: 'none' as const, value: 0, tier: 0, isPercent: false };
+
+    let tier = 0;
+    let finalValue = 0;
+    let isPercent = false;
 
     // คำนวณ Tier
-    let tier = 0;
     if (kills >= 100) tier = 3;
     else if (kills >= 50) tier = 2;
     else if (kills >= 10) tier = 1;
 
+    // --- ระบบ Balance Logic ---
+    if (tier === 3) {
+        isPercent = true;
+        // สูตร: (ค่าพื้นฐาน / 1000) 
+        // ตัวอย่าง: ถ้า valuePerTier คือ 100 จะได้ 0.1 (หรือ 10%)
+        // ตัวอย่าง: ถ้าสไลม์คือ 5 จะได้ 0.005 (หรือ 0.5%) ซึ่งสมดุลกับมอนสเตอร์เลเวลต่ำ
+        finalValue = config.valuePerTier / 1000;
+    } else {
+        isPercent = false;
+        // Tier 1 และ 2 ยังคงเป็น Flat เพื่อช่วยช่วงต้นเกม
+        finalValue = config.valuePerTier * tier;
+    }
+
     return {
         type: config.type,
-        // ใช้ชื่อ valuePerTier ให้ตรงกับ Interface
-        value: (config.valuePerTier || 0) * tier,
-        tier: tier
+        value: finalValue,
+        tier: tier,
+        isPercent: isPercent
     };
+};
+
+export const calculatePlayerClass = (equippedSkills: Array<{ id: string }> = []) => {
+    const equippedIds = new Set(equippedSkills.map(s => s.id));
+
+    for (const cls of CLASS_DEFINITIONS) {
+        const ok = cls.requiredSkills.every(id => equippedIds.has(id));
+        if (ok) return cls;
+    }
+
+    return null;
 };

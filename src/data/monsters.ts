@@ -19,22 +19,24 @@ export const ROLE_MULTIPLIERS: Record<MonsterRoleType, { hp: number; atk: number
     [MonsterRole.BOSS]: { hp: 3.0, atk: 1.4, def: 1.6, exp: 4.0 } // เพิ่มความยากของ Boss
 };
 
-// Base stat formulas (Linear Growth)
 export const calculateBaseStats = (level: number) => {
-    // ใช้ Math.pow(ตัวคูณ, level) เพื่อให้เลเวลสูงๆ สเตตัสพุ่งพรวด
-    const growthFactor = Math.pow(1.2, level - 1);
-
     return {
-        // เลเวล 1 จะได้ 60 | เลเวล 10 จะพุ่งไปประมาณ 300+
-        hp: Math.floor(60 * growthFactor + (level * 20)),
+        // เลเวล 1: 150 | เลเวล 50: ~5,500 (ผู้เล่นเวล 50 มี ~6,000)
+        // มอนสเตอร์จะเลือดน้อยกว่าผู้เล่นนิดหน่อย แต่จะได้ตัวคูณ Role มาช่วย
+        hp: Math.floor(40 + (level * 110)),
 
-        // เลเวล 1 จะได้ 8 | เลเวล 10 จะพุ่งไปประมาณ 40+
-        atk: Math.floor(8 * growthFactor + (level * 2)),
+        // เลเวล 1: 15 | เลเวล 50: ~650 (ผู้เล่นเวล 50 มี ~650)
+        // พลังโจมตีพื้นฐานจะพอๆ กับผู้เล่น
+        atk: Math.floor(5 + (level * 13)),
 
-        // เลเวล 1 จะได้ 2 | เลเวล 10 จะพุ่งไปประมาณ 15+
-        def: Math.floor(2 * growthFactor + (level * 1.5)),
+        // เลเวล 1: 5 | เลเวล 50: ~350 (ผู้เล่นเวล 50 มี ~330)
+        // ป้องกันใกล้เคียงผู้เล่น เพื่อให้การสู้กันกินเวลานิดนึง
+        def: Math.floor(0 + (level * 7)),
 
-        exp: Math.floor(20 * growthFactor + (level * 10))
+        // EXP: ให้สัมพันธ์กับ MaxExp ผู้เล่น (ที่ใช้สูตร 1.2 ยกกำลัง)
+        // เลเวล 1: 40 | เลเวล 10: 220 | เลเวล 50: 1020
+        // หมายความว่าช่วงแรกตบ 2-3 ตัวเวลอัป ช่วงหลังต้องตบเยอะขึ้นมาก
+        exp: Math.floor(20 + (level * 20))
     };
 };
 
@@ -49,7 +51,9 @@ export const initializeMonster = (monsterData: MonsterData) => {
         maxHp: Math.floor(baseStats.hp * multipliers.hp),
         atk: Math.floor(baseStats.atk * multipliers.atk),
         def: Math.floor(baseStats.def * multipliers.def),
-        exp: Math.floor(baseStats.exp * multipliers.exp)
+        exp: Math.floor(baseStats.exp * multipliers.exp),
+        critChance: monsterData.critChance || 0.03, // Default 3% for monsters
+        critDamage: monsterData.critDamage || 1.3, // Default 1.3x for monsters
     };
 };
 
@@ -60,12 +64,13 @@ export const MONSTERS: MonsterData[] = [
         id: 'm-01',
         name: 'สไลม์สดใส',
         description: 'ก้อนเยลลี่สีฟ้าที่ดูเป็นมิตร แต่ถ้าเผลอก็เจ็บได้',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 1,
         role: MonsterRole.NORMAL,
         gold: 20, exp: 0, // exp will be calculated
         element: 'Water',
-        masteryBonus: { type: 'maxHp', valuePerTier: 5 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 8 },
         droppedSkills: ['vitality-boost', 'calm-focus',]
     },
     {
@@ -73,11 +78,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'กระต่ายขี้โมโห',
         description: 'พุ่งชนด้วยความเร็วสูงจนโล่สะเทือน',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 3,
         role: MonsterRole.NORMAL,
         gold: 50, exp: 0, // exp will be calculated
         element: 'Wind',
-        masteryBonus: { type: 'atk', valuePerTier: 1 },
+        masteryBonus: { type: 'atk', valuePerTier: 5 },
         droppedSkills: ['tailwind-strike', 'gold-finder']
     },
     {
@@ -85,11 +91,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'หนอนลาวา',
         description: 'ความร้อนระอุที่ทะลุการป้องกัน',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 4,
         role: MonsterRole.NORMAL,
         gold: 70, exp: 0, // exp will be calculated
         element: 'Fire',
-        masteryBonus: { type: 'def', valuePerTier: 1 },
+        masteryBonus: { type: 'def', valuePerTier: 5 },
         droppedSkills: ['blazing-soul', 'fire-ember']
     },
 
@@ -100,11 +107,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'ผึ้งนักรบ',
         description: 'เหล็กไนรัวเร็วที่ต้องใช้ Aegis ป้องกันให้ทัน',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 5,
         role: MonsterRole.GLASS_CANNON,
         gold: 70, exp: 0, // exp will be calculated
         element: 'Wind',
-        masteryBonus: { type: 'atk', valuePerTier: 3 },
+        masteryBonus: { type: 'atk', valuePerTier: 5 },
         droppedSkills: ['aegis-guard', 'wind-dash']
     },
     {
@@ -112,6 +120,7 @@ export const MONSTERS: MonsterData[] = [
         name: 'จอมเวทวารี',
         description: 'ควบคุมกระแสน้ำเพื่อลดพลังป้องกันและฟื้นฟูตัวเอง',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 6,
         role: MonsterRole.NORMAL,
         gold: 100, exp: 0, // exp will be calculated
@@ -124,11 +133,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'โกเลมหินผา',
         description: 'กำแพงเดินได้ที่การโจมตีธรรมดาแทบไม่ระคายผิว',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 7,
         role: MonsterRole.TANK,
         gold: 150, exp: 0, // exp will be calculated
         element: 'Earth',
-        masteryBonus: { type: 'def', valuePerTier: 3 },
+        masteryBonus: { type: 'def', valuePerTier: 8 },
         droppedSkills: ['stone-skin', 'earth-wall']
     },
     {
@@ -136,11 +146,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'สไลม์เพลิงคลั่ง',
         description: 'โจมตีด้วยความร้อนแรงที่เผาไหม้ทุกอย่าง',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 7,
         role: MonsterRole.GLASS_CANNON,
         gold: 180, exp: 0, // exp will be calculated
         element: 'Fire',
-        masteryBonus: { type: 'atk', valuePerTier: 4 },
+        masteryBonus: { type: 'atk', valuePerTier: 8 },
         droppedSkills: ['fire-ember', 'blazing-soul']
     },
     {
@@ -148,6 +159,7 @@ export const MONSTERS: MonsterData[] = [
         name: 'อัศวินโลหะโบราณ',
         description: 'เกราะหนักที่ถูกทิ้งไว้ในซากปรากหักพัง โจมตีช้าแต่รุนแรง',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 8,
         role: MonsterRole.TANK,
         gold: 450, exp: 0, // exp will be calculated
@@ -162,11 +174,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'วิญญาณหลงทาง',
         description: 'การโจมตีที่รุนแรงและคาดเดาไม่ได้',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 8,
         role: MonsterRole.GLASS_CANNON,
         gold: 250, exp: 0, // exp will be calculated
         element: 'Dark',
-        masteryBonus: { type: 'maxHp', valuePerTier: 50 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 60 },
         droppedSkills: ['dark-pact', 'dark-corruption']
     },
     {
@@ -174,11 +187,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'อัศวินศักดิ์สิทธิ์',
         description: 'สมดุลทั้งรุกและรับด้วยพลังแห่งแสง',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 10,
         role: MonsterRole.NORMAL,
         gold: 500, exp: 0, // exp will be calculated
         element: 'Light',
-        masteryBonus: { type: 'def', valuePerTier: 6 },
+        masteryBonus: { type: 'def', valuePerTier: 10 },
         droppedSkills: ['holy-aura', 'light-blessing']
     },
 
@@ -188,11 +202,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'นักธนูแห่งเงา',
         description: 'ยิงศรพิษที่สามารถทะลุเกราะได้',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 12,
         role: MonsterRole.GLASS_CANNON,
         gold: 600, exp: 0, // exp will be calculated
         element: 'Dark',
-        masteryBonus: { type: 'atk', valuePerTier: 6 },
+        masteryBonus: { type: 'atk', valuePerTier: 10 },
         droppedSkills: ['armor-penetration', 'dark-corruption']
     },
     {
@@ -200,11 +215,12 @@ export const MONSTERS: MonsterData[] = [
         name: 'เสือธาตุ',
         description: 'สัตว์อสูรที่เร็วและดุร้ายด้วยพลังลม',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 14,
         role: MonsterRole.NORMAL,
         gold: 800, exp: 0, // exp will be calculated
         element: 'Wind',
-        masteryBonus: { type: 'atk', valuePerTier: 7 },
+        masteryBonus: { type: 'atk', valuePerTier: 12 },
         droppedSkills: ['tailwind-strike', 'blade-dance']
     },
 
@@ -212,36 +228,39 @@ export const MONSTERS: MonsterData[] = [
         id: 'm-14',
         name: 'ทหารมังกร',
         description: 'ทหารรับจ้างที่ถูกครอบงำด้วยพลังไฟ',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 16,
         role: MonsterRole.TANK,
         gold: 1000, exp: 0, // exp will be calculated
         element: 'Fire',
-        masteryBonus: { type: 'def', valuePerTier: 8 },
+        masteryBonus: { type: 'def', valuePerTier: 12 },
         droppedSkills: ['fire-ember', 'blazing-soul']
     },
     {
         id: 'm-15',
         name: 'แม่มดน้ำแข็ง',
         description: 'ผู้ควบคุมน้ำแข็งที่แช่แข็งทุกสิ่ง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 18,
         role: MonsterRole.NORMAL,
         gold: 1200, exp: 0, // exp will be calculated
         element: 'Water',
-        masteryBonus: { type: 'maxHp', valuePerTier: 80 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 90 },
         droppedSkills: ['water-purify', 'tidal-grace']
     },
     {
         id: 'm-16',
         name: 'ยักษ์หิน',
         description: 'ยักษ์โบราณที่มีพลังทำลายล้างสูง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 20,
         role: MonsterRole.TANK,
         gold: 1500, exp: 0, // exp will be calculated
         element: 'Earth',
-        masteryBonus: { type: 'def', valuePerTier: 12 },
+        masteryBonus: { type: 'def', valuePerTier: 15 },
         droppedSkills: ['earth-wall', 'stone-skin']
     },
 
@@ -250,43 +269,47 @@ export const MONSTERS: MonsterData[] = [
         id: 'm-17',
         name: 'จอมเวทย์แห่งความมืด',
         description: 'ผู้ใช้เวทมนตร์ด้านมืดที่ทรงพลัง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 22,
         role: MonsterRole.GLASS_CANNON,
         gold: 1800, exp: 0, // exp will be calculated
         element: 'Dark',
-        masteryBonus: { type: 'atk', valuePerTier: 15 },
+        masteryBonus: { type: 'atk', valuePerTier: 20 },
         droppedSkills: ['dark-pact', 'dark-corruption']
     },
     {
         id: 'm-18',
         name: 'นางพญาพายุ',
         description: 'ผู้ควบคุมพายุที่รุนแรง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 24,
         role: MonsterRole.NORMAL,
         gold: 2200, exp: 0, // exp will be calculated
         element: 'Wind',
-        masteryBonus: { type: 'maxHp', valuePerTier: 100 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 120 },
         droppedSkills: ['wind-dash', 'tailwind-strike']
     },
     {
         id: 'm-19',
         name: 'ราชาซาลาแมนเดอร์',
         description: 'สัตว์อสูรไฟที่เผาไหม้ทุกอย่าง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 26,
         role: MonsterRole.NORMAL,
         gold: 2800, exp: 0, // exp will be calculated
         element: 'Fire',
-        masteryBonus: { type: 'atk', valuePerTier: 18 },
+        masteryBonus: { type: 'atk', valuePerTier: 22 },
         droppedSkills: ['fire-ember', 'blazing-soul']
     },
     {
         id: 'm-20',
         name: 'ไททันน้ำ',
         description: 'ยักษ์น้ำที่มีพลังฟื้นฟูสูง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 28,
         role: MonsterRole.TANK,
         gold: 3500, exp: 0, // exp will be calculated
@@ -298,12 +321,13 @@ export const MONSTERS: MonsterData[] = [
         id: 'm-21',
         name: 'เทพผู้พิทักษ์',
         description: 'ผู้พิทักษ์โบราณที่มีพลังป้องกันสูง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 30,
         role: MonsterRole.TANK,
         gold: 4500, exp: 0, // exp will be calculated
         element: 'Light',
-        masteryBonus: { type: 'def', valuePerTier: 20 },
+        masteryBonus: { type: 'def', valuePerTier: 22 },
         droppedSkills: ['holy-aura', 'light-blessing']
     },
 
@@ -312,60 +336,65 @@ export const MONSTERS: MonsterData[] = [
         id: 'm-22',
         name: 'จอมเวทย์แห่งความตาย',
         description: 'ผู้ใช้เวทมนตร์มรณะที่อันตรายที่สุด',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 32,
         role: MonsterRole.GLASS_CANNON,
         gold: 5000, exp: 0, // exp will be calculated
         element: 'Dark',
-        masteryBonus: { type: 'atk', valuePerTier: 25 },
+        masteryBonus: { type: 'atk', valuePerTier: 30 },
         droppedSkills: ['armor-penetration', 'dark-pact']
     },
     {
         id: 'm-23',
         name: 'เทพแห่งสายลม',
         description: 'เทพแห่งลมที่เร็วกว่าสายตา',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 34,
         role: MonsterRole.GLASS_CANNON,
         gold: 6000, exp: 0, // exp will be calculated
         element: 'Wind',
-        masteryBonus: { type: 'atk', valuePerTier: 28 },
+        masteryBonus: { type: 'atk', valuePerTier: 32 },
         droppedSkills: ['critical-strike', 'wind-dash']
     },
     {
         id: 'm-24',
         name: 'จอมเวทย์แห่งไฟ',
         description: 'ผู้ควบคุมไฟที่เผาทำลายทุกสิ่ง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 36,
         role: MonsterRole.NORMAL,
         gold: 7000, exp: 0, // exp will be calculated
         element: 'Fire',
-        masteryBonus: { type: 'maxHp', valuePerTier: 200 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 220 },
         droppedSkills: ['fire-ember', 'lifesteal-vamp']
     },
     {
         id: 'm-25',
         name: 'ราชามหาสมุทร',
         description: 'ผู้ควบคุมมหาสมุทรที่กว้างใหญ่',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 38,
         role: MonsterRole.TANK,
         gold: 9000, exp: 0, // exp will be calculated
         element: 'Water',
-        masteryBonus: { type: 'maxHp', valuePerTier: 250 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 280 },
         droppedSkills: ['water-purify', 'lifesteal-vamp']
     },
     {
         id: 'm-26',
         name: 'ยักษ์พฤกษาโบราณ',
         description: 'ยักษ์พฤกษาที่มีพลังป้องกันสูงสุด',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 40,
         role: MonsterRole.TANK,
         gold: 12000, exp: 0, // exp will be calculated
         element: 'Earth',
-        masteryBonus: { type: 'def', valuePerTier: 35 },
+        masteryBonus: { type: 'def', valuePerTier: 28 },
         droppedSkills: ['earth-wall', 'armor-penetration']
     },
 
@@ -374,60 +403,65 @@ export const MONSTERS: MonsterData[] = [
         id: 'm-27',
         name: 'จอมเวทย์แห่งความว่าง',
         description: 'ผู้ใช้พลังความว่างที่ทำลายทุกสิ่ง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 42,
         role: MonsterRole.GLASS_CANNON,
         gold: 15000, exp: 0, // exp will be calculated
         element: 'Dark',
-        masteryBonus: { type: 'atk', valuePerTier: 40 },
+        masteryBonus: { type: 'atk', valuePerTier: 35 },
         droppedSkills: ['elemental-mastery', 'dark-pact']
     },
     {
         id: 'm-28',
         name: 'เทพแห่งพายุ',
         description: 'เทพแห่งพายุที่ควบคุมสภาพอากาศ',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 44,
         role: MonsterRole.GLASS_CANNON,
         gold: 18000, exp: 0, // exp will be calculated
         element: 'Wind',
-        masteryBonus: { type: 'atk', valuePerTier: 45 },
+        masteryBonus: { type: 'atk', valuePerTier: 38 },
         droppedSkills: ['elemental-mastery', 'critical-strike']
     },
     {
         id: 'm-29',
         name: 'จอมเวทย์แห่งนรก',
         description: 'ผู้ควบคุมไฟนรกที่เผาทำลายทุกสิ่ง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 46,
         role: MonsterRole.GLASS_CANNON,
         gold: 22000, exp: 0, // exp will be calculated
         element: 'Fire',
-        masteryBonus: { type: 'atk', valuePerTier: 50 },
+        masteryBonus: { type: 'atk', valuePerTier: 42 },
         droppedSkills: ['elemental-mastery', 'fire-ember']
     },
     {
         id: 'm-30',
         name: 'ราชามหาสมุทรลึก',
         description: 'ผู้ควบคุมมหาสมุทรลึกที่อุดมสมบูรณ์',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 48,
         role: MonsterRole.TANK,
         gold: 28000, exp: 0, // exp will be calculated
         element: 'Water',
-        masteryBonus: { type: 'maxHp', valuePerTier: 400 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 350 },
         droppedSkills: ['elemental-mastery', 'water-purify']
     },
     {
         id: 'm-31',
         name: 'ยักษ์พฤกษาศักดิ์สิทธิ์',
         description: 'ยักษ์พฤกษาที่มีพลังป้องกันสูงสุด',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 50,
         role: MonsterRole.TANK,
         gold: 35000, exp: 0, // exp will be calculated
         element: 'Light',
-        masteryBonus: { type: 'def', valuePerTier: 60 },
+        masteryBonus: { type: 'def', valuePerTier: 50 },
         droppedSkills: ['elemental-mastery', 'holy-aura']
     },
 
@@ -436,7 +470,8 @@ export const MONSTERS: MonsterData[] = [
         id: 'boss-02',
         name: 'จอมเวทย์แห่งความตาย',
         description: 'บอสแห่งความตายที่มีพลังทำลายล้างสูง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 25,
         role: MonsterRole.BOSS,
         gold: 8000, exp: 0, // exp will be calculated
@@ -448,7 +483,8 @@ export const MONSTERS: MonsterData[] = [
         id: 'boss-03',
         name: 'จอมเวทย์แห่งไฟ',
         description: 'บอสแห่งไฟที่เผาทำลายทุกสิ่ง',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 35,
         role: MonsterRole.BOSS,
         gold: 18000, exp: 0, // exp will be calculated
@@ -460,7 +496,8 @@ export const MONSTERS: MonsterData[] = [
         id: 'boss-04',
         name: 'จอมเวทย์แห่งนรก',
         description: 'บอสแห่งนรกที่อันตรายที่สุด',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 45,
         role: MonsterRole.BOSS,
         gold: 25000, exp: 0, // exp will be calculated
@@ -472,7 +509,8 @@ export const MONSTERS: MonsterData[] = [
         id: 'boss-05',
         name: 'จอมเวทย์แห่งความว่างเปล่า',
         description: 'บอสสุดท้ายที่มีพลังทำลายล้างสูงสุด',
-        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated by initializeMonster()
+        hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
+        critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 50,
         role: MonsterRole.BOSS,
         gold: 35000, exp: 0, // exp will be calculated

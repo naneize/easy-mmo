@@ -5,9 +5,10 @@ interface AchievementToastProps {
     title: string;
     description: string;
     onClose: () => void;
+    badgeText?: string;
 }
 
-export function AchievementToast({ title, description, onClose }: AchievementToastProps) {
+export function AchievementToast({ title, description, onClose, badgeText }: AchievementToastProps) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -15,10 +16,10 @@ export function AchievementToast({ title, description, onClose }: AchievementToa
         const showTimeout = setTimeout(() => setIsVisible(true), 100);
 
         // เริ่มหายไปหลังจาก 2 วินาที
-        const hideTimeout = setTimeout(() => setIsVisible(false), 2000);
+        const hideTimeout = setTimeout(() => setIsVisible(false), 2500);
 
         // ปิด Component หลังจากหายไปแล้ว (แอนิเมชันจบ)
-        const closeTimeout = setTimeout(onClose, 1500);
+        const closeTimeout = setTimeout(onClose, 3500);
 
         return () => {
             clearTimeout(showTimeout);
@@ -51,7 +52,7 @@ export function AchievementToast({ title, description, onClose }: AchievementToa
                     {/* Text Section */}
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em] mb-0.5">Achievement Unlocked</span>
+                            <span className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em] mb-0.5">{badgeText ?? 'Achievement Unlocked'}</span>
                         </div>
                         <h4 className="text-white font-black text-lg leading-tight tracking-tight uppercase">
                             {title}

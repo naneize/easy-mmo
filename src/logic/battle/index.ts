@@ -14,7 +14,7 @@ export const simulateBattle = (
 
     // #region --- [SETUP] ---
     const context = prepareBattleContext(player, monster, equippedSkills, killCount);
-    const { allEffects, bonusStats, baseEffectiveAtk, mElementMult, mastery, constantSkillLogs } = context;
+    const { allEffects, bonusStats, baseEffectiveAtk, baseEffectiveDef, baseEffectiveMaxHp, mElementMult, mastery, constantSkillLogs, pElementMult } = context;
 
     // คำนวณ stats จากระบบใหม่
     const initializedMonster = initializeMonster(monster);
@@ -25,8 +25,6 @@ export const simulateBattle = (
     let turn = 1;
 
     logs.push(Log.start(monster.name, initializedMonster.hp));
-
-    const { pElementMult } = context;
 
     // ✅ แก้ไข: ส่ง pElementMult พร้อมด้วยธาตุของผู้เล่นและมอนสเตอร์
     // ตรวจสอบชื่อ property ให้ดี (น่าจะเป็น player.element และ monster.element)
@@ -57,8 +55,11 @@ export const simulateBattle = (
             baseEffectiveAtk,
             player, monster,
             allEffects, bonusStats,
-            player.maxHp
+            baseEffectiveMaxHp,
+            turn,
+            context.playerClass
         );
+
         p_hp = pPhase.p_hp;
         m_hp = pPhase.m_hp;
         logs.push(...pPhase.logs);
@@ -66,16 +67,18 @@ export const simulateBattle = (
         if (m_hp <= 0 || p_hp <= 0) break;
 
         // 2. Monster Turn
-        const currentDef = Math.max(0, player.def + bonusStats.def_flat);
         const mPhase = handleMonsterTurn(
             p_hp,
             m_hp,
             initializedMonster.atk * mElementMult,
-            currentDef,
+            baseEffectiveDef,
             player,
             monster,
-            allEffects
+            allEffects,
+            bonusStats,
+            context.playerClass
         );
+
         p_hp = mPhase.p_hp;
         m_hp = mPhase.m_hp;
         logs.push(...mPhase.logs);
@@ -98,7 +101,7 @@ export const simulateBattle = (
 
         finalGold = baseGold;
 
-        if (goldFinderSkill) {
+        if (goldFinderSkill && 'level' in goldFinderSkill) {
             // 1. คำนวณ % ตามเลเวล (Lv.1 = 0.10, Lv.2 = 0.12...)
             const bonusPercent = 0.10 + ((goldFinderSkill.level - 1) * 0.02);
 

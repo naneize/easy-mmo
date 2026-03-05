@@ -7,26 +7,30 @@ interface StatCardProps {
     label: string;
     value: string | number;
     bonus?: number;
-    baseValue?: number;
-    color: 'rose' | 'amber' | 'emerald' | 'sky';
+    baseValue?: string | number;
+    color: 'rose' | 'amber' | 'emerald' | 'sky' | 'red' | 'orange';
     isRegen?: boolean;
     onElementClick?: () => void;
 }
 
-// 🎨 ปรับสีพื้นหลังให้เข้มขึ้น (Level 100) เพื่อให้เห็นสีชัดเจน ไม่ซีดเหมือนสีขาว
+// ปรับสีพื้นหลังให้เข้มขึ้น (Level 100) เพื่อให้เห็นสีชัดเจน ไม่ซีดเหมือนสีขาว
 const bgColors = {
     rose: 'bg-rose-100',
     amber: 'bg-amber-100',
     emerald: 'bg-emerald-100',
-    sky: 'bg-sky-100'
+    sky: 'bg-sky-100',
+    red: 'bg-red-100',
+    orange: 'bg-orange-100'
 };
 
-// 🖋️ ใช้เส้นขอบสีที่เข้มกว่าพื้นหลัง เพื่อสร้างมิติให้การ์ดดูไม่แบน
+// ใช้เส้นขอบสีที่เข้มกว่าพื้นหลัง เพื่อสร้างมิติให้การ์ดดูไม่แบน
 const borderColors = {
     rose: 'border-rose-200',
     amber: 'border-amber-200',
     emerald: 'border-emerald-200',
-    sky: 'border-sky-200'
+    sky: 'border-sky-200',
+    red: 'border-red-200',
+    orange: 'border-orange-200'
 };
 
 export function StatCard({ icon, label, value, baseValue, bonus, color, isRegen, onElementClick }: StatCardProps) {
@@ -84,7 +88,18 @@ export function StatCard({ icon, label, value, baseValue, bonus, color, isRegen,
                         <div className="text-[10px] font-bold text-slate-500/60 tracking-tight bg-white/30 px-1.5 py-0.5 rounded-lg border border-white/20">
                             {baseValue}
                             <span className={bonus >= 0 ? 'text-emerald-600' : 'text-orange-600'}>
-                                {bonus >= 0 ? ` +${bonus}` : ` -${Math.abs(bonus)}`}
+                                {(() => {
+                                    const isPercentStat = label.toLowerCase().includes('crit') || label.toLowerCase().includes('lifesteal');
+
+                                    if (isPercentStat) {
+                                        // แปลง 0.05 เป็น 5%
+                                        const percentBonus = Math.abs(bonus * 100).toFixed(0);
+                                        return bonus >= 0 ? ` +${percentBonus}%` : ` -${percentBonus}%`;
+                                    }
+
+                                    // ถ้าไม่ใช่ค่า % ให้แสดงแบบปกติ (เช่น +50)
+                                    return bonus >= 0 ? ` +${bonus}` : ` -${Math.abs(bonus)}`;
+                                })()}
                             </span>
                         </div>
                     )}

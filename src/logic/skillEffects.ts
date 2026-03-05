@@ -8,7 +8,7 @@ interface SkillContext {
 }
 
 interface SkillResult {
-    value: number;
+    value?: number;
     chance?: number;
     log?: string;
     atkMod?: number;
@@ -17,7 +17,10 @@ interface SkillResult {
     defPercent?: number;
     hpMod?: number;
     hpPercent?: number;
+    regen_percent?: number;
     lifesteal?: number;
+    critChance?: number;
+    critDamage?: number;
     action?: string;
 }
 
@@ -57,24 +60,23 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const baseAtkPercent = isSynergy ? 0.35 : 0.20;
         const atkPercent = baseAtkPercent + ((level - 1) * 0.03);
 
-        const displayAtkBonus = Math.floor(player.atk * atkPercent);
-
         return {
             value: 0,
             atkPercent: atkPercent,
-            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}⚔️ Blade Dance Lv.${level} ATK +${displayAtkBonus} (${Math.round(atkPercent * 100)}%)`,
+            log: `${isSynergy ? '⚪ [Synergy] ' : ''}⚔️ Blade Dance Lv.${level} ATK +${Math.round(atkPercent * 100)}%`
         };
     },
 
     'calm-focus': ({ player, level }) => {
         const isSynergy = player.element === 'Neutral';
-        const baseHeal = isSynergy ? 10 : 5;
-        const healAmt = baseHeal + ((level - 1) * 2);
-        const hpPercent = ((healAmt / player.maxHp) * 100).toFixed(1);
+        const basePercent = isSynergy ? 0.02 : 0.01;
+        const regenPercent = basePercent + ((level - 1) * 0.005);
 
+        // เราไม่คำนวณ healAmt ในนี้แล้ว แต่ส่ง % ออกไปให้ระบบจัดการ
         return {
-            value: healAmt,
-            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}✨ Calm Focus Lv.${level} ฟื้นฟู +${healAmt} HP (${hpPercent}%)`
+            value: 0,
+            regen_percent: regenPercent, // ส่งค่า 0.02 หรือ 0.015 ออกไป
+            log: `${isSynergy ? '⚪ [Neutral Synergy] ' : ''}✨ Calm Focus Lv.${level} ฟื้นฟู ${(regenPercent * 100).toFixed(1)}% ของ HP สูงสุด`
         };
     },
 
@@ -96,13 +98,7 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         return {
             value: 0,
             atkPercent: bonusMult,
-            // ส่งค่าเปรียบเทียบไปให้ UI
-            displayStats: {
-                atk: normalAtk,
-                synergyAtk: synergyAtk,
-                isSynergy: isSynergy
-            },
-            log: `${isSynergy ? '🔥 [Blazing Synergy]' : '🔥 [Blazing Soul]'} Lv.${level} » ATK +${Math.floor(player.atk * bonusMult)} (+${(bonusMult * 100).toFixed(1)}%)`
+            log: `${isSynergy ? '🔥 [Synergy] ' : ''}🔥 Blazing Soul Lv.${level} ATK +${Math.round(bonusMult * 100)}%`
         };
     },
 
@@ -119,13 +115,13 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
 
     'stone-skin': ({ player, level }) => {
         const isSynergy = player.element === 'Earth';
-        const scalingBonus = Math.floor((level - 1) * 4);
-        const defBonus = (isSynergy ? 25 : 10) + scalingBonus;
+        const baseDefPercent = isSynergy ? 0.25 : 0.10;
+        const defPercent = baseDefPercent + ((level - 1) * 0.03);
 
         return {
             value: 0,
-            defMod: defBonus,
-            log: `${isSynergy ? '🌱 [Stone Synergy]' : '🌱 [Stone Skin]'} Lv.${level} DEF +${defBonus}`
+            defPercent: defPercent,
+            log: `${isSynergy ? '🌱 [Synergy] ' : ''}🛡️ Stone Skin Lv.${level} DEF +${Math.round(defPercent * 100)}%`
         };
     },
 
@@ -156,14 +152,14 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
 
     'dark-pact': ({ player, level }) => {
         const isSynergy = player.element === 'Dark';
-        const atkBonus = 30 + ((level - 1) * 5);
-        const defPenalty = !isSynergy ? -(10 + (level - 1) * 2) : 0;
+        const atkPercent = 0.30 + ((level - 1) * 0.03);
+        const defPenaltyPercent = !isSynergy ? 0.10 + ((level - 1) * 0.02) : 0;
 
         return {
             value: 0,
-            atkMod: atkBonus,
-            defMod: defPenalty,
-            log: `${isSynergy ? '🌙 [Dark Synergy]' : '🌙 [Dark Pact]'} Lv.${level} ATK +${atkBonus}${!isSynergy ? ` (DEF ${defPenalty})` : ''}`
+            atkPercent: atkPercent,
+            defPercent: -defPenaltyPercent,
+            log: `${isSynergy ? '🌙 [Synergy] ' : ''}🌙 Dark Pact Lv.${level} ATK +${Math.round(atkPercent * 100)}%${!isSynergy ? ` (DEF -${Math.round(defPenaltyPercent * 100)}%)` : ''}`
         };
     },
 
@@ -173,13 +169,13 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
 
     'vitality-boost': ({ player, level }) => {
         const isSynergy = player.element === 'Neutral';
-        const baseHp = 15 + ((level - 1) * 10);
-        const hpBonus = isSynergy ? (baseHp * 2) : baseHp;
+        const baseHpPercent = 0.15 + ((level - 1) * 0.02);
+        const hpPercent = isSynergy ? baseHpPercent * 2 : baseHpPercent;
 
         return {
             value: 0,
-            hpMod: hpBonus,
-            log: `❤️ Vitality Boost Lv.${level} Max HP +${hpBonus}${isSynergy ? ' (Neutral Bonus!)' : ''}`
+            hpPercent: hpPercent,
+            log: `${isSynergy ? '⚪ [Synergy] ' : ''}❤️ Vitality Boost Lv.${level} Max HP +${Math.round(hpPercent * 100)}%`
         };
     },
 
@@ -220,22 +216,20 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
 
         return {
             value: healAmount,
-            hpMod: 0, // ปรับเป็น 0 เพราะเป็นการ Heal ไม่ใช่เพิ่ม MaxHP ถาวร
-            log: `${isSynergy ? '💧 [Water Synergy]' : '💧 [Water Purify]'} Lv.${level} ฟื้นฟู +${healAmount} HP และลบสถานะผิดปกติ`
+            log: `${isSynergy ? '💧 [Synergy] ' : ''}💧 Water Purify Lv.${level} ฟื้นฟู +${healAmount} HP (${Math.round(healPercent * 100)}%) และลบสถานะผิดปกติ`
         };
     },
 
     'earth-wall': ({ player, level }) => {
         const isSynergy = player.element === 'Earth';
         const defPercent = 0.20 + ((level - 1) * 0.02);
-        const displayDefBonus = Math.floor(player.def * defPercent);
         const atkPenaltyPercent = !isSynergy ? 0.05 : 0;
 
         return {
             value: 0,
             defPercent: defPercent,
             atkPercent: -atkPenaltyPercent,
-            log: `${isSynergy ? '🌱 [Earth Synergy]' : '🌱 [Earth Wall]'} Lv.${level} DEF +${displayDefBonus}${!isSynergy ? ` (ATK -${Math.floor(player.atk * 0.05)})` : ''}`
+            log: `${isSynergy ? '🌱 [Synergy] ' : ''}🛡️ Earth Wall Lv.${level} DEF +${Math.round(defPercent * 100)}%${!isSynergy ? ` (ATK -${Math.round(atkPenaltyPercent * 100)}%)` : ''}`
         };
     },
 
@@ -243,13 +237,13 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const isSynergy = player.element === 'Wind';
         const baseChance = isSynergy ? 0.30 : 0.20;
         const chance = baseChance + ((level - 1) * 0.02);
-        const counterDamage = Math.floor(player.atk * 0.50);
+        const counterDamagePercent = 0.50;
 
         return {
             action: 'counter',
             chance: chance,
-            value: counterDamage,
-            log: `${isSynergy ? '🌪️ [Wind Synergy]' : '🌪️ [Wind Dash]'} Lv.${level} โอกาสหลบ ${Math.round(chance * 100)}% | สวนกลับ ${Math.round(0.50 * 100)}% ATK`
+            value: counterDamagePercent * 100,
+            log: `${isSynergy ? '🌪️ [Synergy] ' : ''}💨 Wind Dash Lv.${level} โอกาสหลบ ${Math.round(chance * 100)}% | สวนกลับ ${Math.round(counterDamagePercent * 100)}% ATK`
         };
     },
 
@@ -258,12 +252,11 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const healPercent = 0.05 + ((level - 1) * 0.01);
         const atkPercent = (isSynergy ? 0.15 : 0.10) + ((level - 1) * 0.01);
         const healAmount = Math.floor(player.maxHp * healPercent);
-        const displayAtkBonus = Math.floor(player.atk * atkPercent);
 
         return {
             value: healAmount,
             atkPercent: atkPercent,
-            log: `${isSynergy ? '☀️ [Light Synergy]' : '☀️ [Light Blessing]'} Lv.${level} ฟื้นฟู +${healAmount} HP/เทิร์น ATK +${displayAtkBonus}`
+            log: `${isSynergy ? '☀️ [Synergy] ' : ''}☀️ Light Blessing Lv.${level} ฟื้นฟู +${healAmount} HP/เทิร์น ATK +${Math.round(atkPercent * 100)}%`
         };
     },
 
@@ -271,12 +264,11 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         const isSynergy = player.element === 'Dark';
         const enemyDefReduction = 0.15 + ((level - 1) * 0.01);
         const hpPenaltyPercent = !isSynergy ? (0.03 + (level - 1) * 0.01) : 0;
-        const hpPenaltyFlat = Math.floor(player.maxHp * hpPenaltyPercent);
 
         return {
-            value: -enemyDefReduction,
-            hpMod: -hpPenaltyFlat,
-            log: `${isSynergy ? '🌙 [Dark Synergy]' : '🌙 [Dark Corruption]'} Lv.${level} ลด DEF ศัตรู ${Math.round(enemyDefReduction * 100)}%${!isSynergy ? ` (เสีย HP -${hpPenaltyFlat}/เทิร์น)` : ''}`
+            value: -enemyDefReduction * 100,
+            hpPercent: -hpPenaltyPercent,
+            log: `${isSynergy ? '🌙 [Synergy] ' : ''}🌙 Dark Corruption Lv.${level} ลด DEF ศัตรู ${Math.round(enemyDefReduction * 100)}%${!isSynergy ? ` (เสีย HP -${Math.round(hpPenaltyPercent * 100)}%/เทิร์น)` : ''}`
         };
     },
 
@@ -292,6 +284,14 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         };
     },
 
+    'critical-mastery': ({ level }) => {
+        const damageBonus = 0.20 + ((level - 1) * 0.05);
+        return {
+            value: damageBonus * 100,
+            log: `⚡ Critical Mastery Lv.${level} เพิ่มความเสียหาย Critical +${Math.round(damageBonus * 100)}%`
+        };
+    },
+
     'lifesteal-vamp': ({ level }) => {
         const lifestealPercent = 0.15 + ((level - 1) * 0.02);
         const triggerChance = 0.30;
@@ -303,15 +303,14 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
         };
     },
 
-    'armor-penetration': ({ player, level }) => {
+    'armor-penetration': ({ level }) => {
         const penetrationPercent = 0.30 + ((level - 1) * 0.02);
         const atkPenaltyPercent = 0.10;
-        const displayAtkPenalty = Math.floor(player.atk * atkPenaltyPercent);
 
         return {
             value: penetrationPercent * 100,
             atkPercent: -atkPenaltyPercent,
-            log: `⚔️ Armor Penetration Lv.${level} ทะลุ DEF ${Math.round(penetrationPercent * 100)}% (ATK -${displayAtkPenalty})`
+            log: `⚔️ Armor Penetration Lv.${level} ทะลุ DEF ${Math.round(penetrationPercent * 100)}% (ATK -${Math.round(atkPenaltyPercent * 100)}%)`
         };
     },
 
@@ -334,7 +333,7 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
                 atkPercent: nAtk,
                 defPercent: nDef,
                 hpPercent: nHp,
-                log: `👑 [Elemental Mastery] = (Neutral): พลังไร้ธาตุขั้นสุดยอด! (ATK +${Math.round(nAtk * 100)}% / DEF +${Math.round(nDef * 100)}% / HP +${Math.round(nHp * 100)}%)`
+                log: `👑[Elemental Mastery] (Neutral): พลังไร้ธาตุขั้นสุดยอด!(ATK + ${Math.round(nAtk * 100)} % / DEF +${Math.round(nDef * 100)}% / HP + ${Math.round(nHp * 100)} %)`
             };
         }
 
@@ -343,7 +342,7 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             atkPercent: atkPercent,
             defPercent: defPercent,
             hpPercent: hpPercent,
-            log: `👑 [Elemental Mastery] (${player.element}): ATK +${Math.round(atkPercent * 100)}% | DEF +${Math.round(defPercent * 100)}% | HP +${Math.round(hpPercent * 100)}%`
+            log: `👑[Elemental Mastery](${player.element}): ATK + ${Math.round(atkPercent * 100)}% | DEF + ${Math.round(defPercent * 100)}% | HP + ${Math.round(hpPercent * 100)}% `
         };
     },
 

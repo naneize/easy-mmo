@@ -6,7 +6,7 @@ export type SkillTier = 'common' | 'rare' | 'epic' | 'legendary';
 // --- สเตตัสเป้าหมาย ---
 export type StatTarget =
     | 'atk_percent' | 'atk_flat' | 'def_flat' | 'def_percent'
-    | 'hp_percent' | 'maxHp_flat' | 'maxHp_percent' | 'regen_flat'
+    | 'hp_percent' | 'maxHp_flat' | 'maxHp_percent' | 'regen_flat' | 'regen_percent'
     | 'dmg_reduction' | 'lifesteal' | 'lifesteal_percent' | 'multiple'
     | 'chance_boost' | 'crit_chance' | 'crit_multi' | 'armor_pen';
 
@@ -79,6 +79,8 @@ interface BaseEntity {
     def: number;
     level: number;
     element: ElementType;
+    critChance: number;
+    critDamage: number;
 }
 
 // --- ผู้เล่น (Entity) ---
@@ -118,6 +120,7 @@ export interface BattleLogEntry {
     icon?: string;
     playerElem?: string;
     monsterElem?: string;
+    isCrit?: boolean;
 }
 
 // ✨ เพิ่ม Union Type เพื่อใช้ใน Engine แทน any[]

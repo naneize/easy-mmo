@@ -1,4 +1,5 @@
 import type { ElementType } from '../types/game';
+import type { ClassDefinition } from '../data/classes';
 
 // ✅ ประกาศค่ากลางไว้ที่นี่ เพื่อให้แก้จุดเดียวจบ
 const ADVANTAGE_BASE = 1.25;      // จากเดิม 1.5 (ปรับลดลงมาหน่อยแต่ยังรู้สึกว่าชนะธาตุอยู่)
@@ -30,6 +31,21 @@ export const ELEMENT_CHART: Record<ElementType, Partial<Record<ElementType, numb
     Neutral: {},
 };
 
-export const getElementMultiplier = (attacker: ElementType, defender: ElementType): number => {
-    return ELEMENT_CHART[attacker]?.[defender] || 1.0;
+export const getElementMultiplier = (
+    attacker: ElementType,
+    defender: ElementType,
+    playerClass?: ClassDefinition
+): number => {
+    const baseMultiplier = ELEMENT_CHART[attacker]?.[defender] || 1.0;
+
+    // Mage advantage: if player is Mage and has elemental advantage, use 1.8x instead of base
+    if (
+        playerClass?.id === 'mage' &&
+        baseMultiplier > 1.0 &&
+        typeof playerClass.elementAffinity?.advantageMultiplier === 'number'
+    ) {
+        return playerClass.elementAffinity.advantageMultiplier;
+    }
+
+    return baseMultiplier;
 };

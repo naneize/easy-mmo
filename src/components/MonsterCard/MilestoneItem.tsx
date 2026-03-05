@@ -1,20 +1,29 @@
 import { CheckCircle2 } from 'lucide-react'
 import type { MonsterData } from '../../types/game'
+import { getMasteryBonus } from '../../utils/gameHelpers'
 
 interface MilestoneItemProps {
     goal: number;
     currentKills: number;
     monster: MonsterData;
-    tierMultiplier: number;
 }
 
-export function MilestoneItem({ goal, currentKills, monster, tierMultiplier }: MilestoneItemProps) {
+export function MilestoneItem({ goal, currentKills, monster }: MilestoneItemProps) {
     const isReached = currentKills >= goal
-    const baseVal = monster.masteryBonus?.valuePerTier ?? 0
+
+    // ใช้ getMasteryBonus เพื่อคำนวณค่าที่ถูกต้องตาม tier
+    const mastery = getMasteryBonus(monster, goal)
+    const bonusAmount = mastery.value
+    const isPercent = mastery.isPercent
     const rawType = monster.masteryBonus?.type ?? 'Stat'
-    const bonusAmount = baseVal * tierMultiplier
 
     const formatType = (type: string) => (type === 'maxHp' ? 'HP' : type.toUpperCase());
+    const formatBonus = (value: number, isPercent: boolean) => {
+        if (isPercent) {
+            return `${(value * 100).toFixed(1)}%`
+        }
+        return value.toString()
+    }
 
     return (
         <div className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${isReached ? 'bg-emerald-50 border-emerald-200 shadow-sm' : 'bg-white border-slate-100 opacity-60'
@@ -35,7 +44,7 @@ export function MilestoneItem({ goal, currentKills, monster, tierMultiplier }: M
             </div>
             <div className={`text-[11px] font-black px-3 py-1 rounded-lg ${isReached ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'
                 }`}>
-                +{bonusAmount} {formatType(rawType)}
+                +{formatBonus(bonusAmount, isPercent)} {formatType(rawType)}
             </div>
         </div>
     )
