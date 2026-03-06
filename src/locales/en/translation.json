@@ -24,7 +24,6 @@
     "dashboard": "Dashboard",
     "market": "Market",
     "skills": "Skills",
-    "newSkillUnlocked": "You've unlocked a new skill from",
     "equipped_skills": "Equipped Skills",
     "recent_battle_logs": "Recent Battle Logs",
     "no_skills_equipped": "No skills equipped",
@@ -540,6 +539,7 @@
     "bloodlustActivated": "🔥 Bloodlust Activated! ATK +20%",
     "arcaneEchoDamage": "✨ Arcane Echo Damage! (x{{mult}})",
     "thornsReflected": "🌿 Thorns Reflected! {{dmg}} DMG",
-    "damageReduction": "🛡️ Damage Reduced {{percent}}% (-{{amount}})"
+    "damageReduction": "🛡️ Damage Reduced {{percent}}% (-{{amount}})",
+    "newSkillUnlocked": "Congrats! You unlocked [{{skill}}] from {{monster}} (Drop chance: {{dropChance}}%)"
   }
 }

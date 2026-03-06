@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { StatItem } from './StatItem'
 import { MasteryDetailsModal } from './MasteryDetailsModal'
 import { DropDetailModal } from './DropDetailModal';
+import { MonsterSkillModal } from './MonsterSkillModal';
 
 
 
@@ -32,6 +33,7 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
     const { t } = useTranslation()
     const [showMasteryModal, setShowMasteryModal] = useState(false)
     const [showDropModal, setShowDropModal] = useState(false);
+    const [showSkillModal, setShowSkillModal] = useState(false);
 
     const kills = monsterKills[monster.id] || 0
     const mastery = getMasteryBonus(monster, kills)
@@ -94,13 +96,6 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
 
 
 
-                {/* 4. เรียกใช้ Modal */}
-                {showDropModal && (
-                    <DropDetailModal
-                        monster={monster}
-                        onClose={() => setShowDropModal(false)}
-                    />
-                )}
 
                 {/* Header Info */}
                 <div className="flex justify-between items-start mb-4 relative z-10">
@@ -138,18 +133,32 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                     </div>
                 </div>
 
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setShowDropModal(true);
-                    }}
-                    // เพิ่ม justify-center และปรับ w-full (ถ้าอยากให้เต็มกรอบ) หรือกำหนดความกว้างคงที่
-                    className="flex items-center justify-center gap-1.5 px-3 py-1.5 w-full rounded-xl bg-amber-50 text-amber-500 hover:bg-amber-100 transition-all shadow-sm border border-amber-200 group/btn"
-                    title="View Drops"
-                >
-                    <Gift size={12} className="group-hover/btn:scale-110 transition-transform flex-shrink-0" />
-                    <span className="text-[10px] font-black uppercase tracking-tight">View Drop</span>
-                </button>
+                <div className="flex gap-2 mb-4"> {/* ใส่ flex gap เพื่อวางคู่กัน */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDropModal(true);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-500 hover:bg-amber-100 transition-all shadow-sm border border-amber-200 group/btn"
+                    >
+                        <Gift size={12} className="group-hover/btn:scale-110 transition-transform" />
+                        <span className="text-[10px] font-black uppercase">View Drop</span>
+                    </button>
+
+                    {/* ✨ เพิ่มปุ่ม View Skills ตรงนี้ */}
+                    {initializedMonster.passives && initializedMonster.passives.length > 0 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowSkillModal(true);
+                            }}
+                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-500 hover:bg-indigo-100 transition-all shadow-sm border border-indigo-200 group/btn"
+                        >
+                            <Shield size={12} className="group-hover/btn:scale-110 transition-transform" />
+                            <span className="text-[10px] font-black uppercase">View Skills</span>
+                        </button>
+                    )}
+                </div>
 
 
                 {/* Stats Grid */}
@@ -234,9 +243,30 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                 </button>
             </div>
 
+            {/* 4. เรียกใช้ Modal */}
+            {showDropModal && (
+                <DropDetailModal
+                    monster={monster}
+                    onClose={() => setShowDropModal(false)}
+                />
+            )}
+
+
             {showMasteryModal && (
                 <MasteryDetailsModal monster={monster} kills={kills} onClose={() => setShowMasteryModal(false)} />
             )}
+
+
+
+            {/* ✅ เพิ่มส่วนนี้เข้าไปครับ */}
+            {showSkillModal && (
+                <MonsterSkillModal
+                    monster={initializedMonster}
+                    onClose={() => setShowSkillModal(false)}
+                />
+            )}
+
         </>
+
     )
 }

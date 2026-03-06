@@ -25,7 +25,6 @@
     "market": "ตลาด",
     "adventure": "ผจญภัย",
     "skills": "สกิล",
-    "newSkillUnlocked": "คุณได้รับสกิลใหม่จาก",
     "equipped_skills": "สกิลที่สวมใส่",
     "recent_battle_logs": "ประวัติการต่อสู้ล่าสุด",
     "no_skills_equipped": "ยังไม่ได้ติดตั้งสกิล",
@@ -533,6 +532,7 @@
     "bloodlustActivated": "🔥 โลหิตคลั่งทำงาน! ATK +20%",
     "arcaneEchoDamage": "✨ เสียงสะท้อนเวทมนตร์! (x{{mult}})",
     "thornsReflected": "🌿 สะท้อนหนาม! {{dmg}} ดาเมจ",
-    "damageReduction": "🛡️ ลดความเสียหาย {{percent}}% (-{{amount}})"
+    "damageReduction": "🛡️ ลดความเสียหาย {{percent}}% (-{{amount}})",
+    "newSkillUnlocked": "ยินดีด้วย! คุณได้รับสกิล [{{skill}}] จากการกำจัด {{monster}} (โอกาสดรอป {{dropChance}}%)"
   }
 }

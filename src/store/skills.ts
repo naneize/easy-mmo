@@ -239,6 +239,7 @@ export const INITIAL_SKILLS: Skill[] = [
     tier: 'common',
     targetStat: 'def_percent',
     Icon: Shield,
+    element: 'Neutral',
     value: 0.08,
     level: 1,
     maxLevel: 10,
@@ -254,6 +255,7 @@ export const INITIAL_SKILLS: Skill[] = [
     tier: 'common',
     targetStat: 'atk_percent',
     Icon: Swords,
+    element: 'Neutral',
     value: 0.08,
     level: 1,
     maxLevel: 10,
@@ -303,6 +305,7 @@ export const INITIAL_SKILLS: Skill[] = [
     tier: 'common',
     targetStat: 'gold_bonus', // ใช้สถานะชั่วคราวในการคำนวณ
     Icon: Star,
+    element: 'Neutral',
     value: 0,
     level: 1,
     maxLevel: 10,

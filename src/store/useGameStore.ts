@@ -12,6 +12,7 @@ import type { SkillTier } from '../types/game';
 import { SKILL_EFFECTS } from '../logic/skillEffects';
 
 
+
 // #region --- Interfaces ---
 interface BattleResultSummary {
   won: boolean
@@ -172,7 +173,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     return skill ? { ...skill, level: 1, unlocked: true } : null;
   }).filter(Boolean) as Skill[],
 
-  unlockedSkills: ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'] as string[],
+  unlockedSkills: [] as string[],
 
 
   battleLogs: [],
@@ -420,15 +421,6 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
             ? { ...skill, unlocked: true, level: 1 }
             : skill
         ),
-
-        // เพิ่มข้อความใน Log ให้ผู้เล่นดีใจ
-        battleLogs: [
-          ...state.battleLogs,
-          {
-            type: 'synergy',
-            text: `✨ ยินดีด้วย! คุณได้รับสกิล [${skillName}] จากการดรอป`
-          }
-        ]
       };
     });
   },
@@ -514,7 +506,6 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
           for (const skillId of droppedSkillIds) {
             if (newUnlockedSkills.includes(skillId)) continue;
 
-            // 🟢 คำนวณโอกาสดรอป: สกิลแรก 30%, สกิลทั่วไป 3-5%
             const isStarter = starterSkills.includes(skillId);
             const dropChance = isStarter ? 0.30 : (0.03 + Math.random() * 0.02);
 
@@ -522,12 +513,18 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
               newUnlockedSkills.push(skillId);
               newUnlockedSkillsFromThisBattle.push(skillId);
 
-              const skillName = state.ownedSkills.find(s => s.id === skillId)?.name ?? skillId;
+              // 1. หาข้อมูลสกิลเพื่อเอา nameKey มาแปล
+              const skillData = state.ownedSkills.find(s => s.id === skillId);
+              const skillName = skillData ? i18n.t(skillData.nameKey) : skillId;
+
+              // 2. แปลชื่อมอนสเตอร์โดยใช้ nameKey (ต้องมั่นใจว่า monsterData มี nameKey)
+              const monsterName = i18n.t(monsterData.nameKey);
+
               currentLogs.push({
                 type: 'synergy',
                 text: i18n.t('battleLog.newSkillUnlocked', {
-                  skill: skillName,
-                  monster: monsterData.name,
+                  skill: skillName,    // ส่งชื่อที่แปลแล้วเข้าไป
+                  monster: monsterName, // ส่งชื่อที่แปลแล้วเข้าไป
                   dropChance: Math.round(dropChance * 100)
                 })
               });
@@ -572,6 +569,8 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
       );
 
       console.log("1. Store is setting:", summary.droppedSkillIds);
+
+
 
       // --- 4. Return ข้อมูลทั้งหมดกลับไปอัปเดต State ของ Zustand ---
       return {

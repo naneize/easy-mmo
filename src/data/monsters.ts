@@ -18,23 +18,28 @@ export const ROLE_MULTIPLIERS: Record<MonsterRoleType, {
     def: number;
     exp: number;
     critChance: number;   // ✨ เพิ่ม Type
-    critDamage: number;   // ✨ เพิ่ม Type
+    critDamage: number;
+    defaultPassives: { id: string, level: number }[]; // ✨ เพิ่ม Type
 }> = {
     [MonsterRole.NORMAL]: {
         hp: 1.0, atk: 1.0, def: 1.0, exp: 1.0,
-        critChance: 0.05, critDamage: 1.3
+        critChance: 0.05, critDamage: 1.3,
+        defaultPassives: []
     },
     [MonsterRole.TANK]: {
         hp: 2.0, atk: 0.8, def: 1.6, exp: 1.4,
-        critChance: 0.02, critDamage: 1.2
+        critChance: 0.02, critDamage: 1.2,
+        defaultPassives: []
     },
     [MonsterRole.GLASS_CANNON]: {
         hp: 0.8, atk: 1.7, def: 0.7, exp: 1.3,
-        critChance: 0.15, critDamage: 1.8 // 🎯 คริบ่อยและแรงมาก!
+        critChance: 0.15, critDamage: 1.8, // 🎯 คริบ่อยและแรงมาก!
+        defaultPassives: []
     },
     [MonsterRole.BOSS]: {
         hp: 3.0, atk: 1.4, def: 1.6, exp: 4.0,
-        critChance: 0.10, critDamage: 1.5 // 👑 น่าเกรงขามสมเป็นบอส
+        critChance: 0.10, critDamage: 1.5, // 👑 น่าเกรงขามสมเป็นบอส
+        defaultPassives: []
     }
 };
 
@@ -55,7 +60,9 @@ export const calculateBaseStats = (level: number) => {
         // EXP: ให้สัมพันธ์กับ MaxExp ผู้เล่น (ที่ใช้สูตร 1.2 ยกกำลัง)
         // เลเวล 1: 40 | เลเวล 10: 220 | เลเวล 50: 1020
         // หมายความว่าช่วงแรกตบ 2-3 ตัวเวลอัป ช่วงหลังต้องตบเยอะขึ้นมาก
-        exp: Math.floor(20 + (level * 20))
+        exp: Math.floor(20 + (level * 20)),
+
+
     };
 };
 
@@ -75,6 +82,8 @@ export const initializeMonster = (monsterData: MonsterData) => {
         // ✅ ใช้ค่าจาก Multiplier ถ้าไม่มีค่อยใช้ Default
         critChance: monsterData.critChance || multipliers.critChance,
         critDamage: monsterData.critDamage || multipliers.critDamage,
+
+        passives: monsterData.passives ?? multipliers.defaultPassives ?? [],
     };
 };
 
@@ -91,6 +100,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 1,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 20, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'maxHp', valuePerTier: 8 },
@@ -106,6 +116,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 3,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 50, exp: 0, // exp will be calculated
         element: 'Wind',
         masteryBonus: { type: 'atk', valuePerTier: 5 },
@@ -121,6 +132,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 4,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 70, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'def', valuePerTier: 5 },
@@ -154,6 +166,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 6,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 100, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'maxHp', valuePerTier: 15 },
@@ -169,6 +182,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 7,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 150, exp: 0, // exp will be calculated
         element: 'Earth',
         masteryBonus: { type: 'def', valuePerTier: 8 },
@@ -199,6 +213,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 8,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 450, exp: 0, // exp will be calculated
         element: 'Neutral',
         masteryBonus: { type: 'atk', valuePerTier: 5 },
@@ -216,6 +231,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 8,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 250, exp: 0, // exp will be calculated
         element: 'Dark',
         masteryBonus: { type: 'maxHp', valuePerTier: 60 },
@@ -231,6 +247,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 10,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 500, exp: 0, // exp will be calculated
         element: 'Light',
         masteryBonus: { type: 'def', valuePerTier: 10 },
@@ -279,6 +296,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 16,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 1000, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'def', valuePerTier: 12 },
@@ -294,6 +312,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 18,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 1200, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'maxHp', valuePerTier: 90 },
@@ -309,6 +328,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 20,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 1500, exp: 0, // exp will be calculated
         element: 'Earth',
         masteryBonus: { type: 'def', valuePerTier: 15 },
@@ -326,6 +346,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 22,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 1800, exp: 0, // exp will be calculated
         element: 'Dark',
         masteryBonus: { type: 'atk', valuePerTier: 20 },
@@ -341,6 +362,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 24,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 2200, exp: 0, // exp will be calculated
         element: 'Wind',
         masteryBonus: { type: 'maxHp', valuePerTier: 120 },
@@ -356,6 +378,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 26,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 2800, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'atk', valuePerTier: 22 },
@@ -371,6 +394,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 28,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 3500, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'def', valuePerTier: 15 },
@@ -386,6 +410,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 30,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 4500, exp: 0, // exp will be calculated
         element: 'Light',
         masteryBonus: { type: 'def', valuePerTier: 22 },
@@ -403,6 +428,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 32,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 5000, exp: 0, // exp will be calculated
         element: 'Dark',
         masteryBonus: { type: 'atk', valuePerTier: 30 },
@@ -418,6 +444,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 34,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 6000, exp: 0, // exp will be calculated
         element: 'Wind',
         masteryBonus: { type: 'atk', valuePerTier: 32 },
@@ -433,6 +460,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 36,
         role: MonsterRole.NORMAL,
+        passives: [],
         gold: 7000, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'maxHp', valuePerTier: 220 },
@@ -448,6 +476,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 38,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 9000, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'maxHp', valuePerTier: 280 },
@@ -463,6 +492,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 40,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 12000, exp: 0, // exp will be calculated
         element: 'Earth',
         masteryBonus: { type: 'def', valuePerTier: 28 },
@@ -480,6 +510,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 42,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 15000, exp: 0, // exp will be calculated
         element: 'Dark',
         masteryBonus: { type: 'atk', valuePerTier: 35 },
@@ -495,6 +526,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 44,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 18000, exp: 0, // exp will be calculated
         element: 'Wind',
         masteryBonus: { type: 'atk', valuePerTier: 38 },
@@ -510,6 +542,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 46,
         role: MonsterRole.GLASS_CANNON,
+        passives: [],
         gold: 22000, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'atk', valuePerTier: 42 },
@@ -525,6 +558,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 48,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 28000, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'maxHp', valuePerTier: 350 },
@@ -540,6 +574,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 50,
         role: MonsterRole.TANK,
+        passives: [],
         gold: 35000, exp: 0, // exp will be calculated
         element: 'Light',
         masteryBonus: { type: 'def', valuePerTier: 50 },
@@ -549,16 +584,17 @@ export const MONSTERS: MonsterData[] = [
     // --- บอสประจำเขต (Boss) ---
     {
         id: 'boss-02',
-        name: 'จอมเวทย์แห่งความตาย',
+        name: 'จอมเวทย์แห่งความแสง',
         nameKey: 'monsters.boss-02.name',
-        description: 'บอสแห่งความตายที่มีพลังทำลายล้างสูง',
+        description: 'บอสแห่งความแสงที่มีพลังทำลายล้างสูง',
         descriptionKey: 'monsters.boss-02.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
-        level: 25,
+        level: 50,
         role: MonsterRole.BOSS,
-        gold: 8000, exp: 0, // exp will be calculated
-        element: 'Dark',
+        passives: [],
+        gold: 17000, exp: 0, // exp will be calculated
+        element: 'Light',
         masteryBonus: { type: 'atk', valuePerTier: 20 },
         droppedSkills: ['lifesteal-vamp', 'dark-corruption']
     },
@@ -570,8 +606,9 @@ export const MONSTERS: MonsterData[] = [
         descriptionKey: 'monsters.boss-03.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
-        level: 35,
+        level: 50,
         role: MonsterRole.BOSS,
+        passives: [],
         gold: 18000, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'atk', valuePerTier: 30 },
@@ -579,16 +616,17 @@ export const MONSTERS: MonsterData[] = [
     },
     {
         id: 'boss-04',
-        name: 'จอมเวทย์แห่งนรก',
+        name: 'จอมเวทย์แห่งสายลม',
         nameKey: 'monsters.boss-04.name',
         description: 'บอสแห่งนรกที่อันตรายที่สุด',
         descriptionKey: 'monsters.boss-04.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
-        level: 45,
+        level: 50,
         role: MonsterRole.BOSS,
+        passives: [],
         gold: 25000, exp: 0, // exp will be calculated
-        element: 'Fire',
+        element: 'Wind',
         masteryBonus: { type: 'atk', valuePerTier: 50 },
         droppedSkills: ['elemental-mastery', 'fire-ember']
     },
@@ -602,6 +640,7 @@ export const MONSTERS: MonsterData[] = [
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
         level: 50,
         role: MonsterRole.BOSS,
+        passives: [],
         gold: 35000, exp: 0, // exp will be calculated
         element: 'Dark',
         masteryBonus: { type: 'atk', valuePerTier: 80 },

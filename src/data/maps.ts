@@ -115,7 +115,7 @@ export const WORLD_MAPS: GameMap[] = [
         nameKey: 'maps.wizardTower.name',
         description: 'ที่อยู่ของเหล่าจอมเวทย์และบอสที่ทรงพลัง',
         descriptionKey: 'maps.wizardTower.description',
-        minLevel: 25,
+        minLevel: 50,
         bgEmoji: '👑',
         monsters: [
             MONSTERS.find(m => m.id === 'boss-02'),
