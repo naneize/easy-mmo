@@ -13,7 +13,6 @@ export const WORLD_MAPS: GameMap[] = [
         monsters: [
             MONSTERS.find(m => m.id === 'm-01'),
             MONSTERS.find(m => m.id === 'm-02'),
-            MONSTERS.find(m => m.id === 'm-03'),
             MONSTERS.find(m => m.id === 'm-04')
         ].filter(Boolean),
     },
@@ -26,6 +25,7 @@ export const WORLD_MAPS: GameMap[] = [
         minLevel: 5,
         bgEmoji: '🌲',
         monsters: [
+            MONSTERS.find(m => m.id === 'm-03'),
             MONSTERS.find(m => m.id === 'm-05'),
             MONSTERS.find(m => m.id === 'm-06'),
             MONSTERS.find(m => m.id === 'm-07')

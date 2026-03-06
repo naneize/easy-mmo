@@ -12,6 +12,8 @@ export type ClassBonus = {
     dmgReduction?: number;
 };
 
+export type ClassCategory = 'striker' | 'tanker' | 'caster' | 'specialist';
+
 export type ClassSpecialEffect = {
     id: string;
     name: string;
@@ -29,6 +31,7 @@ export type ClassDefinition = {
     id: string;
     name: string;
     nameKey: string;
+    category: ClassCategory; // ✨ เพิ่มฟิลด์นี้สำหรับทำ Filter
     requiredSkills: [string, string, string, string];
     bonus: ClassBonus;
     specialEffect?: ClassSpecialEffect;
@@ -40,6 +43,7 @@ export const CLASS_DEFINITIONS: ClassDefinition[] = [
         id: 'berserker',
         name: 'Berserker',
         nameKey: 'classes.berserker.name',
+        category: 'striker',
         requiredSkills: ['blade-dance', 'critical-strike', 'lifesteal-vamp', 'armor-penetration'],
         specialEffect: {
             id: 'bloodlust',
@@ -58,6 +62,7 @@ export const CLASS_DEFINITIONS: ClassDefinition[] = [
         id: 'guardian',
         name: 'Guardian',
         nameKey: 'classes.guardian.name',
+        category: 'tanker',
         requiredSkills: ['aegis-guard', 'stone-skin', 'earth-wall', 'holy-aura'],
         specialEffect: {
             id: 'thorns',
@@ -79,6 +84,7 @@ export const CLASS_DEFINITIONS: ClassDefinition[] = [
         id: 'mage',
         name: 'Mage',
         nameKey: 'classes.mage.name',
+        category: 'caster',
         requiredSkills: ['spark-burst', 'fire-ember', 'dark-corruption', 'elemental-mastery'],
         specialEffect: {
             id: 'arcane-echo',

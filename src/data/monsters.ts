@@ -12,11 +12,30 @@ export const MonsterRole = {
 // สร้าง Type จาก Object เพื่อให้ยังใช้ Type Safety ได้
 export type MonsterRoleType = typeof MonsterRole[keyof typeof MonsterRole];
 
-export const ROLE_MULTIPLIERS: Record<MonsterRoleType, { hp: number; atk: number; def: number; exp: number }> = {
-    [MonsterRole.NORMAL]: { hp: 1.0, atk: 1.0, def: 1.0, exp: 1.0 },
-    [MonsterRole.TANK]: { hp: 2.0, atk: 0.8, def: 1.6, exp: 1.4 }, // เพิ่มความท้าทาย
-    [MonsterRole.GLASS_CANNON]: { hp: 0.8, atk: 1.7, def: 0.7, exp: 1.3 }, // เพิ่ม ATK ให้โดดเด่น
-    [MonsterRole.BOSS]: { hp: 3.0, atk: 1.4, def: 1.6, exp: 4.0 } // เพิ่มความยากของ Boss
+export const ROLE_MULTIPLIERS: Record<MonsterRoleType, {
+    hp: number;
+    atk: number;
+    def: number;
+    exp: number;
+    critChance: number;   // ✨ เพิ่ม Type
+    critDamage: number;   // ✨ เพิ่ม Type
+}> = {
+    [MonsterRole.NORMAL]: {
+        hp: 1.0, atk: 1.0, def: 1.0, exp: 1.0,
+        critChance: 0.05, critDamage: 1.3
+    },
+    [MonsterRole.TANK]: {
+        hp: 2.0, atk: 0.8, def: 1.6, exp: 1.4,
+        critChance: 0.02, critDamage: 1.2
+    },
+    [MonsterRole.GLASS_CANNON]: {
+        hp: 0.8, atk: 1.7, def: 0.7, exp: 1.3,
+        critChance: 0.15, critDamage: 1.8 // 🎯 คริบ่อยและแรงมาก!
+    },
+    [MonsterRole.BOSS]: {
+        hp: 3.0, atk: 1.4, def: 1.6, exp: 4.0,
+        critChance: 0.10, critDamage: 1.5 // 👑 น่าเกรงขามสมเป็นบอส
+    }
 };
 
 export const calculateBaseStats = (level: number) => {
@@ -52,8 +71,10 @@ export const initializeMonster = (monsterData: MonsterData) => {
         atk: Math.floor(baseStats.atk * multipliers.atk),
         def: Math.floor(baseStats.def * multipliers.def),
         exp: Math.floor(baseStats.exp * multipliers.exp),
-        critChance: monsterData.critChance || 0.03, // Default 3% for monsters
-        critDamage: monsterData.critDamage || 1.3, // Default 1.3x for monsters
+
+        // ✅ ใช้ค่าจาก Multiplier ถ้าไม่มีค่อยใช้ Default
+        critChance: monsterData.critChance || multipliers.critChance,
+        critDamage: monsterData.critDamage || multipliers.critDamage,
     };
 };
 
@@ -116,7 +137,7 @@ export const MONSTERS: MonsterData[] = [
         descriptionKey: 'monsters.m-03.description',
         hp: 0, maxHp: 0, atk: 0, def: 0, // Will be calculated
         critChance: 0, critDamage: 0, // Will be calculated by initializeMonster()
-        level: 5,
+        level: 6,
         role: MonsterRole.GLASS_CANNON,
         gold: 70, exp: 0, // exp will be calculated
         element: 'Wind',

@@ -8,6 +8,7 @@
     "lifesteal": "ดูดเลือด",
     "armorPen": "เจาะเกราะ",
     "stamina": "สตามิน่า",
+    "dmgReduction": "ลดความเสียหาย",
     "exp": "EXP",
     "gold": "Gold",
     "level": "Lv.",
@@ -29,7 +30,7 @@
     "settings": "ตั้งค่า",
     "language": "ภาษา",
     "currentClass": "อาชีพปัจจุบัน",
-    "novice": "มือใหม่",
+    "novice": "นักผจญภัย",
     "elementGuide": "คู่มือธาตุ",
     "elementHint": "เลือกธาตุที่ชนะทางมอนสเตอร์เพื่อดาเมจสูงสุด",
     "classUnlockHint": "สวมใส่สกิลให้ครบ 4 ช่องตามเซต เพื่อปลดล็อคอาชีพ",
@@ -420,17 +421,16 @@
     "requiredSkills": "สกิลที่ต้องการ",
     "classBonuses": "โบนัสอาชีพ",
     "specialEffect": "เอฟเฟกต์พิเศษ",
-    "elementAffinity": "ความต่างธาตุ",
+    "elementAffinity": "เพิ่มความเสียหายเมื่อชนะธาตุ",
     "advantageBonus": "โบนัสเมื่อชนะทาง",
     "disadvantageReduction": "ลดความเสียหายเมื่อแพ้ทาง",
-    "novice": "มือใหม่",
+    "novice": "นักผจญภัย",
     "locked": "ถูกล็อค",
     "active": "ใช้งานอยู่",
     "berserker": {
       "name": "Berserker",
       "specialEffect": {
         "bloodlust": {
-          "name": "โลหิตคลั่ง",
           "description": "เมื่อ HP เหลือน้อยกว่า 30% จะได้รับพลังโจมตีเพิ่มขึ้น 20% ทันที!"
         }
       }
@@ -439,7 +439,6 @@
       "name": "Guardian",
       "specialEffect": {
         "thorns": {
-          "name": "หนามสะท้อน",
           "description": "มีโอกาส 10% ที่จะสะท้อนความเสียหายกลับไปยังศัตรูที่โจมตี!"
         }
       }
@@ -448,7 +447,6 @@
       "name": "Mage",
       "specialEffect": {
         "arcaneEcho": {
-          "name": "เสียงเวทย้อนกลับ",
           "description": "การโจมตีทุกๆ 3 เทิร์นจะสร้างความเสียหายที่รุนแรงขึ้นอย่างมหาศาล!"
         }
       }

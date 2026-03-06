@@ -29,23 +29,15 @@ function App() {
   }, [regenHP])
 
   return (
-    <MainLayout>
-      {/* --- 1. หน้า Dashboard (หน้าหลัก) --- */}
+    <div className="min-h-screen bg-gradient-to-br from-emerald-400 via-cyan-500 to-blue-600 bg-fixed">      <MainLayout>
       {activeTab === 'dashboard' && <DashboardPage />}
-
-      {/* --- 2. หน้าเลือกสกิล Passive --- */}
       {activeTab === 'skills' && <PassiveSkillPage />}
-
-      {/* --- 3. หน้าผจญภัยสู้กับมอนสเตอร์ --- */}
       {activeTab === 'adventure' && <AdventurePage />}
-
       {activeTab === 'classes' && <ClassesPage />}
-
       {activeTab === 'achievements' && <AchievementPage />}
-
       {activeTab === 'inventory' && <InventoryPage />}
-
     </MainLayout>
+    </div>
   )
 }
 

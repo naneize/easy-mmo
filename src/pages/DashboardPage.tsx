@@ -1,10 +1,9 @@
 import { useGameStore } from '../store/useGameStore';
-import { Trophy, Zap, Shield, Swords, Heart, History, Sparkles, Target } from 'lucide-react';
+import { Trophy, Zap, Shield, Swords, Heart, History, Sparkles, Target, Coins } from 'lucide-react';
 import { calculateFinalStats } from '../logic/stats';
 import { calculatePlayerClass } from '../utils/gameHelpers';
 import { StatCard } from '../components/dashboard/StatCard';
 import { ElementSelector } from '../components/dashboard/ElementSelector';
-import { QuickShop } from '../components/dashboard/QuickShop';
 import { ELEMENT_CHART } from '../logic/elementalLogic';
 import { ElementGuideModal } from '../components/ElementGuideModal';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -136,7 +135,10 @@ export function DashboardPage() {
                                     onClick={() => setIsClassModalOpen(true)}
                                     className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white shadow-sm transition-all ${playerClass ? 'bg-fuchsia-600 text-white hover:bg-fuchsia-700' : 'bg-slate-300 text-slate-700 hover:bg-slate-400'} ${showClassUnlocked ? 'animate-pulse' : ''}`}
                                 >
-                                    {playerClass ? playerClass.name : 'Novice'}
+                                    {playerClass
+                                        ? t(playerClass.nameKey) // ✅ ใช้ nameKey ที่เราตั้งไว้ใน ClassDefinition
+                                        : t('ui.novice')         // ✅ ถ้าไม่มีคลาส ให้ดึงคำว่า Novice จากหมวด UI
+                                    }
                                 </button>
                                 <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest border border-white shadow-sm
                         ${player.element === 'Fire' ? 'bg-rose-500 text-white' :
@@ -191,9 +193,9 @@ export function DashboardPage() {
             </div>
 
             {/* --- Section 3: Final Stats Display --- */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 <StatCard
-                    icon={<Heart className={`text-rose-500 ${isRegenerating ? 'animate-pulse' : ''}`} />}
+                    icon={<Heart className={`text-rose-400 drop-shadow-[0_0_8px_rgba(251,113,133,0.6)] ${isRegenerating ? 'animate-pulse' : ''}`} />}
                     label="HP"
                     value={`${Math.floor(player.hp)} / ${finalStats.maxHp}`}
                     baseValue={finalStats.baseMaxHp}
@@ -203,7 +205,7 @@ export function DashboardPage() {
                 />
 
                 <StatCard
-                    icon={<Swords className="text-amber-500" />}
+                    icon={<Swords className="text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)]" />}
                     label="ATK"
                     value={finalStats.atk}
                     baseValue={finalStats.baseAtk}
@@ -212,7 +214,7 @@ export function DashboardPage() {
                 />
 
                 <StatCard
-                    icon={<Shield className="text-emerald-500" />}
+                    icon={<Shield className="text-emerald-300 drop-shadow-[0_0_8px_rgba(110,231,183,0.6)]" />}
                     label="DEF"
                     value={finalStats.def}
                     baseValue={finalStats.baseDef}
@@ -221,14 +223,14 @@ export function DashboardPage() {
                 />
 
                 <StatCard
-                    icon={<Trophy className="text-sky-500" />}
+                    icon={<Coins className="text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.6)]" />}
                     label="Gold"
                     value={player.gold.toLocaleString()}
-                    color="sky"
+                    color="amber" // เปลี่ยนเป็น amber เพื่อให้ได้โทนเหลืองสว่าง
                 />
 
                 <StatCard
-                    icon={<Target className="text-red-500" />}
+                    icon={<Target className="text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.6)]" />}
                     label="Crit Chance"
                     value={`${(finalStats.critChance * 100).toFixed(1)}%`}
                     baseValue={`${(finalStats.baseCritChance * 100).toFixed(1)}%`}
@@ -237,7 +239,7 @@ export function DashboardPage() {
                 />
 
                 <StatCard
-                    icon={<Zap className="text-orange-500" />}
+                    icon={<Zap className="text-orange-300 drop-shadow-[0_0_8px_rgba(253,186,116,0.6)]" />}
                     label="Crit Damage"
                     value={`${finalStats.critDamage.toFixed(2)}x`}
                     baseValue={`${finalStats.baseCritDamage.toFixed(2)}x`}
@@ -335,7 +337,10 @@ export function DashboardPage() {
                         <div className={`p-6 text-white relative overflow-hidden ${playerClass ? 'bg-gradient-to-br from-fuchsia-600 to-indigo-700' : 'bg-gradient-to-br from-slate-600 to-slate-800'}`}>
                             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
                             <div className="text-[10px] font-black uppercase tracking-widest opacity-80">Current Class</div>
-                            <div className="mt-1 text-3xl font-black tracking-tighter">{playerClass ? playerClass.name : 'Novice'}</div>
+                            <div className="mt-1 text-3xl font-black tracking-tighter">{playerClass
+                                ? t(playerClass.nameKey) // ✅ ใช้ nameKey ที่เราตั้งไว้ใน ClassDefinition
+                                : t('ui.novice')         // ✅ ถ้าไม่มีคลาส ให้ดึงคำว่า Novice จากหมวด UI
+                            }</div>
                             <button
                                 type="button"
                                 className="mt-4 w-full rounded-2xl bg-white/15 hover:bg-white/20 border border-white/30 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all"
@@ -399,8 +404,15 @@ export function DashboardPage() {
                                 </div>
                             ) : (
                                 <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-                                    <div className="text-[11px] font-black uppercase tracking-widest text-slate-400">No Class Yet</div>
-                                    <div className="mt-1 text-[12px] font-bold text-slate-600">Equip the correct 4 skills to unlock a class.</div>
+                                    {/* 1. แก้ไขหัวข้อ "No Class Yet" */}
+                                    <div className="text-[11px] font-black uppercase tracking-widest text-slate-400">
+                                        {t('ui.novice', { lng: 'en' })} {/* หรือใช้คำว่า 'No Class Yet' ใน JSON ก็ได้ */}
+                                    </div>
+
+                                    {/* 2. แก้ไขคำแนะนำการปลดล็อกคลาส */}
+                                    <div className="mt-1 text-[12px] font-bold text-slate-600">
+                                        {t('ui.classUnlockHint')}
+                                    </div>
                                 </div>
                             )}
                         </div>

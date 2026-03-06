@@ -49,15 +49,15 @@ export function InventoryPage() {
         <div className="mb-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-slate-400">{t('inventory.totalCombatPower')}</div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <div>
-            <div className="text-[9px] sm:text-[10px] font-bold text-sky-400 uppercase">{t('inventory.attack')}</div>
+            <div className="text-[9px] sm:text-[10px] font-bold text-sky-400 uppercase">{t('attack')}</div>
             <div className="text-xl sm:text-2xl font-black">{finalStats.atk}</div>
           </div>
           <div>
-            <div className="text-[9px] sm:text-[10px] font-bold text-emerald-400 uppercase">{t('inventory.defense')}</div>
+            <div className="text-[9px] sm:text-[10px] font-bold text-emerald-400 uppercase">{t('defense')}</div>
             <div className="text-xl sm:text-2xl font-black">{finalStats.def}</div>
           </div>
           <div className="col-span-2 sm:col-span-1 pt-2 sm:pt-0 border-t border-slate-800 sm:border-0 sm:pl-4 sm:border-l sm:border-slate-800">
-            <div className="text-[9px] sm:text-[10px] font-bold text-rose-400 uppercase">{t('inventory.maxHealth')}</div>
+            <div className="text-[9px] sm:text-[10px] font-bold text-rose-400 uppercase">{t('maxHealth')}</div>
             <div className="text-xl sm:text-2xl font-black">{finalStats.maxHp}</div>
           </div>
         </div>
@@ -203,7 +203,7 @@ export function InventoryPage() {
                           : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
                         }`}
                     >
-                      {t(`inventory.${r.toLowerCase()}`)}
+                      {t(`${r.toLowerCase()}`)}
                     </button>
                   ))}
                 </div>

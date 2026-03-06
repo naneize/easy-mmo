@@ -11,6 +11,7 @@ export interface GameItem {
     type: ItemType;
     rarity: ItemRarity;
     price: number;
+
     icon: string;
     minLevel: number;
     // สำหรับไอเทมสวมใส่ (Stats ถาวร)
@@ -22,7 +23,7 @@ export interface GameItem {
     };
     // สำหรับไอเทมกดใช้ (Effect ทันที)
     effect?: {
-        type: 'hp' | 'atk_buff';
+        type: 'hp' | 'atk_buff' | 'hp_percent';
         value: number;
     };
     // สำหรับไอเทมระดับสูง (Passive พิเศษ)
@@ -39,35 +40,35 @@ export const ITEMS: Record<string, GameItem> = {
     'hp_potion_s': {
         id: 'hp_potion_s',
         name: 'Small HP Potion',
-        description: 'ฟื้นฟู 50 HP ทันที',
+        description: 'ฟื้นฟู 20% ของ HP สูงสุด', // ปรับคำอธิบาย
         type: 'consumable',
         rarity: 'Common',
-        price: 20,
+        price: 50,
         icon: '🧪',
         minLevel: 1,
-        effect: { type: 'hp', value: 50 }
+        effect: { type: 'hp_percent', value: 0.20 } // 20%
     },
     'hp_potion_m': {
         id: 'hp_potion_m',
         name: 'Medium HP Potion',
-        description: 'ฟื้นฟู 150 HP ทันที',
+        description: 'ฟื้นฟู 40% ของ HP สูงสุด',
         type: 'consumable',
         rarity: 'Common',
-        price: 50,
+        price: 100,
         icon: '⚗️',
         minLevel: 1,
-        effect: { type: 'hp', value: 150 }
+        effect: { type: 'hp_percent', value: 0.40 } // 40%
     },
     'hp_potion_l': {
         id: 'hp_potion_l',
         name: 'Mega HP Potion',
-        description: 'ฟื้นฟู 500 HP ทันที',
+        description: 'ฟื้นฟู 75% ของ HP สูงสุด',
         type: 'consumable',
         rarity: 'Rare',
-        price: 150,
+        price: 200,
         icon: '🍶',
         minLevel: 1,
-        effect: { type: 'hp', value: 500 }
+        effect: { type: 'hp_percent', value: 0.75 } // 75%
     },
 
     // --- WEAPONS (อาวุธ) ---

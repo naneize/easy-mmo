@@ -30,7 +30,7 @@ export interface GameItem {
         maxHp?: number;
     };
     effect?: {
-        type: 'hp' | 'atk_buff';
+        type: 'hp' | 'atk_buff' | 'hp_percent';
         value: number;
     };
     passive?: {

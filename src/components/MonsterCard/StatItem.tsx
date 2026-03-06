@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 
 interface StatItemProps {
     icon: ReactNode;
@@ -9,12 +9,16 @@ interface StatItemProps {
 
 export function StatItem({ icon, label, value, color }: StatItemProps) {
     return (
-        <div className={`flex flex-col items-center justify-center ${color} p-2 rounded-2xl border border-black/5`}>
-            <div className="flex items-center gap-1 mb-0.5 opacity-60">
+        <div className={`flex flex-col items-center justify-center ${color} p-2 rounded-2xl border border-black/5 min-h-[50px]`}>
+            <div className="flex items-center gap-1 mb-0.5"> {/* 👈 เอา opacity-60 ออกก่อนเพื่อเช็ค */}
                 {icon}
-                <span className="text-[8px] font-black uppercase tracking-tighter">{label}</span>
+                <span className="text-[10px] font-bold uppercase tracking-tight text-slate-500">
+                    {label || '???'} {/* 👈 ถ้า label ว่างให้โชว์ ??? จะได้รู้ว่า i18n หาไม่เจอ */}
+                </span>
             </div>
-            <span className="text-xs font-black text-slate-700 tabular-nums">{value}</span>
+            <span className="text-sm font-black text-slate-800 tabular-nums">
+                {value}
+            </span>
         </div>
     )
 }

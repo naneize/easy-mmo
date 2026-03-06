@@ -111,7 +111,7 @@ export function AdventurePage() {
                 {/* ปุ่มกดดู Guide แบบประหยัดพื้นที่ */}
                 <button
                     onClick={() => setShowElementGuide(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-2xl border-2 border-amber-200 font-black text-[10px] hover:bg-amber-200 transition-all shadow-sm active:scale-95"
+                    className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-400 rounded-2xl border-2 border-amber-200 font-black text-[10px] hover:bg-amber-200 transition-all shadow-sm active:scale-95"
                 >
                     <Info size={14} />
                     {t('ui.elementGuide')}
@@ -119,37 +119,35 @@ export function AdventurePage() {
             </div>
 
             {/* Map Banner */}
-            <div className="p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[2.5rem] text-white shadow-2xl border border-white/10">
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl backdrop-blur-sm border border-white/20">
-                        {selectedMap.bgEmoji}
-                    </div>
-                    <div>
-                        <h2 className="text-3xl font-black">{t(selectedMap.nameKey)}</h2>
-                        <p className="text-indigo-200/70 text-lg font-medium max-w-xl leading-relaxed italic">
-                            {t(selectedMap.descriptionKey)}
-                        </p>
-                    </div>
+            <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl backdrop-blur-sm border border-white/20">
+                    {selectedMap.bgEmoji}
                 </div>
-
-                {/* Monsters Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
-                    {mapMonsters.map((monster) => (
-                        <MonsterCard
-                            key={monster.id}
-                            monster={monster}
-                            onBattle={() => handleStartBattle(monster)}
-                            isProcessing={processingId === monster.id}
-                        />
-                    ))}
+                <div>
+                    <h2 className="text-3xl font-black">{t(selectedMap.nameKey)}</h2>
+                    <p className="text-indigo-200/70 text-lg font-medium max-w-xl leading-relaxed italic">
+                        {t(selectedMap.descriptionKey)}
+                    </p>
                 </div>
-
-                {battleLogs.length > 0 && (
-                    <div className="animate-in fade-in slide-in-from-bottom-4">
-                        <BattleLog logs={battleLogs} onReset={resetBattle} />
-                    </div>
-                )}
             </div>
+
+            {/* Monsters Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+                {mapMonsters.map((monster) => (
+                    <MonsterCard
+                        key={monster.id}
+                        monster={monster}
+                        onBattle={() => handleStartBattle(monster)}
+                        isProcessing={processingId === monster.id}
+                    />
+                ))}
+            </div>
+
+            {battleLogs.length > 0 && (
+                <div className="animate-in fade-in slide-in-from-bottom-4">
+                    <BattleLog logs={battleLogs} onReset={resetBattle} />
+                </div>
+            )}
         </div>
     )
 }

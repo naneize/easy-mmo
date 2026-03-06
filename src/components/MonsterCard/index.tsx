@@ -9,6 +9,8 @@ import { StatItem } from './StatItem'
 import { MasteryDetailsModal } from './MasteryDetailsModal'
 import { DropDetailModal } from './DropDetailModal';
 
+
+
 const ELEMENT_COLORS: Record<string, string> = {
     Fire: 'text-orange-500 bg-orange-50 border-orange-100',
     Water: 'text-blue-500 bg-blue-50 border-blue-100',
@@ -47,6 +49,8 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
 
     // คำนวณ stats จากระบบใหม่
     const initializedMonster = initializeMonster(monster)
+
+
 
     return (
         <>
@@ -150,13 +154,37 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
-                    <StatItem icon={<Heart size={14} className="text-rose-500" />} label="HP" value={initializedMonster.hp} color="bg-rose-50/50" />
-                    <StatItem icon={<Swords size={14} className="text-slate-600" />} label="ATK" value={initializedMonster.atk} color="bg-slate-50/50" />
-                    <StatItem icon={<Shield size={14} className="text-blue-500" />} label="DEF" value={initializedMonster.def} color="bg-blue-50/50" />
-                    <StatItem icon={<Target size={14} className="text-purple-500" />} label="CRIT" value={`${(initializedMonster.critChance * 100).toFixed(1)}%`} color="bg-purple-50/50" />
+                    <StatItem
+                        icon={<Heart size={14} className="text-rose-500" />}
+                        label={t('global.hp')}
+                        value={initializedMonster.hp}
+                        color="bg-rose-50/50"
+                    />
+                    <StatItem
+                        icon={<Swords size={14} className="text-slate-600" />}
+                        label={t('global.atk')}
+                        value={initializedMonster.atk}
+                        color="bg-slate-50/50"
+                    />
+                    <StatItem
+                        icon={<Shield size={14} className="text-blue-500" />}
+                        label={t('global.def')}
+                        value={initializedMonster.def}
+                        color="bg-blue-50/50"
+                    />
+                    <StatItem
+                        icon={<Target size={14} className="text-purple-500" />}
+                        label={t('global.critChance')}
+                        value={`${(initializedMonster.critChance * 100).toFixed(1)}%`}
+                        color="bg-purple-50/50"
+                    />
                     <div className="col-span-2 grid grid-cols-2 gap-2">
-                        <StatItem icon={<Zap size={14} className="text-yellow-500" />} label="CRIT DMG" value={`${initializedMonster.critDamage.toFixed(1)}x`} color="bg-yellow-50/50" />
-
+                        <StatItem
+                            icon={<Zap size={14} className="text-yellow-500" />}
+                            label={t('global.critDamage')}
+                            value={`${initializedMonster.critDamage.toFixed(1)}x`}
+                            color="bg-yellow-50/50"
+                        />
                     </div>
                 </div>
 
