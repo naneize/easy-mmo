@@ -26,10 +26,10 @@ export function MapSelection({ playerLevel, onSelect }: MapSelectionProps) {
         <div className="grid grid-cols-1 gap-4 animate-in fade-in zoom-in-95 duration-300">
             <div className="flex justify-between items-end mb-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-800 flex items-center gap-3">
+                    <h2 className="text-3xl font-black text-white flex items-center gap-3">
                         <MapIcon className="text-sky-500" size={32} /> World Map
                     </h2>
-                    <p className="text-slate-400 font-medium ml-11">เลือกพื้นที่ที่ต้องการออกล่า</p>
+                    <p className="text-slate-800/60 font-medium ml-11">{t('ui.chooseMap')}</p>
                 </div>
             </div>
 
@@ -56,7 +56,7 @@ export function MapSelection({ playerLevel, onSelect }: MapSelectionProps) {
                                             {map.bgEmoji}
                                         </div>
                                         <div>
-                                            <h3 className="font-black text-slate-800 text-2xl leading-tight">{t(map.nameKey)}</h3>
+                                            <h3 className="font-black text-emerald-500 text-2xl leading-tight">{t(map.nameKey)}</h3>
                                             <p className="text-sm text-slate-500 mt-1 max-w-[220px] line-clamp-1 italic">"{t(map.descriptionKey)}"</p>
 
                                             {!isLocked && (

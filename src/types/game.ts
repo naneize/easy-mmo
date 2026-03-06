@@ -8,7 +8,7 @@ export type StatTarget =
     | 'atk_percent' | 'atk_flat' | 'def_flat' | 'def_percent'
     | 'hp_percent' | 'maxHp_flat' | 'maxHp_percent' | 'regen_flat' | 'regen_percent'
     | 'dmg_reduction' | 'lifesteal' | 'lifesteal_percent' | 'multiple'
-    | 'chance_boost' | 'crit_chance' | 'crit_multi' | 'armor_pen';
+    | 'chance_boost' | 'crit_chance' | 'crit_multi' | 'armor_pen' | 'gold_bonus' | 'none';
 
 // --- ระบบไอเทม ---
 export type ItemRarity = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';

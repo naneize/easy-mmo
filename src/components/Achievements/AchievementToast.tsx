@@ -28,7 +28,7 @@ export function AchievementToast({ title, description, onClose, badgeText }: Ach
             clearTimeout(hideTimeout);
             clearTimeout(closeTimeout);
         };
-    }, [onClose]);
+    }, []);
 
     return (
         <div className={`fixed bottom-8 right-8 z-[200] transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-90'

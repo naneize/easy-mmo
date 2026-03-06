@@ -5,6 +5,7 @@ import { handlePlayerTurn } from './modules/playerActions';
 import { handleMonsterTurn } from './modules/monsterActions';
 import { initializeMonster } from '../../data/monsters';
 import { BattleLogger as Log } from '../battleLogger';
+import { calculatePlayerClass } from '../../utils/gameHelpers';
 
 // Helper สำหรับแปลภาษา
 const t = (key: string, params?: Record<string, any>) => i18next.t(key, params) as string;
@@ -63,7 +64,8 @@ export const simulateBattle = (
             allEffects, bonusStats,
             baseEffectiveMaxHp,
             turn,
-            context.playerClass?.id || ""
+            context.playerClass?.id || "",
+            pElementMult
         );
 
         p_hp = pPhase.p_hp;
@@ -99,16 +101,28 @@ export const simulateBattle = (
     const won = m_hp <= 0;
 
     let finalGold = 0;
+
     if (won) {
         const baseGold = monster.gold || 0;
-        const goldFinderSkill = equippedSkills.find(s => s.id === 'gold-finder');
-        finalGold = baseGold;
+        // เริ่มต้นที่ 1.0 (คือ 100% ของ baseGold)
+        let totalMultiplier = 1.0;
 
+        // 1. เช็คโบนัสจากสกิล Gold Finder (10% base + 2% ต่อระดับ)
+        const goldFinderSkill = equippedSkills.find(s => s.id === 'gold-finder');
         if (goldFinderSkill && 'level' in goldFinderSkill) {
-            const bonusPercent = 0.10 + ((goldFinderSkill.level - 1) * 0.02);
-            const bonusGold = Math.floor(baseGold * bonusPercent);
-            finalGold = baseGold + bonusGold;
+            const skillBonus = 0.10 + ((goldFinderSkill.level - 1) * 0.02);
+            totalMultiplier += skillBonus;
         }
+
+        // 2. เช็คโบนัสจากอาชีพ (เช่น Mercenary ที่มี gold_bonus: 0.15)
+        // ตรงนี้จะทำงานเมื่อผู้เล่นเปลี่ยนอาชีพเป็น Mercenary แล้วเท่านั้น
+        const playerClass = calculatePlayerClass(equippedSkills as Array<{ id: string }>);
+        if (playerClass?.bonus?.gold_bonus) {
+            totalMultiplier += playerClass.bonus.gold_bonus;
+        }
+
+        // คำนวณทองสุทธิครั้งเดียวและปัดเศษลง
+        finalGold = Math.floor(baseGold * totalMultiplier);
     }
 
     // ✅ แก้ไข: ใช้ชื่อที่แปลแล้วในผลการต่อสู้

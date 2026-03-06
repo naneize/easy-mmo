@@ -82,7 +82,7 @@ export function ElementGuideModal({ onClose, elementChart }: ElementGuideProps) 
                                                         ) : (
                                                             <ShieldAlert size={14} className="text-slate-400" />
                                                         )}
-                                                        <span className="font-bold text-slate-600 uppercase">{t('elementGuide.vs')} {target}</span>
+                                                        <span className="font-bold text-slate-600 uppercase">{t('elementGuide.vs', { lng: 'en' })} {target}</span>
                                                     </div>
                                                     <span className={`font-black px-2 py-0.5 rounded-md ${isStrong ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
                                                         {isStrong ? '↑' : '↓'} {percent}%

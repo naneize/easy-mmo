@@ -37,20 +37,33 @@ export function DropDetailModal({ monster, onClose }: Props) {
 
                 <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
                     {droppedSkills.length > 0 ? (
-                        droppedSkills.map(skill => (
-                            <div key={skill?.id} className="flex items-center gap-4 p-4 rounded-3xl border border-slate-100 bg-white">
-                                <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-2xl">
-                                    {typeof skill?.Icon === 'string' ? skill.Icon : "✨"}
+                        droppedSkills.map(skill => {
+                            // 1. กำหนดสกิลเริ่มต้น (เพื่อให้ตรงกับ Logic ใน Battle)
+                            const starterSkills = ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'];
+                            const isStarter = starterSkills.includes(skill.id);
+
+                            // 2. เลือกข้อความที่จะโชว์
+                            const displayRate = isStarter ? "30%" : "3-5%";
+
+                            return (
+                                <div key={skill?.id} className="flex items-center gap-4 p-4 rounded-3xl border border-slate-100 bg-white shadow-sm">
+                                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-2xl">
+                                        {typeof skill?.Icon === 'string' ? skill.Icon : "✨"}
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-sm font-black text-slate-800">{t(`skills.${skill.id}.name`)}</div>
+
+                                        </div>
+                                        <div className="text-[10px] text-slate-400 font-medium leading-tight">{t(`skills.${skill.id}.description`)}</div>
+                                    </div>
+                                    {/* 🟢 แสดง Rate ตามประเภทสกิล */}
+                                    <div className={`text-[10px] font-black px-2 py-1 rounded-lg ${isStarter ? 'text-emerald-600 bg-emerald-50' : 'text-amber-500 bg-amber-50'}`}>
+                                        {displayRate}
+                                    </div>
                                 </div>
-                                <div className="flex-1">
-                                    <div className="text-sm font-black text-slate-800">{skill?.name}</div>
-                                    <div className="text-[10px] text-slate-400 font-medium leading-tight">{skill?.description}</div>
-                                </div>
-                                <div className="text-[10px] font-black text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">
-                                    {t('dropDetail.dropRate')}
-                                </div>
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
                         <p className="text-center py-10 text-slate-400 font-bold uppercase text-xs">{t('dropDetail.noDrops')}</p>
                     )}

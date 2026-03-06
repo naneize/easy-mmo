@@ -25,6 +25,10 @@
     "market": "ตลาด",
     "adventure": "ผจญภัย",
     "skills": "สกิล",
+    "newSkillUnlocked": "คุณได้รับสกิลใหม่จาก",
+    "equipped_skills": "สกิลที่สวมใส่",
+    "recent_battle_logs": "ประวัติการต่อสู้ล่าสุด",
+    "no_skills_equipped": "ยังไม่ได้ติดตั้งสกิล",
     "classes": "อาชีพ",
     "achievements": "ความสำเร็จ",
     "settings": "ตั้งค่า",
@@ -34,7 +38,8 @@
     "elementGuide": "คู่มือธาตุ",
     "elementHint": "เลือกธาตุที่ชนะทางมอนสเตอร์เพื่อดาเมจสูงสุด",
     "classUnlockHint": "สวมใส่สกิลให้ครบ 4 ช่องตามเซต เพื่อปลดล็อคอาชีพ",
-    "noBattleLogs": "ยังไม่มีประวัติการต่อสู้"
+    "noBattleLogs": "ยังไม่มีประวัติการต่อสู้",
+    "chooseMap": "เลือกแผนที่เพื่อทำการต่อสู้"
   },
   "battleResult": {
     "victory": "ชัยชนะ!",
@@ -52,13 +57,13 @@
   "elementGuide": {
     "title": "กลยุทธ์ธาตุ",
     "subtitle": "ตารางความได้เปรียบทางธาตุ (Updated v1.1)",
-    "vs": "พบกับ",
     "closeButton": "รับทราบแผนกลยุทธ์!"
   },
   "dropDetail": {
-    "title": "ของที่ดรอป",
-    "dropRate": "3-5%",
-    "noDrops": "ไม่พบของดรอพิเศษ"
+    "title": "รายละเอียดของดรอป",
+    "dropRate": "โอกาสดรอป",
+    "noDrops": "ไม่มีของดรอปพิเศษจากมอนสเตอร์ตัวนี้",
+    "requirement": "เงื่อนไขอาชีพ"
   },
   "masteryDetail": {
     "title": "ความคืบหน้าความเชี่ยวชาญ",
@@ -103,6 +108,26 @@
       "name": "Spark Burst",
       "description": "มีโอกาส 25% ที่จะโจมตีซ้ำด้วยความเสียหาย 100% (เพิ่มเป็น 40% หากผู้เล่นเป็นธาตุ Neutral) +โอกาส 2% และ +ความเสียหาย 3% ต่อระดับ",
       "log": "⚡ Spark Burst Lv.{{level}} สายฟ้าฟาด! (ดาเมจ: {{dmg}})"
+    },
+    "mercenary-path": {
+      "name": "Mercenary Path",
+      "description": "สกิลและโบนัสพิเศษสำหรับมิตรภาพ",
+      "log": "⚔️ Mercenary Path Lv.{{level}} สกิลและโบนัสพิเศษ!"
+    },
+    "sturdy-body": {
+      "name": "Sturdy Body",
+      "description": "เพิ่ม DEF 8% และเพิ่มขึ้น 1% ต่อ LV",
+      "log": "🛡️ Sturdy Body Lv.{{level}} เพิ่ม DEF {{percent}}% (+{{def}} DEF)!"
+    },
+    "brute-force": {
+      "name": "Brute Force",
+      "description": "เพิ่ม ATK 8% และเพิ่มขึ้น 1% ต่อ LV",
+      "log": "💪 Brute Force Lv.{{level}} เพิ่ม ATK {{percent}}% (+{{atk}} ATK)!"
+    },
+    "battle-focus": {
+      "name": "Battle Focus",
+      "description": "เพิ่ม Final DMG 5% และเพิ่มขึ้น 0.5% ต่อ LV",
+      "log": "⚔️ Battle Focus Lv.{{level}} เพิ่ม Final DMG {{percent}}%!"
     },
     "blade-dance": {
       "name": "Blade Dance",
@@ -448,6 +473,14 @@
       "specialEffect": {
         "arcaneEcho": {
           "description": "การโจมตีทุกๆ 3 เทิร์นจะสร้างความเสียหายที่รุนแรงขึ้นอย่างมหาศาล!"
+        }
+      }
+    },
+    "mercenary": {
+      "name": "Mercenary",
+      "specialEffect": {
+        "mercenaryPath": {
+          "description": "สกิลและโบนัสพิเศษสำหรับมิตรภาพ"
         }
       }
     }

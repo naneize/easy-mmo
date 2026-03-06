@@ -24,6 +24,10 @@
     "dashboard": "Dashboard",
     "market": "Market",
     "skills": "Skills",
+    "newSkillUnlocked": "You've unlocked a new skill from",
+    "equipped_skills": "Equipped Skills",
+    "recent_battle_logs": "Recent Battle Logs",
+    "no_skills_equipped": "No skills equipped",
     "adventure": "Adventure",
     "classes": "Classes",
     "achievements": "Achievements",
@@ -34,7 +38,8 @@
     "elementGuide": "Element Guide",
     "elementHint": "Choose an element that counters the monster for maximum damage",
     "classUnlockHint": "Equip 4 skills according to the set to unlock the class",
-    "noBattleLogs": "No battle logs yet"
+    "noBattleLogs": "No battle logs yet",
+    "chooseMap": "Choose Map to Battle"
   },
   "battleResult": {
     "victory": "Victory!",
@@ -57,8 +62,9 @@
   },
   "dropDetail": {
     "title": "Drop Rewards",
-    "dropRate": "3-5%",
-    "noDrops": "No special drops found"
+    "dropRate": "Drop Rate",
+    "noDrops": "No special drops found from this monster",
+    "requirement": "Class Requirement"
   },
   "masteryDetail": {
     "title": "Mastery Progress",
@@ -103,6 +109,26 @@
       "name": "Spark Burst",
       "description": "25% chance to attack again for 100% damage (increases to 40% if player is Neutral element) +2% chance and +3% damage per level",
       "log": "⚡ Spark Burst Lv.{{level}} lightning strikes! (Damage: {{dmg}})"
+    },
+    "mercenary-path": {
+      "name": "Mercenary Path",
+      "description": "Special mercenary skills and bonuses",
+      "log": "⚔️ Mercenary Path Lv.{{level}} special mercenary skills and bonuses!"
+    },
+    "sturdy-body": {
+      "name": "Sturdy Body",
+      "description": "Increase DEF by 8% and increase by 1% per level",
+      "log": "🛡️ Sturdy Body Lv.{{level}} increases DEF by {{percent}}% (+{{def}} DEF)!"
+    },
+    "brute-force": {
+      "name": "Brute Force",
+      "description": "Increase ATK by 8% and increase by 1% per level",
+      "log": "💪 Brute Force Lv.{{level}} increases ATK by {{percent}}% (+{{atk}} ATK)!"
+    },
+    "battle-focus": {
+      "name": "Battle Focus",
+      "description": "Increase Final DMG by 5% and increase by 0.5% per level",
+      "log": "⚔️ Battle Focus Lv.{{level}} increases Final DMG by {{percent}}%!"
     },
     "blade-dance": {
       "name": "Blade Dance",
@@ -451,6 +477,15 @@
         "arcaneEcho": {
           "name": "Arcane Echo",
           "description": "Every 3 turns, create massively increased damage!"
+        }
+      }
+    },
+    "mercenary": {
+      "name": "Mercenary",
+      "specialEffect": {
+        "mercenaryPath": {
+          "name": "Mercenary Path",
+          "description": "Special mercenary skills and bonuses"
         }
       }
     }

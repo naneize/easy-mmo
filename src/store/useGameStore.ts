@@ -143,8 +143,8 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
   player: {
     hp: 350,
     maxHp: 350,
-    atk: 35, // 15
-    def: 20, // 10
+    atk: 30, // 15
+    def: 15, // 10
     level: 1,
     lastElementChange: 0,
     gold: 1000,
@@ -165,11 +165,16 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
   inventory: ['w_wooden_sword', 'a_leather_armor'] as string[],
   equipped: { weapon: null, armor: null, accessory: null } as GameState['equipped'],
   ownedSkills: INITIAL_SKILLS.map(s => ({ ...s, level: 1 })),
+
+
   equippedSkills: [].map(id => {
     const skill = INITIAL_SKILLS.find(s => s.id === id);
     return skill ? { ...skill, level: 1, unlocked: true } : null;
   }).filter(Boolean) as Skill[],
-  unlockedSkills: [] as string[],
+
+  unlockedSkills: ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'] as string[],
+
+
   battleLogs: [],
   lastBattleResult: null as BattleResultSummary | null,
   monsterKills: {},
@@ -503,12 +508,16 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
 
         const droppedSkillIds = monsterData.droppedSkills ?? [];
         if (droppedSkillIds.length > 0) {
+          // รายชื่อสกิลสำหรับปลดล็อกอาชีพแรก (Mercenary)
+          const starterSkills = ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'];
+
           for (const skillId of droppedSkillIds) {
             if (newUnlockedSkills.includes(skillId)) continue;
 
-            // ใช้ true สำหรับการทดสอบ (ดรอป 100%)
-            // ค้นหาบรรทัด if (true) เดิมแล้ววางทับด้วยโค้ดชุดนี้ครับ
-            const dropChance = 0.03 + (Math.random() * 0.02); // โอกาสดรอป 3-5%
+            // 🟢 คำนวณโอกาสดรอป: สกิลแรก 30%, สกิลทั่วไป 3-5%
+            const isStarter = starterSkills.includes(skillId);
+            const dropChance = isStarter ? 0.30 : (0.03 + Math.random() * 0.02);
+
             if (Math.random() < dropChance) {
               newUnlockedSkills.push(skillId);
               newUnlockedSkillsFromThisBattle.push(skillId);
@@ -516,7 +525,11 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
               const skillName = state.ownedSkills.find(s => s.id === skillId)?.name ?? skillId;
               currentLogs.push({
                 type: 'synergy',
-                text: `🎁 คุณได้รับสกิลใหม่จาก ${monsterData.name}: [${skillName}] (${Math.round(dropChance * 100)}% Drop)`
+                text: i18n.t('battleLog.newSkillUnlocked', {
+                  skill: skillName,
+                  monster: monsterData.name,
+                  dropChance: Math.round(dropChance * 100)
+                })
               });
             }
           }

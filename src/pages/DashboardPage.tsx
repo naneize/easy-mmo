@@ -8,6 +8,7 @@ import { ELEMENT_CHART } from '../logic/elementalLogic';
 import { ElementGuideModal } from '../components/ElementGuideModal';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 const ELEMENT_STYLES: Record<string, string> = {
     Fire: 'from-orange-500 to-rose-600',
@@ -74,10 +75,11 @@ export function DashboardPage() {
             crit_chance: 'Crit Chance %',
             crit_multi: 'Crit Damage +',
             armor_pen: 'Armor Pen %',
-            dmgReduction: 'Damage Reduction %'
+            dmgReduction: 'Damage Reduction %',
+            gold_bonus: 'Gold Bonus %'
         };
 
-        const percentKeys = new Set(['atk_percent', 'def_percent', 'hp_percent', 'lifesteal_percent', 'crit_chance', 'armor_pen', 'dmgReduction']);
+        const percentKeys = new Set(['atk_percent', 'def_percent', 'hp_percent', 'lifesteal_percent', 'crit_chance', 'armor_pen', 'dmgReduction', 'gold_bonus']);
 
         const toDisplay = (key: string, raw: number) => {
             if (percentKeys.has(key)) return `${(raw * 100).toFixed(0)}%`;
@@ -253,8 +255,8 @@ export function DashboardPage() {
 
                 {/* Equipped Skills */}
                 <div className="space-y-3">
-                    <h3 className="px-2 text-sm font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                        <Zap size={16} /> Equipped Skills
+                    <h3 className="px-2 text-sm font-black uppercase tracking-widest text-white flex items-center gap-2">
+                        {t('ui.equipped_skills')}
                     </h3>
                     {equippedSkills.length > 0 ? (
                         equippedSkills.map(skill => {
@@ -289,7 +291,7 @@ export function DashboardPage() {
                         })
                     ) : (
                         <div className="py-8 text-center text-sm text-slate-400 italic bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                            ยังไม่ได้ติดตั้งสกิล
+                            {t('ui.no_skills_equipped')}
                         </div>
                     )}
                 </div>
@@ -298,7 +300,7 @@ export function DashboardPage() {
                 <div className="rounded-4xl bg-white p-6 shadow-sm border border-slate-100 h-fit">
                     <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-slate-800">
                         <History className="text-indigo-500" size={20} />
-                        Recent Battle Logs
+                        {t('ui.recent_battle_logs')}
                     </h3>
                     <div className="space-y-2 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
                         {battleLogs.length > 0 ? (
@@ -338,8 +340,8 @@ export function DashboardPage() {
                             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
                             <div className="text-[10px] font-black uppercase tracking-widest opacity-80">Current Class</div>
                             <div className="mt-1 text-3xl font-black tracking-tighter">{playerClass
-                                ? t(playerClass.nameKey) // ✅ ใช้ nameKey ที่เราตั้งไว้ใน ClassDefinition
-                                : t('ui.novice')         // ✅ ถ้าไม่มีคลาส ให้ดึงคำว่า Novice จากหมวด UI
+                                ? t(playerClass.nameKey)
+                                : t('ui.novice')
                             }</div>
                             <button
                                 type="button"

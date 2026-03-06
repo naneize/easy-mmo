@@ -23,7 +23,7 @@ interface SkillResult {
     critChance?: number;
     critDamage?: number;
     action?: string;
-    multiplier?: number; // เพิ่มเพื่อให้รองรับ gold-finder
+    multiplier?: number;
 }
 
 // Helper สำหรับแปลภาษาภายในไฟล์นี้
@@ -344,4 +344,48 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             log: `👑 ` + t('skills.elemental-mastery.elementalLog', { element: player.element, atk: Math.round(atk * 100), def: Math.round(def * 100), hp: Math.round(hp * 100) })
         };
     },
+
+    // #region --- Mercenary Path Skills ---
+
+    'sturdy-body': ({ level }) => {
+        const defPercent = 0.08 + ((level - 1) * 0.01);
+        const percentValue = Math.round(defPercent * 100);
+        return {
+            value: 0,
+            defPercent: defPercent,
+            // ส่งทั้ง level, percent (สำหรับข้อความหลัก) และ def (สำหรับตัวเลขบวก)
+            log: `🛡️ ` + t('skills.sturdy-body.log', {
+                level,
+                percent: percentValue,
+                def: percentValue // ส่งค่าเปอร์เซ็นต์ไปโชว์ในช่อง {{def}}
+            })
+        };
+    },
+
+    'brute-force': ({ level }) => {
+        const atkPercent = 0.08 + ((level - 1) * 0.01);
+        const percentValue = Math.round(atkPercent * 100);
+        return {
+            value: 0,
+            atkPercent: atkPercent,
+            log: `⚔️ ` + t('skills.brute-force.log', {
+                level,
+                percent: percentValue,
+                atk: percentValue // ส่งค่าเปอร์เซ็นต์ไปโชว์ในช่อง {{atk}}
+            })
+        };
+    },
+
+    'battle-focus': ({ level }) => {
+        // ไม่ต้องส่ง atkPercent กลับไป เพื่อให้มันไปคำนวณที่ handlePlayerTurn ที่เดียว
+        return {
+            value: 0,
+            // atkPercent: 0, // ลบทิ้ง หรือใส่เป็น 0
+            log: `🎯 ` + t('skills.battle-focus.log', {
+                level,
+                percent: 5 + ((level - 1) * 0.5) // แค่ส่งไปโชว์ใน Log
+            })
+        };
+    },
+    // #endregion
 };

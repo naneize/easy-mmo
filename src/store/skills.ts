@@ -46,7 +46,10 @@ const ICON_MAP: Record<string, React.ElementType> = {
   'armor-penetration': Swords,
   'elemental-mastery': Crown,
   'drop-chance': Gift,
-  'drop-amount': Gift
+  'drop-amount': Gift,
+  'sturdy-body': Shield,
+  'brute-force': Swords,
+  'battle-focus': Target
 }
 
 // Helper function to reconstruct skills with proper Icon components
@@ -225,6 +228,54 @@ export const INITIAL_SKILLS: Skill[] = [
   },
   // #endregion
 
+  // #region --- Mercenary Path Skills ---
+  {
+    id: 'sturdy-body',
+    name: 'Sturdy Body',
+    description: 'เพิ่ม DEF 8% และเพิ่มขึ้น 1% ต่อ LV',
+    nameKey: 'skills.sturdy-body.name',
+    descriptionKey: 'skills.sturdy-body.description',
+    type: 'constant',
+    tier: 'common',
+    targetStat: 'def_percent',
+    Icon: Shield,
+    value: 0.08,
+    level: 1,
+    maxLevel: 10,
+    unlocked: false
+  },
+  {
+    id: 'brute-force',
+    name: 'Brute Force',
+    description: 'เพิ่ม ATK 8% และเพิ่มขึ้น 1% ต่อ LV',
+    nameKey: 'skills.brute-force.name',
+    descriptionKey: 'skills.brute-force.description',
+    type: 'constant',
+    tier: 'common',
+    targetStat: 'atk_percent',
+    Icon: Swords,
+    value: 0.08,
+    level: 1,
+    maxLevel: 10,
+    unlocked: false
+  },
+  {
+    id: 'battle-focus',
+    name: 'Battle Focus',
+    description: 'เพิ่ม Final DMG 5% และเพิ่มขึ้น 0.5% ต่อ LV',
+    nameKey: 'skills.battle-focus.name',
+    descriptionKey: 'skills.battle-focus.description',
+    type: 'constant',
+    tier: 'common',
+    targetStat: 'none',
+    Icon: Target,
+    value: 0.05,
+    level: 1,
+    maxLevel: 10,
+    unlocked: false
+  },
+  // #endregion
+
   // #region --- Common Tier Skills (Early Game) ---
   {
     id: 'vitality-boost',
@@ -250,7 +301,7 @@ export const INITIAL_SKILLS: Skill[] = [
     descriptionKey: 'skills.gold-finder.description',
     type: 'constant',
     tier: 'common',
-    targetStat: 'atk_flat', // ใช้สถานะชั่วคราวในการคำนวณ
+    targetStat: 'gold_bonus', // ใช้สถานะชั่วคราวในการคำนวณ
     Icon: Star,
     value: 0,
     level: 1,

@@ -10,6 +10,7 @@ export type ClassBonus = {
     crit_multi?: number;
     armor_pen?: number;
     dmgReduction?: number;
+    gold_bonus?: number;
 };
 
 export type ClassCategory = 'striker' | 'tanker' | 'caster' | 'specialist';
@@ -100,6 +101,19 @@ export const CLASS_DEFINITIONS: ClassDefinition[] = [
             atk_percent: 0.08,
             def_percent: -0.05,
             armor_pen: 0.10
+        }
+    },
+    {
+        id: 'mercenary',
+        name: 'Mercenary',
+        nameKey: 'classes.mercenary.name',
+        category: 'striker',
+        requiredSkills: ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'],
+        bonus: {
+            atk_percent: 0.10,
+            def_percent: 0.08,
+            hp_percent: 0.05,
+            gold_bonus: 0.20
         }
     }
 ];

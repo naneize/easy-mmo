@@ -94,7 +94,7 @@ export const MONSTERS: MonsterData[] = [
         gold: 20, exp: 0, // exp will be calculated
         element: 'Water',
         masteryBonus: { type: 'maxHp', valuePerTier: 8 },
-        droppedSkills: ['vitality-boost', 'calm-focus',]
+        droppedSkills: ['sturdy-body', 'vitality-boost', 'calm-focus']
     },
     {
         id: 'm-02',
@@ -109,7 +109,7 @@ export const MONSTERS: MonsterData[] = [
         gold: 50, exp: 0, // exp will be calculated
         element: 'Wind',
         masteryBonus: { type: 'atk', valuePerTier: 5 },
-        droppedSkills: ['tailwind-strike', 'gold-finder']
+        droppedSkills: ['brute-force', 'gold-finder', 'tailwind-strike']
     },
     {
         id: 'm-04',
@@ -124,7 +124,7 @@ export const MONSTERS: MonsterData[] = [
         gold: 70, exp: 0, // exp will be calculated
         element: 'Fire',
         masteryBonus: { type: 'def', valuePerTier: 5 },
-        droppedSkills: ['blazing-soul', 'fire-ember']
+        droppedSkills: ['battle-focus', 'blazing-soul', 'fire-ember']
     },
 
     // --- โซนกลาง (Level 5-8) ---

@@ -124,8 +124,8 @@ export function AdventurePage() {
                     {selectedMap.bgEmoji}
                 </div>
                 <div>
-                    <h2 className="text-3xl font-black">{t(selectedMap.nameKey)}</h2>
-                    <p className="text-indigo-200/70 text-lg font-medium max-w-xl leading-relaxed italic">
+                    <h2 className="text-3xl text-white font-black">{t(selectedMap.nameKey)}</h2>
+                    <p className="text-slate-500 text-lg font-medium max-w-xl leading-relaxed italic">
                         {t(selectedMap.descriptionKey)}
                     </p>
                 </div>

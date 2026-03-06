@@ -8,7 +8,12 @@ import { useTranslation } from 'react-i18next'
 
 // --- Helper Functions (เหมือนเดิม) ---
 function formatBonusValue(key: string, value: number): string {
-  const isPercent = key.endsWith('_percent') || key === 'crit_chance' || key === 'armor_pen' || key === 'dmgReduction';
+  const isPercent = key.endsWith('_percent') ||
+    key === 'crit_chance' ||
+    key === 'armor_pen' ||
+    key === 'dmgReduction' ||
+    key === 'gold_bonus';
+
   if (isPercent) {
     const val = (value * 100).toFixed(0);
     return `${value > 0 ? '+' : ''}${val}%`;
@@ -25,8 +30,9 @@ function formatBonusName(key: string, t: any): string {
     lifesteal_percent: 'global.lifesteal', crit_chance: 'global.critChance',
     crit_multi: 'global.critDamage', armor_pen: 'global.armorPen',
     dmgReduction: 'global.dmgReduction',
+    gold_bonus: 'global.gold',
   }
-  const isPercent = key.endsWith('_percent') || key === 'crit_chance' || key === 'armor_pen' || key === 'dmgReduction';
+  const isPercent = key.endsWith('_percent') || key === 'crit_chance' || key === 'armor_pen' || key === 'dmgReduction' || key === 'gold_bonus';
   const suffix = isPercent ? ' (%)' : '';
   const baseKey = globalKeyMap[key] || key;
   try { return t(baseKey, { lng: 'en' }) + suffix; } catch { return key + suffix; }
@@ -115,7 +121,7 @@ export function ClassesPage() {
                   }`}
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${isActive ? 'bg-fuchsia-100 border-fuchsia-200 text-fuchsia-600' :
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${isActive ? 'bg-fuchsia-100 border-fuchsia-200 text-emerald-500' :
                     isUnlocked ? 'bg-emerald-100 border-emerald-200 text-emerald-600' : 'bg-slate-200 border-slate-300 text-slate-500'
                     }`}>
                     {isUnlocked ? <CheckCircle2 size={24} /> : <Lock size={24} />}

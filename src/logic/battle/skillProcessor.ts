@@ -87,27 +87,41 @@ export const processConstantSkills = (
             }
         }
 
-        // --- [2] จัดการกรณีเป็น "ITEM" (Passive) ---
-        if ('passive' in effect && effect.passive) {
-            const p = effect.passive;
-            const val = p.value || 0;
+        // --- [2] จัดการกรณีเป็น "ITEM" (ดึงจาก stats และ passive) ---
+        // ตรวจสอบทั้งกรณีมี stats (ดาบไม้/เกราะหนัง) และกรณีมี passive (ไอเทมพิเศษ)
+        if ('stats' in effect || ('passive' in effect && effect.passive)) {
+            const item = effect as any;
+            const s = item.stats || {};
+            const p = item.passive || {};
 
-            if (p.target === 'atk_flat') bonusStats.atk_flat += val;
-            if (p.target === 'def_flat') bonusStats.def_flat += val;
-            if (p.target === 'maxHp_flat') bonusStats.hp_mod += val;
-            if (p.target === 'atk_percent') bonusStats.atk_percent += (val / 100);
-            if (p.target === 'def_percent') bonusStats.def_percent += (val / 100);
-            if (p.target === 'maxHp_percent') bonusStats.hp_percent += (val / 100);
-            if (p.target === 'lifesteal') bonusStats.lifesteal_percent += (val / 100);
+            // 1. ดึงจากระบบ stats (Flat Values)
+            if (typeof s.atk === 'number') bonusStats.atk_flat += s.atk;
+            if (typeof s.def === 'number') bonusStats.def_flat += s.def;
+            if (typeof s.maxHp === 'number') bonusStats.hp_mod += s.maxHp;
 
-            // แปลประเภท Stat สำหรับ Item Log
-            const statName = p.target.split('_')[0].toUpperCase();
+            // 2. ดึงจากระบบ passive เดิม (เพื่อไม่ให้ของเก่าพัง)
+            const pVal = p.value || 0;
+            if (p.target === 'atk_flat') bonusStats.atk_flat += pVal;
+            if (p.target === 'def_flat') bonusStats.def_flat += pVal;
+            if (p.target === 'maxHp_flat') bonusStats.hp_mod += pVal;
+            if (p.target === 'atk_percent') bonusStats.atk_percent += (pVal / 100);
+            if (p.target === 'def_percent') bonusStats.def_percent += (pVal / 100);
+            if (p.target === 'maxHp_percent') bonusStats.hp_percent += (pVal / 100);
 
-            skillLogs.push({
-                type: 'item',
-                text: `📦 [${effect.name}] ${statName} +${val}${p.target.includes('percent') ? '%' : ''}`,
-                skillName: effect.name
-            });
+            // --- ส่วนการแสดง Log ของไอเทม ---
+            const displayParts: string[] = [];
+            if (s.atk) displayParts.push(`ATK +${s.atk}`);
+            if (s.def) displayParts.push(`DEF +${s.def}`);
+            if (s.maxHp) displayParts.push(`HP +${s.maxHp}`);
+            if (p.target) displayParts.push(`${p.target.toUpperCase()} +${pVal}`);
+
+            if (displayParts.length > 0) {
+                skillLogs.push({
+                    type: 'item',
+                    text: `📦 [${effect.name}] ${displayParts.join(', ')}`,
+                    skillName: effect.name
+                });
+            }
         }
     });
 

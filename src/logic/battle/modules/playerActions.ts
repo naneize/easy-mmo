@@ -17,7 +17,8 @@ export const handlePlayerTurn = (
     bonusStats: any,
     baseEffectiveMaxHp: number,
     turn: number,
-    playerClass: string
+    playerClass: string,
+    pElementMult: number
 ): { p_hp: number; m_hp: number; logs: BattleLogEntry[] } => {
 
     const turnLogs: BattleLogEntry[] = [];
@@ -71,14 +72,26 @@ export const handlePlayerTurn = (
         turnLogs.push({ type: 'skill', text: t('battleLog.arcaneEchoDamage', { mult: arcaneEchoMult }) });
     }
 
-    // 4. Critical & Attack (✅ แก้ไขให้ใช้ playerName และ monsterName)
+    // 4. Critical Calculation (คำนวณเลขเบื้องต้น)
     let isCrit = Math.random() < bonusStats.crit_chance;
     if (isCrit) {
         pDmg = Math.floor(pDmg * bonusStats.crit_multi);
-        currentMHp -= pDmg;
+    }
+
+    // 🚩 [FINAL CALCULATION] รวมร่าง Final Damage และ ธาตุ
+    const battleFocus = allEffects.find(eff => eff.id === 'battle-focus');
+    const bfMultiplier = (battleFocus && 'level' in battleFocus)
+        ? 1 + (0.05 + (battleFocus.level - 1) * 0.005)
+        : 1;
+
+    // คำนวณดาเมจสุดท้ายที่รวมทุกอย่างแล้ว (คริ + ธาตุ + Battle Focus)
+    pDmg = Math.floor(pDmg * (pElementMult || 1) * bfMultiplier);
+
+    // 5. Update Monster HP and Logs (หักเลือดและแสดงผลแค่ "ครั้งเดียว" ตรงนี้)
+    currentMHp -= pDmg;
+    if (isCrit) {
         turnLogs.push(Log.critical(playerName, monsterName, pDmg, bonusStats.crit_multi, Math.max(0, currentMHp)));
     } else {
-        currentMHp -= pDmg;
         turnLogs.push(Log.attack(playerName, monsterName, pDmg, Math.max(0, currentMHp)));
     }
 
