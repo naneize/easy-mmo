@@ -8,6 +8,8 @@ import { useToastStore } from '../store/useToastStore'
 import { AchievementToast } from '../components/Achievements/AchievementToast'
 import { calculatePlayerClass } from '../utils/gameHelpers'
 
+import { useTranslation } from 'react-i18next'
+
 
 const tabTitle: Record<string, string> = {
   dashboard: 'Player Profile',
@@ -31,6 +33,8 @@ export function MainLayout(props: { children?: ReactNode }) {
 
   const prevClassIdRef = useRef<string | null>(null);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     const playerClass = calculatePlayerClass(equippedSkills);
     const nextId = playerClass?.id ?? null;
@@ -43,10 +47,13 @@ export function MainLayout(props: { children?: ReactNode }) {
     markClassUnlocked(nextId);
 
     if (prevId !== nextId) {
+      // ดึงชื่ออาชีพที่ผ่านการแปลมาแล้ว (ถ้ามี)
+      const className = playerClass?.name ?? nextId;
+
       setActiveToast({
-        title: `ปลดล็อคอาชีพ: ${playerClass?.name ?? nextId}`,
-        desc: `สวมใส่สกิลครบเซตของอาชีพนี้แล้ว! ไปดูรายละเอียดที่หน้า Classes ได้เลย`,
-        badgeText: 'Class Unlocked'
+        title: t('achievementToast.classUnlocked.title', { className }),
+        desc: t('achievementToast.classUnlocked.desc'),
+        badgeText: t('achievementToast.classUnlocked.badge')
       });
     }
   }, [equippedSkills, markClassUnlocked, setActiveToast, unlockedClasses]);

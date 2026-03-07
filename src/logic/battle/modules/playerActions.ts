@@ -19,7 +19,7 @@ export const handlePlayerTurn = (
     turn: number,
     playerClass: string,
     pElementMult: number
-): { p_hp: number; m_hp: number; logs: BattleLogEntry[] } => {
+): { p_hp: number; m_hp: number; logs: BattleLogEntry[], totalDamageDealt: number } => {
 
     const turnLogs: BattleLogEntry[] = [];
     let currentPHp = p_hp;
@@ -112,5 +112,7 @@ export const handlePlayerTurn = (
         turnLogs.push(Log.doubleAttack(playerName, monsterName, secondHitDmg, Math.max(0, currentMHp)));
     }
 
-    return { p_hp: currentPHp, m_hp: currentMHp, logs: turnLogs };
+    const totalDamageDealt = (m_hp - currentMHp);
+
+    return { p_hp: currentPHp, m_hp: currentMHp, logs: turnLogs, totalDamageDealt };
 };

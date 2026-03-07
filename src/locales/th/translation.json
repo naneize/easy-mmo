@@ -82,7 +82,12 @@
     "footer": "ปลดล็อกความสำเร็จเพื่อรับรางวัลพิเศษในอนาคต"
   },
   "achievementToast": {
-    "unlocked": "ปลดล็อกความสำเร็จแล้ว"
+    "unlocked": "ปลดล็อคความสำเร็จ!",
+    "classUnlocked": {
+      "title": "ปลดล็อคอาชีพ: {{className}}",
+      "desc": "สวมใส่สกิลครบเซตของอาชีพนี้แล้ว! ไปดูรายละเอียดที่หน้า Classes ได้เลย",
+      "badge": "อาชีพใหม่"
+    }
   },
   "achievements": {
     "firstBlood": {
@@ -132,6 +137,21 @@
       "name": "Blade Dance",
       "description": "เพิ่ม ATK 20% (เพิ่มเป็น 35% หากผู้เล่นเป็นธาตุ Neutral) +3% ต่อระดับ",
       "log": "⚔️ Blade Dance Lv.{{level}} เพิ่มพลังโจมตี {{percent}}% (+{{atk}} ATK)!"
+    },
+    "p-reflect-skin": {
+      "name": "ผิวเยลลี่สะท้อนกลับ",
+      "description": "สะท้อนความเสียหาย 15%",
+      "log": "🛡️ ผิวของ King Slime ยืดหยุ่นเป็นพิเศษ! สะท้อนดาเมจ {{value}}!"
+    },
+    "p-enrage": {
+      "name": "บ้าคลั่ง (Enrage)",
+      "description": "เมื่อ HP ต่ำกว่า 40% พลังโจมตีจะเพิ่มขึ้น 50%",
+      "log": "💢 บ้าคลั่ง! พลังโจมตีของบอสเพิ่มขึ้น 50%!"
+    },
+    "p-regen": {
+      "name": "ฟื้นตัวอัตโนมัติ",
+      "description": "ฟื้นฟู HP 3% ของ Max HP ทุกเทิร์น",
+      "log": "🧪 ฟื้นตัวอัตโนมัติ! บอสฟื้นฟูเลือด 3%! {{value}}"
     },
     "aegis-guard": {
       "name": "Aegis Guard",
@@ -308,6 +328,10 @@
     "m-03": {
       "name": "ผึ้งนักรบ",
       "description": "เหล็กไนรัวเร็ว"
+    },
+    "m-boss-01": {
+      "name": "ราชาสไลม์",
+      "description": "ราชาสไลม์ที่ทรงพลัง"
     },
     "m-04": {
       "name": "หนอนลาวา",
@@ -531,8 +555,15 @@
     "doubleAttack": "🌪️ DOUBLE ATTACK! 🌪️ {{attacker}} โจมตีต่อเนื่อง! -{{dmg}} HP (เหลือ {{hpLeft}} HP)",
     "bloodlustActivated": "🔥 โลหิตคลั่งทำงาน! ATK +20%",
     "arcaneEchoDamage": "✨ เสียงสะท้อนเวทมนตร์! (x{{mult}})",
-    "thornsReflected": "🌿 สะท้อนหนาม! {{dmg}} ดาเมจ",
+    "thornsReflected": "🌿 สะท้อนหนาม! {{dmg}}",
     "damageReduction": "🛡️ ลดความเสียหาย {{percent}}% (-{{amount}})",
-    "newSkillUnlocked": "ยินดีด้วย! คุณได้รับสกิล [{{skill}}] จากการกำจัด {{monster}} (โอกาสดรอป {{dropChance}}%)"
+    "newSkillUnlocked": "ยินดีด้วย! คุณได้รับสกิล [{{skill}}] จากการกำจัด {{monster}} (โอกาสดรอป {{dropChance}}%)",
+    "bossPassive": "🌀 {{name}} ใช้ {{passive}}: {{effect}}",
+    "reflect": "⚠️ {{name}} สะท้อนความเสียหายกลับมา {{dmg}}!"
+  },
+  "monsterPassive": {
+    "reflectSkin": "🛡️ ผิวของ {{name}} ยืดหยุ่นเป็นพิเศษ! สะท้อน {{value}}!",
+    "enrage": "💢 {{name}} โกรธจัด! ร่างกายเปลี่ยนเป็นสีแดงและตีแรงขึ้น {{value}}!",
+    "regen": "✨ {{name}} กำลังฟื้นฟูบาดแผลอย่างช้าๆ... {{value}}"
   }
 }

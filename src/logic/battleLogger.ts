@@ -33,14 +33,6 @@ export const BattleLogger = {
         return null;
     },
 
-    synergy: (skillLog: string): BattleLogEntry => ({
-        type: 'synergy',
-        text: i18next.t('battleLog.synergy', {
-            prefix: i18next.t('battleLog.synergyPrefix'), // ดึง "⚪ [Synergy] " มา
-            skillLog: skillLog                           // ข้อความของสกิล
-        })
-    }),
-
     // --- ระบบสกิลและสถานะ ---
     regen: (amt: number, currentHp: number): BattleLogEntry => ({
         type: 'regen',
@@ -102,6 +94,31 @@ export const BattleLogger = {
     lifesteal: (sourceName: string, amt: number, currentHp: number): BattleLogEntry => ({
         type: 'lifesteal',
         text: i18next.t('battleLog.lifesteal', { sourceName, amt: Math.floor(amt), currentHp: Math.floor(currentHp) })
+    }),
+
+    // --- ✨ เพิ่มใหม่: ระบบสกิลและพาสซีฟของบอส (Boss Special) ---
+    bossSkill: (bossName: string, skillName: string, effect: string): BattleLogEntry => ({
+        type: 'boss_skill',
+        text: i18next.t('battleLog.bossSkill', {
+            name: bossName,
+            skill: `[${skillName}]`,
+            effect
+        })
+    }),
+
+    bossPassive: (bossName: string, passiveName: string, effect: string, value: string = ""): BattleLogEntry => ({
+        type: 'boss_passive',
+        text: i18next.t('battleLog.bossPassive', {
+            name: bossName,
+            passive: `[${passiveName}]`,
+            effect: effect,
+            value: value // 👈 ส่งตัวแปรนี้เข้าไป เพื่อแทนที่ {{value}} ใน JSON
+        })
+    }),
+
+    reflect: (bossName: string, dmg: number): BattleLogEntry => ({
+        type: 'reflect',
+        text: i18next.t('battleLog.reflect', { name: bossName, dmg: Math.floor(dmg).toLocaleString() })
     }),
 
     // --- สรุปผล ---

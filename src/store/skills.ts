@@ -271,6 +271,7 @@ export const INITIAL_SKILLS: Skill[] = [
     tier: 'common',
     targetStat: 'none',
     Icon: Target,
+    element: 'Neutral',
     value: 0.05,
     level: 1,
     maxLevel: 10,

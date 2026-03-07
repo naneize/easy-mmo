@@ -83,7 +83,12 @@
     "footer": "Unlock achievements to receive special rewards in the future"
   },
   "achievementToast": {
-    "unlocked": "Achievement Unlocked"
+    "unlocked": "Achievement Unlocked!",
+    "classUnlocked": {
+      "title": "Class Unlocked: {{className}}",
+      "desc": "Full skill set equipped! Check the details on the Classes page.",
+      "badge": "New Class"
+    }
   },
   "achievements": {
     "firstBlood": {
@@ -133,6 +138,21 @@
       "name": "Blade Dance",
       "description": "Increase ATK by 20% (increases to 35% if player is Neutral element) +3% per level",
       "log": "⚔️ Blade Dance Lv.{{level}} increases ATK by {{percent}}% (+{{atk}} ATK)!"
+    },
+    "p-reflect-skin": {
+      "name": "Reflective Skin",
+      "description": "Reflects 15% of damage taken",
+      "log": "🛡️ King Slime's skin is extra elastic! Reflecting {{value}}"
+    },
+    "p-enrage": {
+      "name": "Enrage",
+      "description": "Increases ATK by 50% when HP is below 40%",
+      "log": "💢 Enrage increases ATK by 50%!"
+    },
+    "p-regen": {
+      "name": "Auto Regeneration",
+      "description": "Restores 3% of Max HP every turn",
+      "log": "🧪 Auto Regeneration heals {{value}}!"
     },
     "aegis-guard": {
       "name": "Aegis Guard",
@@ -309,6 +329,10 @@
     "m-03": {
       "name": "Warrior Bee",
       "description": "Rapid stingers"
+    },
+    "m-boss-01": {
+      "name": "King Slime",
+      "description": "A powerful slime king"
     },
     "m-04": {
       "name": "Lava Worm",
@@ -538,8 +562,16 @@
     "resetBuffer": "Reset Buffer",
     "bloodlustActivated": "🔥 Bloodlust Activated! ATK +20%",
     "arcaneEchoDamage": "✨ Arcane Echo Damage! (x{{mult}})",
-    "thornsReflected": "🌿 Thorns Reflected! {{dmg}} DMG",
+    "thornsReflected": "🌿 Thorns Reflected! {{dmg}}",
+    "reflectDmg": "⚠️ You were reflected {{dmg}} damage!",
     "damageReduction": "🛡️ Damage Reduced {{percent}}% (-{{amount}})",
-    "newSkillUnlocked": "Congrats! You unlocked [{{skill}}] from {{monster}} (Drop chance: {{dropChance}}%)"
+    "newSkillUnlocked": "Congrats! You unlocked [{{skill}}] from {{monster}} (Drop chance: {{dropChance}}%)",
+    "bossPassive": "🌀 {{name}} uses {{passive}}: {{effect}}",
+    "reflect": "⚠️ {{name}} reflected {{dmg}} damage back!"
+  },
+  "monsterPassive": {
+    "reflectSkin": "🛡️ {{name}}'s skin is extra elastic! Reflecting {{value}}!",
+    "enrage": "💢 {{name}} is enraged! ATK increases by {{value}}!",
+    "regen": "✨ {{name}} is slowly regenerating... {{value}}"
   }
 }

@@ -36,6 +36,10 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
         double: 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 font-bold shadow-[0_0_20px_rgba(34,211,238,0.3)] animate-pulse-slow py-3',
         dodge: 'bg-sky-400/10 text-sky-300 border-sky-400/30 font-medium py-1.5',
         counter: 'bg-cyan-500/25 text-cyan-200 border-cyan-400/60 font-bold shadow-[0_0_20px_rgba(34,211,238,0.3)] py-3',
+        boss_skill: 'bg-rose-950/40 text-rose-200 border-rose-500/50 font-black shadow-[0_0_15px_rgba(225,29,72,0.2)] py-2 my-1 ring-1 ring-rose-500/20',
+        boss_passive: 'bg-purple-900/30 text-purple-200 border-purple-500/40 py-1.5 shadow-inner opacity-100',
+        reflect: 'bg-orange-500/20 text-orange-300 border-orange-500/40 py-1.5 font-bold',
+
     }), [])
 
     useEffect(() => {
@@ -160,6 +164,9 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
                                     {log.type === 'double' && <Zap size={16} className="text-cyan-400 animate-pulse fill-cyan-400 drop-shadow-[0_0_8px_#22d3ee]" />}
                                     {log.type === 'dodge' && <Wind size={16} className="text-sky-300" />}
                                     {log.type === 'counter' && <RotateCcw size={16} className="text-cyan-400 animate-pulse drop-shadow-[0_0_8px_#22d3ee]" />}
+                                    {log.type === 'boss_skill' && <Skull size={18} className="text-rose-500 animate-pulse drop-shadow-[0_0_8px_#e11d48]" />}
+                                    {log.type === 'boss_passive' && <Activity size={16} className="text-purple-400" />}
+                                    {log.type === 'reflect' && <RotateCcw size={16} className="text-orange-400" />}
 
                                     {/* Custom/Default Icon */}
                                     {!logStyles[log.type] && (
@@ -169,45 +176,61 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
 
                                 {/* Text Content */}
                                 <div className="flex-1 py-0.5">
-                                    {/* ภายในส่วน Content ของ Log <p>...</p> */}
-                                    {log.type === 'elemental' ? (
-                                        log.text.split(' ').map((word, index) => {
-                                            // 1. นิยามสีประจำธาตุ (Tailwind Classes)
-                                            const elementColors: Record<string, string> = {
-                                                Fire: 'text-orange-500 font-bold drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]',
-                                                Water: 'text-blue-400 font-bold',
-                                                Earth: 'text-emerald-400 font-bold', // สีเขียวฟ้าแบบที่คุณชอบ
-                                                Wind: 'text-sky-300 font-bold',
-                                                Light: 'text-yellow-300 font-bold drop-shadow-[0_0_5px_rgba(253,224,71,0.3)]',
-                                                Dark: 'text-purple-500 font-bold',
-                                                Neutral: 'text-slate-400 font-bold'
-                                            };
+                                    {(() => {
+                                        // --- 1. สำหรับ Elemental (ของเดิมของคุณ) ---
+                                        if (log.type === 'elemental') {
+                                            return log.text.split(' ').map((word, index) => {
+                                                const elementColors: Record<string, string> = {
+                                                    Fire: 'text-orange-500 font-bold drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]',
+                                                    Water: 'text-blue-400 font-bold',
+                                                    Earth: 'text-emerald-400 font-bold',
+                                                    Wind: 'text-sky-300 font-bold',
+                                                    Light: 'text-yellow-300 font-bold drop-shadow-[0_0_5px_rgba(253,224,71,0.3)]',
+                                                    Dark: 'text-purple-500 font-bold',
+                                                    Neutral: 'text-slate-400 font-bold'
+                                                };
+                                                const cleanWord = word.replace('!', '');
+                                                if (elementColors[cleanWord]) {
+                                                    return <span key={index} className={`${elementColors[cleanWord]} mx-0.5`}>{word}</span>;
+                                                }
+                                                if (word.includes('ได้เปรียบ')) return <span key={index} className="text-emerald-400 font-black underline decoration-emerald-500/30 mx-0.5">ได้เปรียบ</span>;
+                                                if (word.includes('เสียเปรียบ')) return <span key={index} className="text-rose-400 font-black underline decoration-rose-500/30 mx-0.5">เสียเปรียบ</span>;
+                                                if (word.includes('x')) return <span key={index} className="text-amber-200/80 font-mono text-[12px] ml-1 bg-white/5 px-1 rounded border border-white/5">{word}</span>;
+                                                return <span key={index}>{word} </span>;
+                                            });
+                                        }
 
-                                            // 2. เช็คว่าคำนี้คือชื่อธาตุหรือไม่ (ตัดเครื่องหมายตกใจออกถ้ามี)
-                                            const cleanWord = word.replace('!', '');
+                                        // --- 2. สำหรับ Boss Skill (เพิ่มใหม่ ✨) ---
+                                        if (log.type === 'boss_skill' || log.type === 'boss_passive') {
+                                            return (
+                                                <div className="flex flex-wrap items-center gap-1">
+                                                    {log.text.split(' ').map((word, index) => {
+                                                        // ไฮไลต์คำที่เป็นชื่อสกิล (มักจะอยู่ใน [ ] หรือ เป็นคำเน้น)
+                                                        if (word.startsWith('[') && word.endsWith(']')) {
+                                                            return (
+                                                                <span key={index} className="text-rose-400 font-black tracking-tighter bg-rose-500/10 px-1.5 rounded border border-rose-500/20 animate-pulse">
+                                                                    {word}
+                                                                </span>
+                                                            );
+                                                        }
+                                                        // ไฮไลต์พวกตัวเลขความเสียหายของบอส
+                                                        if (!isNaN(Number(word.replace(/[^0-9]/g, ''))) && word.length > 1) {
+                                                            return <span key={index} className="text-white font-bold">{word}</span>;
+                                                        }
+                                                        return <span key={index} className={log.type === 'boss_passive' ? 'text-purple-200/80 ' : 'text-rose-100'}>{word} </span>;
+                                                    })}
+                                                </div>
+                                            );
+                                        }
 
-                                            if (elementColors[cleanWord]) {
-                                                return <span key={index} className={`${elementColors[cleanWord]} mx-0.5`}>{word}</span>;
-                                            }
+                                        // --- 3. สำหรับสถานะพิเศษอื่นๆ (สะท้อน/ฟื้นฟู) ---
+                                        if (log.type === 'reflect') {
+                                            return <span className="text-orange-300 font-bold ">🛡️ {log.text}</span>;
+                                        }
 
-                                            // 3. ไฮไลต์คำว่า "ได้เปรียบ" / "เสียเปรียบ"
-                                            if (word.includes('ได้เปรียบ')) {
-                                                return <span key={index} className="text-emerald-400 font-black underline decoration-emerald-500/30 mx-0.5">ได้เปรียบ</span>;
-                                            }
-                                            if (word.includes('เสียเปรียบ')) {
-                                                return <span key={index} className="text-rose-400 font-black underline decoration-rose-500/30 mx-0.5">เสียเปรียบ</span>;
-                                            }
-
-                                            // 4. ไฮไลต์ Damage Multiplier (x1.25)
-                                            if (word.includes('x')) {
-                                                return <span key={index} className="text-amber-200/80 font-mono text-[12px] ml-1 bg-white/5 px-1 rounded border border-white/5">{word}</span>;
-                                            }
-
-                                            return <span key={index}>{word} </span>;
-                                        })
-                                    ) : (
-                                        log.text
-                                    )}
+                                        // --- 4. ข้อความปกติ ---
+                                        return <span className="text-slate-300">{log.text}</span>;
+                                    })()}
                                 </div>
 
                                 {/* Row ID (Invisible/Subtle) */}

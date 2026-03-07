@@ -13,9 +13,16 @@ export const WORLD_MAPS: GameMap[] = [
         monsters: [
             MONSTERS.find(m => m.id === 'm-01'),
             MONSTERS.find(m => m.id === 'm-02'),
-            MONSTERS.find(m => m.id === 'm-04')
+            MONSTERS.find(m => m.id === 'm-04'),
+            MONSTERS.find(m => m.id === 'm-boss-01')
         ].filter(Boolean),
+
+
+
     },
+
+
+
     {
         id: 'whispering-forest',
         name: 'ป่ากระซิบ',
@@ -107,6 +114,7 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-29'),
             MONSTERS.find(m => m.id === 'm-30'),
             MONSTERS.find(m => m.id === 'm-31')
+
         ].filter(Boolean),
     },
     {
@@ -125,3 +133,11 @@ export const WORLD_MAPS: GameMap[] = [
         ].filter(Boolean),
     }
 ];
+
+console.log("📍 แผนที่ทุ่งหญ้ามีมอนสเตอร์กี่ตัว:",
+    WORLD_MAPS.find(map => map.id === 'starter-field')?.monsters.length
+);
+
+console.log("👾 รายชื่อ ID มอนสเตอร์ที่มีในระบบ:",
+    MONSTERS.map(m => m.id)
+);

@@ -10,8 +10,10 @@ export const prepareBattleContext = (
     player: Entity,
     monsterData: MonsterData,
     equippedSkills: BattleEffect[],
-    killCount: number
+    allKills: Record<string, number>,
+    allMonsters: MonsterData[]
 ) => {
+    console.log('🔍 Player Data Structure:', player);
 
     const monster = initializeMonster(monsterData);
 
@@ -20,7 +22,8 @@ export const prepareBattleContext = (
     const allEffects: BattleEffect[] = [...equippedSkills, ...equipmentList];
 
     // คำนวณค่า Mastery และธาตุ
-    const { mastery, masteryBonusStats, masteryBonusForCalc, pElementMult, mElementMult, playerClass, classBonus } = calculateInitialStats(player, monster, killCount, equippedSkills as Array<{ id: string }>);
+    const { mastery, masteryBonusStats, masteryBonusForCalc, pElementMult, mElementMult, playerClass, classBonus }
+        = calculateInitialStats(player, monster, allKills, allMonsters, equippedSkills as Array<{ id: string }>);
 
     // ประมวลผล Passive/Constant
     const { bonusStats, skillLogs: constantSkillLogs } = processConstantSkills(allEffects, player, monster, 0);
@@ -55,12 +58,12 @@ export const prepareBattleContext = (
     const baseDef = player.def;
     const baseMaxHp = player.maxHp;
 
-    const baseEffectiveMaxHp = (baseMaxHp + (bonusStats.hp_mod || 0) + (masteryBonusForCalc.hp_flat || 0)) * (1 + (bonusStats.hp_percent || 0) + (masteryBonusForCalc.hp_percent || 0));
-    const baseEffectiveDef = (baseDef + (bonusStats.def_flat || 0) + (masteryBonusForCalc.def_flat || 0)) * (1 + (bonusStats.def_percent || 0) + (masteryBonusForCalc.def_percent || 0));
+    const baseEffectiveMaxHp = (baseMaxHp + (bonusStats.hp_mod || 0) + (masteryBonusForCalc.maxHp_flat || 0)) * (1 + (bonusStats.hp_percent || 0) + (masteryBonusForCalc.maxHp_percent || 0));
     const baseEffectiveAtk = (baseAtk + (bonusStats.atk_flat || 0) + (masteryBonusForCalc.atk_flat || 0)) * (1 + (bonusStats.atk_percent || 0) + (masteryBonusForCalc.atk_percent || 0));
+    const baseEffectiveDef = (baseDef + (bonusStats.def_flat || 0) + (masteryBonusForCalc.def_flat || 0)) * (1 + (bonusStats.def_percent || 0) + (masteryBonusForCalc.def_percent || 0));
 
     // ==========================================
-    // 🔥 DETAILED DEBUG LOGS (Updated with Final Damage & Correct Element Logic)
+    // 🔥 DETAILED DEBUG LOGS (Updated for Global Mastery & Correct Stats)
     // ==========================================
     console.group(`⚔️ BATTLE SETUP: ${player.name} vs ${monster.name}`);
 
@@ -71,6 +74,7 @@ export const prepareBattleContext = (
     const bfSkill = allEffects.find(eff => eff.id === 'battle-focus');
     const bfLevel = (bfSkill && 'level' in bfSkill) ? (bfSkill as any).level : 1;
     const bfMult = bfSkill ? (1 + (0.05 + (bfLevel - 1) * 0.005)) : 1;
+
     console.table({
         baseAtk,
         baseDef,
@@ -83,13 +87,17 @@ export const prepareBattleContext = (
         finalCritChance: Number((bonusStats.crit_chance ?? 0).toFixed(4)),
         finalCritDamage: Number((bonusStats.crit_multi ?? 1).toFixed(2)),
         lifestealPercent: Number(((bonusStats.lifesteal_percent ?? 0) * 100).toFixed(1)),
-        finalDmgMult: `x${bfMult.toFixed(3)} (Battle Focus)` // 🚩 เพิ่มบรรทัดนี้
+        finalDmgMult: `x${bfMult.toFixed(3)} (Battle Focus)`
     });
 
     console.group("🧩 Modifiers Breakdown");
-    console.log(`- Mastery Level: ${mastery?.tier || 0} (Kills: ${killCount})`);
-    console.log(`- Mastery Bonus (display):`, masteryBonusStats);
-    console.log(`- Mastery Bonus (calc):`, masteryBonusForCalc);
+    // แสดง Mastery เฉพาะของมอนสเตอร์ตัวนี้ (เพื่อเช็ค Tier ปัจจุบัน)
+    const currentMonsterKills = allKills[monster.id] || 0;
+
+    console.log(`- Current Monster Mastery: Tier ${mastery?.tier || 0} (Kills: ${currentMonsterKills + 1})`);
+
+    // แสดงโบนัส Mastery รวมทั้งหมดจากมอนสเตอร์ทุกตัว (Global Stats)
+    console.log(`- Global Mastery Stats (Total):`, masteryBonusForCalc);
     console.log(`- Skill/Item BonusStats:`, bonusStats);
     console.groupEnd();
 
@@ -118,11 +126,11 @@ export const prepareBattleContext = (
     console.log(`- Elemental Matchup: x${pElementMult.toFixed(2)} ${pElementMult > 1 ? '🔥 Advantage' : pElementMult < 1 ? '❄️ Disadvantage' : '⚖️ Neutral'}`);
     console.log(`- Final Dmg Multiplier (Battle Focus): x${bfMult.toFixed(3)}`);
 
-    // สูตร ATK (ตอนนี้ ATK จะไม่คูณ pElementMult แล้วเพื่อให้เลขตรงหน้า Status)
+    // แก้ไขสูตรการแสดงผล ATK ให้ใช้ชื่อ maxHp_flat/percent ให้ถูกต้อง
     const pAtkFormula = `(${baseAtk} + ${((bonusStats.atk_flat || 0) + (masteryBonusForCalc.atk_flat || 0)).toFixed(0)}) * (1 + ${(bonusStats.atk_percent || 0).toFixed(2)} + ${(masteryBonusForCalc.atk_percent || 0).toFixed(2)})`;
     console.log(`- Player Final ATK: ${baseEffectiveAtk.toFixed(2)} (Formula: ${pAtkFormula})`);
 
-    // 🚩 คำนวณ Damage ที่คาดหวังใหม่ (ย้าย Element ไปคูณที่ DMG)
+    // คำนวณ Damage ที่คาดหวัง
     const baseDiff = Math.max(1, baseEffectiveAtk - monster.def);
     const estDamageToMonster = Math.floor(baseDiff * pElementMult * bfMult);
 

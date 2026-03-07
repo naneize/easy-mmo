@@ -10,6 +10,7 @@ import { INITIAL_SKILLS, reconstructSkill } from './skills'
 import type { Skill } from './skills'
 import type { SkillTier } from '../types/game';
 import { SKILL_EFFECTS } from '../logic/skillEffects';
+import { MONSTERS } from '../data/monsters'
 
 
 
@@ -148,7 +149,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     def: 15, // 10
     level: 1,
     lastElementChange: 0,
-    gold: 1000,
+    gold: 9999999,
     exp: 0,
     maxExp: 100,
     element: 'Neutral' as ElementType,
@@ -474,7 +475,15 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     ].filter(Boolean) as BattleEffect[]; // กรองเอาเฉพาะตัวที่ไม่เป็น null
 
     // ✨ 4. ส่ง allActiveEffects (ที่มีไอเทมแล้ว) เข้าไปแทน latestEquippedSkills
-    const result = simulateBattle(playerForBattle, monsterData, allActiveEffects, currentKillCount);
+    // เปลี่ยนมาส่ง monsterKills (ทั้งก้อน) และ MONSTERS (รายชื่อทั้งหมด)
+    const result = simulateBattle(
+      playerForBattle,
+      monsterData,
+      allActiveEffects,
+      monsterKills, // ✅ ส่งสมุดจดสถิติการฆ่าทั้งหมด (Record) แทนเลขตัวเดียว
+      MONSTERS      // ✅ ส่งรายชื่อมอนสเตอร์ทั้งหมดเข้าไปเป็นตัวที่ 5
+    );
+
 
     set((state) => {
       // --- 1. เตรียมตัวแปรพื้นฐานสำหรับอัปเดต Store ---

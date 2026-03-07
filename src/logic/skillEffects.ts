@@ -347,9 +347,11 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
 
     // #region --- Mercenary Path Skills ---
 
-    'sturdy-body': ({ level }) => {
+    'sturdy-body': ({ level, player }) => {
         const defPercent = 0.08 + ((level - 1) * 0.01);
         const percentValue = Math.round(defPercent * 100);
+        const flatIncrease = Math.round(player.def * defPercent);
+
         return {
             value: 0,
             defPercent: defPercent,
@@ -357,21 +359,23 @@ export const SKILL_EFFECTS: Record<string, (ctx: SkillContext) => SkillResult> =
             log: `🛡️ ` + t('skills.sturdy-body.log', {
                 level,
                 percent: percentValue,
-                def: percentValue // ส่งค่าเปอร์เซ็นต์ไปโชว์ในช่อง {{def}}
+                def: flatIncrease // ส่งค่าเปอร์เซ็นต์ไปโชว์ในช่อง {{def}}
             })
         };
     },
 
-    'brute-force': ({ level }) => {
+    'brute-force': ({ level, player }) => {
         const atkPercent = 0.08 + ((level - 1) * 0.01);
         const percentValue = Math.round(atkPercent * 100);
+        const flatIncrease = Math.round(player.atk * atkPercent);
+
         return {
             value: 0,
             atkPercent: atkPercent,
             log: `⚔️ ` + t('skills.brute-force.log', {
                 level,
                 percent: percentValue,
-                atk: percentValue // ส่งค่าเปอร์เซ็นต์ไปโชว์ในช่อง {{atk}}
+                atk: flatIncrease// ส่งค่าเปอร์เซ็นต์ไปโชว์ในช่อง {{atk}}
             })
         };
     },

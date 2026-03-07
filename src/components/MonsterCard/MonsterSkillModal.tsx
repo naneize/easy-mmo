@@ -25,7 +25,7 @@ export function MonsterSkillModal({ monster, onClose }: Props) {
                         </div>
                         <div>
                             <h3 className="font-black text-slate-800 text-lg uppercase tracking-tight">
-                                {t('monsterSkill.title', 'Monster Passives')}
+                                {t('skill.title')}
                             </h3>
                             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                                 {t(monster.nameKey)}

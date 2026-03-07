@@ -108,20 +108,7 @@ export const processConstantSkills = (
             if (p.target === 'def_percent') bonusStats.def_percent += (pVal / 100);
             if (p.target === 'maxHp_percent') bonusStats.hp_percent += (pVal / 100);
 
-            // --- ส่วนการแสดง Log ของไอเทม ---
-            const displayParts: string[] = [];
-            if (s.atk) displayParts.push(`ATK +${s.atk}`);
-            if (s.def) displayParts.push(`DEF +${s.def}`);
-            if (s.maxHp) displayParts.push(`HP +${s.maxHp}`);
-            if (p.target) displayParts.push(`${p.target.toUpperCase()} +${pVal}`);
 
-            if (displayParts.length > 0) {
-                skillLogs.push({
-                    type: 'item',
-                    text: `📦 [${effect.name}] ${displayParts.join(', ')}`,
-                    skillName: effect.name
-                });
-            }
         }
     });
 

@@ -92,6 +92,7 @@ export interface Entity extends BaseEntity {
     maxExp: number;
     skills: Skill[];
     lastElementChange: number;
+    monsterMasteries?: Record<string, number>;
 
     // ✨ เพิ่มส่วนนี้เข้าไปเพื่อแก้ Error Property 'equipment' does not exist
     equipment: {
@@ -108,7 +109,15 @@ export interface MonsterData extends BaseEntity {
     nameKey: string;
     description: string;
     descriptionKey: string;
-    role: import('../data/monsters').MonsterRoleType
+    role: import('../data/monsters').MonsterRoleType;
+
+    // ✅ แก้ไขบรรทัดนี้: เพิ่ม name?: string เข้าไป
+    passives?: {
+        id: string;
+        level: number;
+        name?: string; // ✨ เพิ่มตัวนี้เพื่อให้ใส่ชื่อในไฟล์ monsters.ts ได้
+    }[];
+
     gold: number;
     exp: number;
     masteryBonus?: {

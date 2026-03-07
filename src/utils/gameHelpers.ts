@@ -47,3 +47,35 @@ export const calculatePlayerClass = (equippedSkills: Array<{ id: string }> = [])
 
     return null;
 };
+
+// --- ฟังก์ชันใหม่สำหรับรวมโบนัสทั้งหมดจากมอนสเตอร์ทุกตัวที่เคยฆ่า ---
+export const getAllMasteryStats = (allKills: Record<string, number>, allMonsters: MonsterData[]) => {
+    const total = {
+        atk_flat: 0, atk_percent: 0,
+        def_flat: 0, def_percent: 0,
+        maxHp_flat: 0, maxHp_percent: 0
+    };
+
+    // วนลูปตามรายชื่อมอนสเตอร์ทั้งหมดในเกม
+    allMonsters.forEach(monster => {
+        const count = allKills[monster.id] || 0;
+        if (count === 0) return; // ถ้าไม่เคยฆ่าตัวนี้เลย ให้ข้ามไป
+
+        // เรียกใช้ฟังก์ชัน getMasteryBonus เดิมเพื่อคำนวณโบนัสของมอนสเตอร์ตัวนั้นๆ
+        const bonus = getMasteryBonus(monster, count);
+
+        // แยกบวกค่าเข้าตามประเภท (Flat หรือ Percent)
+        if (bonus.type === 'atk') {
+            if (bonus.isPercent) total.atk_percent += bonus.value;
+            else total.atk_flat += bonus.value;
+        } else if (bonus.type === 'def') {
+            if (bonus.isPercent) total.def_percent += bonus.value;
+            else total.def_flat += bonus.value;
+        } else if (bonus.type === 'maxHp') {
+            if (bonus.isPercent) total.maxHp_percent += bonus.value;
+            else total.maxHp_flat += bonus.value;
+        }
+    });
+
+    return total;
+};
