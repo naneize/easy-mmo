@@ -7,6 +7,7 @@ import { initializeMonster } from '../../data/monsters';
 import { BattleLogger as Log } from '../battleLogger';
 import { calculatePlayerClass } from '../../utils/gameHelpers';
 import { MONSTER_PASSIVES } from '../monsterPassives';
+import { ITEMS } from '../../data/items';
 
 
 // Helper สำหรับแปลภาษา
@@ -25,23 +26,48 @@ export const simulateBattle = (
     const context = prepareBattleContext(player, monster, equippedSkills, allMasteries, allMonsters);
     const {
         allEffects, bonusStats, baseEffectiveAtk, baseEffectiveDef,
-        baseEffectiveMaxHp, mElementMult, mastery, constantSkillLogs, pElementMult
+        baseEffectiveMaxHp, mElementMult, constantSkillLogs, pElementMult, playerClass
     } = context;
 
     console.log('🔍 ส่องดูข้อมูล Player ทั้งหมด:', player);
 
     const initializedMonster = initializeMonster(monster);
 
+
+
+
+
     // เตรียมชื่อมอนสเตอร์จากระบบแปลภาษา (ดึงตาม ID)
     const translatedMonsterName = t(`monsters.${monster.id}.name`);
 
     let p_hp = player.hp;
     let m_hp = initializedMonster.hp;
+
+
+
     const logs: BattleLogEntry[] = [...constantSkillLogs];
+
+    // 2. ✨ ย้ายโค้ดเช็คเงื่อนไขมาไว้ตรงนี้ (หลังประกาศ logs)
+    const equippedWeapon = player.equipment.weapon;
+
+
+    // เปลี่ยนจาก message เป็น text ตามที่ Error แจ้ง
+    if (playerClass?.id === 'mercenary' && (equippedWeapon as any)?.weaponType === 'sword') {
+        logs.push({
+            type: 'system', // หรือ 'info' ตามที่ type คุณรองรับ
+            text: '⚔️ Mercenary Sword Mastery: Increases Attack by 15%!',
+            // ถ้ามันยังฟ้องว่าขาดตัวไหน ให้เพิ่มตัวนั้นเข้าไปด้วยครับ เช่น
+            // damage: 0, 
+            // icon: '⚔️'
+        } as BattleLogEntry);
+    }
+
     let turn = 1;
 
     // ✅ แก้ไข: ใช้ชื่อที่แปลแล้ว
     logs.push(Log.start(translatedMonsterName, initializedMonster.hp));
+
+
 
     const elementNotice = Log.elementalNotice(
         pElementMult,
@@ -52,6 +78,8 @@ export const simulateBattle = (
     if (elementNotice) {
         logs.push(elementNotice);
     }
+
+
 
     // #endregion
 

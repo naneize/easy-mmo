@@ -102,6 +102,13 @@ export function InventoryPage() {
                       <div className={`truncate font-black text-sm sm:text-base ${slot.item ? 'text-slate-800' : 'text-slate-400 italic'}`}>
                         {slot.item?.name || t('inventory.emptySlot')}
                       </div>
+
+                      {/* ✨ เพิ่มบรรทัดนี้เพื่อโชว์ Weapon Type ใต้ชื่ออาวุธ */}
+                      {slot.item && (slot.item as any).weaponType && (
+                        <div className="text-[8px] font-bold text-sky-600 uppercase tracking-widest -mt-0.5">
+                          Type: {(slot.item as any).weaponType}
+                        </div>
+                      )}
                       {slot.item?.stats && (
                         <div className="flex flex-wrap gap-x-2 gap-y-1 text-[9px] sm:text-[10px] font-bold">
                           {/* --- 1. แสดง Stats ปกติ (ATK, HP, DEF) --- */}
@@ -251,6 +258,13 @@ export function InventoryPage() {
                                   'border-slate-200 bg-slate-50 text-slate-500'}`}>
                             {t(`inventory.${item.rarity.toLowerCase()}`)}
                           </span>
+
+                          {/* สำหรับฝั่งขวา (เช่น ใน Card ของ Inventory) */}
+                          {item && (item as any).weaponType && (
+                            <div className="text-[8px] font-bold text-sky-600 uppercase tracking-widest -mt-0.5 opacity-90">
+                              Type: {(item as any).weaponType}
+                            </div>
+                          )}
 
                           {isLocked && (
                             <span className="flex items-center gap-0.5 text-[8px] sm:text-[9px] font-black text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100 uppercase">

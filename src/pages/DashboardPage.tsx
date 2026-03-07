@@ -370,6 +370,20 @@ export function DashboardPage() {
                                             </div>
                                         )}
                                     </div>
+                                    {/* ✨ เพิ่มส่วนนี้เข้าไปต่อท้ายรายการโบนัสปกติ */}
+                                    {playerClass.id === 'mercenary' && (
+                                        <div className="flex flex-col gap-1 rounded-2xl border-2 border-rose-100 bg-rose-50/50 px-4 py-3 mt-2 animate-in slide-in-from-bottom-2 duration-500">
+                                            <div className="flex items-center justify-between">
+
+                                                {/* ถ้ามี logic เช็คอาวุธ สามารถเปลี่ยนสีป้ายนี้ได้ */}
+                                                <span className="text-[8px] font-black bg-rose-500 text-white px-1.5 py-0.5 rounded-full">SPECIAL</span>
+                                            </div>
+                                            <div className="text-[12px] font-medium text-rose-800/80 leading-relaxed">
+                                                Increases Attack by <span className="font-black text-rose-600">+15%</span> when
+                                                <span className="underline decoration-rose-400/50 underline-offset-2"> Sword</span> is equipped.
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {(playerClass.specialEffect || playerClass.elementAffinity) && (
                                         <div className="pt-4 space-y-3">
@@ -378,6 +392,26 @@ export function DashboardPage() {
                                                     <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Special Effect</div>
                                                     <div className="mt-1 text-[12px] font-black text-slate-800">{playerClass.specialEffect.name}</div>
                                                     <div className="mt-1 text-[11px] font-bold text-slate-600 leading-snug">{playerClass.specialEffect.description}</div>
+                                                </div>
+                                            )}
+
+                                            {/* ✨ 2. เพิ่มส่วนนี้: ตรวจสอบและแสดงผล Weapon Mastery ที่กำลังทำงานอยู่ */}
+                                            {playerClass.id === 'mercenary' && (
+                                                <div className="rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 animate-in fade-in slide-in-from-top-1 duration-300">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="text-[10px] font-black uppercase tracking-widest text-rose-400 italic">Weapon Mastery</div>
+                                                        {/* เช็คว่าใส่ดาบอยู่จริงๆ ไหม (Optionally: ถ้าอยากให้โชว์แค่ตอนใส่ดาบ) */}
+                                                        <span className="text-[8px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full font-black animate-pulse">ACTIVE</span>
+                                                    </div>
+                                                    <div className="mt-1 flex items-center gap-2">
+                                                        <span className="text-lg">⚔️</span>
+                                                        <div>
+                                                            <div className="text-[12px] font-black text-rose-900 leading-none">Sword Mastery</div>
+                                                            <div className="text-[10px] font-bold text-rose-700/80 mt-1">
+                                                                ได้รับ ATK +15% จากการใช้ดาบ
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             )}
 

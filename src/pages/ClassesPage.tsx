@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Users, CheckCircle2, Lock, TrendingUp, Sparkles, Shield, X, ChevronRight, Filter } from 'lucide-react'
+import { Users, CheckCircle2, Lock, TrendingUp, Sparkles, Shield, X, ChevronRight, Filter, Sword } from 'lucide-react'
 import { CLASS_DEFINITIONS, type ClassDefinition } from '../data/classes'
 import { INITIAL_SKILLS } from '../store/skills'
 import { useGameStore } from '../store/useGameStore'
@@ -236,6 +236,21 @@ export function ClassesPage() {
                   </div>
                   <div className="text-sm font-black text-amber-900 mb-1">{t(selectedClass.specialEffect.nameKey, { lng: 'en' })}</div>
                   <div className="text-[12px] font-medium text-amber-800/80 leading-relaxed">{t(selectedClass.specialEffect.descriptionKey)}</div>
+                </div>
+              )}
+
+              {/* ✨ เพิ่มส่วนนี้: Weapon Mastery (โบนัสอาวุธเฉพาะอาชีพ) */}
+              {selectedClass.id === 'mercenary' && (
+                <div className="bg-rose-50 rounded-[2rem] p-5 border border-rose-100 shadow-sm animate-in zoom-in-95 duration-300">
+                  <div className="flex items-center gap-2 mb-3 text-rose-600">
+
+                    <span className="text-[10px] font-black uppercase tracking-widest">Special</span>
+                  </div>
+
+                  <div className="text-[12px] font-medium text-rose-800/80 leading-relaxed">
+                    Increases Attack by <span className="font-black text-rose-600">+15%</span> when
+                    <span className="underline decoration-rose-400/50 underline-offset-2"> Sword</span> is equipped.
+                  </div>
                 </div>
               )}
 

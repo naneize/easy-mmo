@@ -25,9 +25,9 @@ export const calculateFinalStats = (
     const baseCritDamage = player.critDamage || 1.5; // Default 1.5x
 
     // 1. ตัวแปรเก็บค่าสะสม (Accumulators)
-    let atkFlat = player.atk;
-    let defFlat = player.def;
-    let maxHpFlat = player.maxHp;
+    let atkFlat = 0;
+    let defFlat = 0;
+    let maxHpFlat = 0;
     let critChanceFlat = baseCritChance;
     let critDamageFlat = baseCritDamage;
 
@@ -158,7 +158,7 @@ export const calculateFinalStats = (
     });
 
     // สูตร: (Base + FlatSkill) * (1 + PercentSum)
-    const finalAtk = Math.max(0, Math.floor((atkFlat + skillAtkMod) * (1 + atkPercent)));
+    const finalAtk = Math.max(0, Math.floor((player.atk + atkFlat + skillAtkMod) * (1 + atkPercent)));
     const finalDef = Math.max(0, Math.floor((defFlat + skillDefMod) * (1 + defPercent)));
     const finalMaxHp = Math.max(1, Math.floor((maxHpFlat + skillMaxHpMod) * (1 + maxHpPercent)));
     const finalCritChance = Math.min(1, Math.max(0, critChanceFlat + critChancePercent)); // Cap between 0-100%

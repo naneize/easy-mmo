@@ -9,6 +9,31 @@ import { StatItem } from './StatItem'
 import { MasteryDetailsModal } from './MasteryDetailsModal'
 import { DropDetailModal } from './DropDetailModal';
 import { MonsterSkillModal } from './MonsterSkillModal';
+import { MonsterRole } from '../../data/monsters';
+
+const ROLE_STYLES: Record<string, { card: string; title: string; badge: string }> = {
+    [MonsterRole.NORMAL]: {
+        card: 'border-slate-50 bg-white',
+        title: 'text-slate-800 group-hover:text-indigo-600',
+        badge: 'bg-slate-100 text-slate-500'
+    },
+    [MonsterRole.BOSS]: {
+        // เพิ่ม shadow-xl และเปลี่ยนสี shadow ให้ติดโทนส้มทอง
+        card: 'border-amber-300 bg-gradient-to-br from-white to-amber-50 shadow-[0_20px_50px_rgba(245,158,11,0.3)]',
+        title: 'text-amber-700 group-hover:text-orange-600',
+        badge: 'bg-amber-500 text-white'
+    },
+    [MonsterRole.TANK]: {
+        card: 'border-blue-100 bg-slate-50',
+        title: 'text-blue-900',
+        badge: 'bg-blue-600 text-white'
+    },
+    [MonsterRole.GLASS_CANNON]: {
+        card: 'border-rose-100 bg-rose-50/10',
+        title: 'text-rose-700',
+        badge: 'bg-rose-500 text-white'
+    }
+}
 
 
 
@@ -52,14 +77,18 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
     // คำนวณ stats จากระบบใหม่
     const initializedMonster = initializeMonster(monster)
 
-
+    const roleStyle = ROLE_STYLES[monster.role] || ROLE_STYLES.NORMAL;
 
     return (
         <>
-            <div className={`bg-white rounded-[2.5rem] p-6 border-2 border-slate-50 shadow-sm transition-all flex flex-col group relative overflow-hidden 
-                ${isProcessing
+            <div className={`rounded-[2.5rem] p-6 border-2 shadow-sm transition-all flex flex-col group relative overflow-hidden               
+               ${roleStyle.card}
+               ${isProcessing
                     ? 'animate-monster-shake border-indigo-200 shadow-indigo-100'
                     : 'hover:shadow-xl hover:-translate-y-1'}`}>
+
+
+
 
                 {/* ⚔️ Battle Visual Effects (Enhanced) */}
                 {isProcessing && (
@@ -100,10 +129,23 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                 {/* Header Info */}
                 <div className="flex justify-between items-start mb-4 relative z-10">
                     <div>
-                        <h4 className="font-black text-slate-800 text-lg group-hover:text-indigo-600 transition-colors">
+                        <h4 className={`font-black text-lg transition-colors flex items-center gap-2 ${roleStyle.title}`}>
                             {t(monster.nameKey)}
+                            {monster.role === MonsterRole.BOSS && (
+                                <span className="flex items-center gap-1">
+                                    <span className="drop-shadow-sm">👑</span>
+                                    <span className="text-[10px] tracking-tighter bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded-md border border-amber-200">
+                                        BOSS
+                                    </span>
+                                </span>
+                            )}
                         </h4>
+                        {/* ✨ เพิ่ม Aura เฉพาะ Boss */}
+                        {monster.role === MonsterRole.BOSS && !isProcessing && (
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-amber-400/40 blur-[70px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none z-0" />
+                        )}
                         <div className="flex items-center gap-2 mt-1.5">
+
                             <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase border shadow-sm ${ELEMENT_COLORS[monster.element]}`}>
                                 {monster.element}
                             </span>

@@ -36,8 +36,8 @@ export const ROLE_MULTIPLIERS: Record<MonsterRoleType, {
         defaultPassives: []
     },
     [MonsterRole.BOSS]: {
-        hp: 3.0, atk: 1.4, def: 1.6, exp: 4.0,
-        critChance: 0.10, critDamage: 1.5,
+        hp: 3.0, atk: 2.0, def: 1.6, exp: 3.0,
+        critChance: 0.15, critDamage: 1.6,
         defaultPassives: []
     }
 };
@@ -139,7 +139,7 @@ const RAW_MONSTERS: MonsterData[] = [
         ],
         gold: 350, exp: 0,
         element: 'Water',
-        masteryBonus: { type: 'maxHp', valuePerTier: 40 },
+        masteryBonus: { type: 'maxHp', valuePerTier: 20 },
         droppedSkills: ['sturdy-body', 'water-purify', 'vitality-boost']
     },
     {

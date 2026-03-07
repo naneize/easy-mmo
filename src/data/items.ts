@@ -3,9 +3,11 @@ import type { StatTarget } from '../types/game';
 
 export type ItemRarity = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
 export type ItemType = 'consumable' | 'weapon' | 'armor' | 'accessory' | 'material';
+export type WeaponSubtype = 'sword' | 'dagger' | 'axe' | 'staff' | 'bow';
 
 export interface GameItem {
     id: string;
+    weaponType?: WeaponSubtype;
     name: string;
     description: string;
     type: ItemType;
@@ -76,21 +78,27 @@ export const ITEMS: Record<string, GameItem> = {
         id: 'w_wooden_sword',
         name: 'Wooden Sword',
         description: 'ดาบไม้เก่าๆ เพิ่มพลังโจมตีเล็กน้อย',
-        type: 'weapon', rarity: 'Common', price: 100, icon: '🗡️', minLevel: 1,
+        type: 'weapon',
+        weaponType: 'sword',
+        rarity: 'Common', price: 100, icon: '🗡️', minLevel: 1,
         stats: { atk: 7 }
     },
     'w_iron_blade': {
         id: 'w_iron_blade',
         name: 'Iron Blade',
         description: 'ดาบเหล็กมาตรฐานสำหรับนักผจญภัย',
-        type: 'weapon', rarity: 'Rare', price: 500, icon: '⚔️', minLevel: 5,
+        type: 'weapon',
+        weaponType: 'sword',
+        rarity: 'Rare', price: 500, icon: '⚔️', minLevel: 5,
         stats: { atk: 15 }
     },
     'w_sanguine_dagger': {
         id: 'w_sanguine_dagger', // ID ตรงกับ Key
         name: 'Sanguine Dagger',
         description: 'เขี้ยวแวมไพร์ที่ยังมีความกระหายเลือด',
-        type: 'weapon', rarity: 'Epic', price: 2500, icon: '🗡️', minLevel: 8,
+        type: 'weapon',
+        weaponType: 'dagger',
+        rarity: 'Epic', price: 2500, icon: '🗡️', minLevel: 8,
         stats: { atk: 20 },
         passive: {
             name: 'Essence Reaping',

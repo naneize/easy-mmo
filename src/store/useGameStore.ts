@@ -149,7 +149,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     def: 15, // 10
     level: 1,
     lastElementChange: 0,
-    gold: 9999999,
+    gold: 1000,
     exp: 0,
     maxExp: 100,
     element: 'Neutral' as ElementType,
@@ -164,7 +164,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     critDamage: 1.5, // Default 1.5x
   },
   monster: null as MonsterData | null,
-  inventory: ['w_wooden_sword', 'a_leather_armor'] as string[],
+  inventory: ['w_wooden_sword', 'a_leather_armor', 'acc_iron_ring'] as string[],
   equipped: { weapon: null, armor: null, accessory: null } as GameState['equipped'],
   ownedSkills: INITIAL_SKILLS.map(s => ({ ...s, level: 1 })),
 
@@ -174,7 +174,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     return skill ? { ...skill, level: 1, unlocked: true } : null;
   }).filter(Boolean) as Skill[],
 
-  unlockedSkills: [] as string[],
+  unlockedSkills: ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'] as string[],
 
 
   battleLogs: [],
@@ -331,22 +331,34 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
 
   equipItem: (itemId) => {
     const item = ITEMS[itemId];
-    // 🚩 ลบ equipped ออกจากบรรทัดนี้ เพราะไม่ได้ใช้ check logic ก่อน set
     const { player, inventory } = get();
 
     if (!item || !inventory.includes(itemId)) return;
 
     if (player.level < item.minLevel) {
-      set((state) => ({
-        battleLogs: [...state.battleLogs]
-      }));
+      // ... โค้ดส่วนแจ้งเตือนเลเวลไม่พอ ...
       return;
     }
 
     set((state) => {
       const itemType = item.type as keyof typeof state.equipped;
+
       return {
-        equipped: { ...state.equipped, [itemType]: itemId },
+        // 1. อัปเดตส่วน ID (ใช้ในหน้า Inventory/UI)
+        equipped: {
+          ...state.equipped,
+          [itemType]: itemId
+        },
+
+        // 2. อัปเดตส่วน Object ในตัว Player (ใช้ในการคำนวณพลังโจมตี/Mastery)
+        player: {
+          ...state.player,
+          equipment: {
+            ...state.player.equipment,
+            [itemType]: item // เก็บ Object ไอเทมลงไปตรงๆ
+          }
+        },
+
         battleLogs: [...state.battleLogs]
       };
     });
@@ -443,7 +455,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
 
   processBattle: (monsterData) => {
     const { player, ownedSkills, equippedSkills, monsterKills, equipped } = get();
-    const currentKillCount = monsterKills[monsterData.id] || 0;
+
 
 
     const finalStats = get().getDerivedStats();
@@ -455,33 +467,54 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
       maxHp: finalStats.maxHp
     };
 
+
     const latestEquippedSkills = equippedSkills
       .map(eqSkill => {
         return ownedSkills.find(os => os.id === eqSkill.id) || eqSkill;
       })
-      .filter(Boolean); // กรอง null/undefined ออก
+      .filter(Boolean);
 
-    // ✨ 2. ดึงข้อมูล Item จริงๆ จาก Database (ITEMS) ตามที่สวมใส่อยู่
+    // ✨ 2. ดึงข้อมูล Item จริงๆ (เก็บไว้เหมือนเดิมครับ ห้ามลบ!)
     const weaponItem = equipped.weapon ? ITEMS[equipped.weapon] : null;
     const armorItem = equipped.armor ? ITEMS[equipped.armor] : null;
     const accItem = equipped.accessory ? ITEMS[equipped.accessory] : null;
 
-    // ✨ 3. รวม "สกิล" และ "ไอเทมสวมใส่" เข้าด้วยกันเป็น Array เดียว
-    const allActiveEffects = [
+    // สร้างลิสต์ ID ของไอเทมที่ใส่อยู่เพื่อเอาไว้กรองออก
+    const equippedIds = [equipped.weapon, equipped.armor, equipped.accessory].filter(Boolean);
+
+    const combined = [
       ...latestEquippedSkills,
       weaponItem,
       armorItem,
       accItem
-    ].filter(Boolean) as BattleEffect[]; // กรองเอาเฉพาะตัวที่ไม่เป็น null
+    ].filter(Boolean) as BattleEffect[];
 
-    // ✨ 4. ส่ง allActiveEffects (ที่มีไอเทมแล้ว) เข้าไปแทน latestEquippedSkills
-    // เปลี่ยนมาส่ง monsterKills (ทั้งก้อน) และ MONSTERS (รายชื่อทั้งหมด)
+    // ✨ 3. รวมร่างใหม่: กรองสิ่งที่ซ้ำกับไอเทมใน Slot ออกจากลิสต์สกิล
+    const rawEffects = [
+      ...latestEquippedSkills,
+      weaponItem,
+      armorItem,
+      accItem
+    ].filter(Boolean) as BattleEffect[];
+
+    // 🛡️ พ่น Log ออกมาดูว่า ID แต่ละตัว "หน้าตาจริงๆ" เป็นยังไง (ใส่เครื่องหมาย | ครอบไว้ดู Space)
+    rawEffects.forEach((eff, i) => {
+      console.log(`[Audit ${i}] ID: |${eff.id}| , Type: ${eff.type}, ATK: ${(eff as any).stats?.atk}`);
+    });
+
+    const allActiveEffects = Array.from(
+      new Map(combined.map(eff => [eff.id, eff])).values()
+    ) as BattleEffect[];
+
+    console.log("🛡️ FINAL CHECK - ID List:", allActiveEffects.map(e => e.id));
+
+    // ✨ 4. ส่งไปที่ simulateBattle เหมือนเดิม
     const result = simulateBattle(
       playerForBattle,
       monsterData,
       allActiveEffects,
-      monsterKills, // ✅ ส่งสมุดจดสถิติการฆ่าทั้งหมด (Record) แทนเลขตัวเดียว
-      MONSTERS      // ✅ ส่งรายชื่อมอนสเตอร์ทั้งหมดเข้าไปเป็นตัวที่ 5
+      monsterKills,
+      MONSTERS
     );
 
 
