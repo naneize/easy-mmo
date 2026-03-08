@@ -7,42 +7,55 @@ export function AchievementItem({ data }: { data: Achievement }) {
     const progress = Math.min((data.currentValue / data.targetValue) * 100, 100);
 
     return (
-        <div className={`relative p-5 rounded-[2.5rem] border-2 transition-all duration-500 backdrop-blur-md ${data.isUnlocked
-            /* 🚩 ถ้าปลดล็อคแล้ว: ใช้สีทองใสๆ ให้ความรู้สึกหรูหรา */
-            ? 'bg-amber-400/20 border-amber-400/40 shadow-[0_0_20px_rgba(251,191,36,0.2)]'
-            /* 🚩 ถ้ายังไม่ปลด: ใช้สีขาวใส (Glass) */
-            : 'bg-white/5 border-white/10 opacity-80'
+        <div className={`relative p-5 rounded-[2rem] border transition-all duration-500 backdrop-blur-xl group
+            ${data.isUnlocked
+                /* 🚩 ปลดล็อคแล้ว: ใช้สีเขียวมรกตใสสว่าง ล้อกับธีม Emerald */
+                ? 'bg-white/20 border-emerald-200/50 shadow-[0_8px_32px_rgba(16,185,129,0.15)] ring-1 ring-white/30'
+                /* 🚩 ยังไม่ปลด: ใช้สีเข้มขึ้นเพื่อให้ตัดกับพื้นหลังสว่าง */
+                : 'bg-slate-900/10 border-white/5 opacity-70 hover:opacity-100 hover:bg-white/10'
             }`}>
 
-            <div className="flex items-center gap-4">
-                {/* Icon Container */}
-                <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center text-2xl shadow-inner ${data.isUnlocked
-                    ? 'bg-gradient-to-b from-amber-300 to-orange-500 text-white animate-bounce-slow'
-                    : 'bg-white/10 text-white/20 grayscale'
+            <div className="flex items-center gap-5">
+                {/* Icon Container: ปรับเป็นทรงสี่เหลี่ยมโค้งมนสไตล์แอปสมัยใหม่ */}
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-transform duration-500 group-hover:scale-110 shadow-lg ${data.isUnlocked
+                    ? 'bg-gradient-to-br from-emerald-400 to-cyan-500 text-white shadow-emerald-500/20 rotate-3'
+                    : 'bg-slate-800/40 text-slate-400 grayscale border border-white/5'
                     }`}>
-                    {data.isUnlocked ? data.icon : <Lock size={20} />}
+                    {data.isUnlocked ? (
+                        <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">{data.icon}</span>
+                    ) : (
+                        <Lock size={20} className="opacity-50" />
+                    )}
                 </div>
 
                 <div className="flex-1">
-                    <h4 className={`font-black text-sm flex items-center gap-2 ${data.isUnlocked ? 'text-amber-200' : 'text-white/70'}`}>
-                        {t(data.titleKey)}
-                        {data.isUnlocked && <Trophy size={14} className="text-amber-400 fill-amber-400/20" />}
-                    </h4>
+                    <div className="flex items-center justify-between">
+                        <h4 className={`font-black text-[15px] tracking-tight ${data.isUnlocked ? 'text-slate-900' : 'text-slate-700/60'}`}>
+                            {t(data.titleKey)}
+                        </h4>
+                        {data.isUnlocked && (
+                            <div className="bg-emerald-500/20 p-1 rounded-full">
+                                <Trophy size={12} className="text-emerald-600 fill-emerald-600/10" />
+                            </div>
+                        )}
+                    </div>
 
-                    <p className={`text-[10px] font-bold uppercase leading-tight ${data.isUnlocked ? 'text-amber-100/60' : 'text-white/40'}`}>
+                    <p className={`text-[11px] font-bold mt-0.5 leading-snug ${data.isUnlocked ? 'text-slate-600' : 'text-slate-500/40'}`}>
                         {t(data.descriptionKey)}
                     </p>
 
+                    {/* Progress Area: ปรับสีให้เข้ากับธีม Cyan/Blue */}
                     {!data.isUnlocked && (
-                        <div className="mt-3">
-                            <div className="flex justify-between text-[9px] font-black mb-1">
-                                <span className="text-white/40">{t('achievement.progress')}</span>
-                                <span className="text-white/60">{data.currentValue.toLocaleString()} / {data.targetValue.toLocaleString()}</span>
+                        <div className="mt-4 space-y-1.5">
+                            <div className="flex justify-between items-end px-0.5">
+                                <span className="text-[10px] font-black text-slate-500/50 uppercase tracking-widest">{t('achievement.progress')}</span>
+                                <span className="text-[10px] font-black text-cyan-600 bg-cyan-50 px-1.5 py-0.5 rounded-md">
+                                    {data.currentValue.toLocaleString()} <span className="text-cyan-300">/</span> {data.targetValue.toLocaleString()}
+                                </span>
                             </div>
-                            {/* 🚩 Progress Bar แบบใส */}
-                            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden border border-white/5">
+                            <div className="w-full h-2 bg-slate-900/5 rounded-full overflow-hidden p-[1px] border border-white/20">
                                 <div
-                                    className="h-full bg-gradient-to-r from-indigo-400 to-purple-400 shadow-[0_0_8px_rgba(129,140,248,0.5)] transition-all duration-1000"
+                                    className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-1000 ease-out"
                                     style={{ width: `${progress}%` }}
                                 />
                             </div>
@@ -51,9 +64,12 @@ export function AchievementItem({ data }: { data: Achievement }) {
                 </div>
             </div>
 
-            {/* Effect พิเศษเมื่อปลดล็อคแล้ว (แสงฟุ้ง) */}
+            {/* ✨ ของตกแต่ง: แสงสะท้อนเล็กๆ มุมการ์ด */}
             {data.isUnlocked && (
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full blur-md animate-pulse" />
+                <>
+                    <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-white rounded-full animate-ping" />
+                    <div className="absolute -z-10 inset-0 bg-gradient-to-br from-white/40 to-transparent rounded-[2rem]" />
+                </>
             )}
         </div>
     );

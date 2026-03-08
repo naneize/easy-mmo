@@ -378,9 +378,9 @@ export function DashboardPage() {
                                                 {/* ถ้ามี logic เช็คอาวุธ สามารถเปลี่ยนสีป้ายนี้ได้ */}
                                                 <span className="text-[8px] font-black bg-rose-500 text-white px-1.5 py-0.5 rounded-full">SPECIAL</span>
                                             </div>
-                                            <div className="text-[12px] font-medium text-rose-800/80 leading-relaxed">
+                                            <div className="text-[11.5px] font-medium text-rose-800/80 leading-relaxed">
                                                 Increases Attack by <span className="font-black text-rose-600">+15%</span> when
-                                                <span className="underline decoration-rose-400/50 underline-offset-2"> Sword</span> is equipped.
+                                                equipped with a <span className="font-bold border-b border-rose-400/50">Sword-type</span> weapon.
                                             </div>
                                         </div>
                                     )}

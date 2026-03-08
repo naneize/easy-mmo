@@ -39,6 +39,7 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
         boss_skill: 'bg-rose-950/40 text-rose-200 border-rose-500/50 font-black shadow-[0_0_15px_rgba(225,29,72,0.2)] py-2 my-1 ring-1 ring-rose-500/20',
         boss_passive: 'bg-purple-900/30 text-purple-200 border-purple-500/40 py-1.5 shadow-inner opacity-100',
         reflect: 'bg-orange-500/20 text-orange-300 border-orange-500/40 py-1.5 font-bold',
+        constant: 'bg-blue-500/10 text-blue-300 border-blue-500/20 shadow-inner py-1.5 opacity-100',
 
     }), [])
 
@@ -157,7 +158,7 @@ export function BattleLog({ logs, onReset }: BattleLogProps) {
                                     })()}
 
                                     {log.type === 'skill' && <Zap size={14} className="text-sky-400" />}
-                                    {log.type === 'regen' && <HeartPulse size={14} className="text-emerald-400" />}
+                                    {log.type === 'constant' && <Sparkles size={14} className="text-blue-400 animate-pulse" />}
                                     {log.type === 'start' && <Sword size={14} className="text-slate-500" />}
                                     {log.type === 'critical' && <Zap size={16} className="text-orange-400 animate-pulse fill-orange-400 drop-shadow-[0_0_8px_#f97316]" />}
                                     {log.type === 'lifesteal' && <HeartPulse size={14} className="text-fuchsia-400" />}

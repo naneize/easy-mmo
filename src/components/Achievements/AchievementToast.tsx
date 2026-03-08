@@ -42,51 +42,50 @@ export function AchievementToast({ title, description, onClose, badgeText }: Ach
 
     return (
         <div className={`fixed bottom-8 right-8 z-[200] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] transform 
-            ${isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-90'}`}>
+        ${isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-90 pointer-events-none'}`}>
 
-            {/* กล่องหลัก: เพิ่ม backdrop-blur-xl เพื่อให้โปร่งแสงเห็นพื้นหลัง Emerald ของคุณแบบนวลๆ */}
-            <div className="bg-slate-900/90 backdrop-blur-xl border-2 border-amber-400 p-1 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(251,191,36,0.2)] overflow-hidden min-w-[320px]">
+            {/* กล่องหลัก: เปลี่ยนจากสีดำเป็นกระจกขาวใส (White Glass) */}
+            <div className="bg-white/40 backdrop-blur-2xl border border-white/40 p-1.5 rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15),0_0_20px_rgba(16,185,129,0.1)] overflow-hidden min-w-[340px]">
 
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/80 rounded-[2.3rem] p-5 flex items-center gap-4 relative">
+                <div className="bg-white/40 rounded-[2.2rem] p-5 flex items-center gap-4 relative overflow-hidden">
 
-                    {/* Background Trophy (ตกแต่งด้านหลัง) */}
-                    <div className="absolute -top-2 -right-2 p-4 opacity-5 rotate-12 text-white">
-                        <Trophy size={90} />
+                    {/* Background Decoration: แสงฟุ้งสีเขียวมรกตด้านหลัง */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/20 blur-[40px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                    {/* Icon Section: ใช้ Gradient Emerald to Cyan */}
+                    <div className="relative shrink-0">
+                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-bounce-slow">
+                            <Trophy className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.1)]" size={32} />
+                        </div>
+                        {/* Sparkles Effect */}
+                        <div className="absolute -top-1 -right-1 text-emerald-500 animate-pulse">
+                            <Sparkles size={18} fill="currentColor" className="opacity-70" />
+                        </div>
                     </div>
 
-                    {/* Icon Section */}
-                    <div className="relative">
-                        <div className="w-14 h-14 bg-gradient-to-t from-amber-600 to-yellow-300 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.4)] animate-bounce-slow">
-                            <Trophy className="text-white drop-shadow-md" size={28} />
-                        </div>
-                        <div className="absolute -top-2 -right-2 text-amber-300 animate-pulse">
-                            <Sparkles size={20} />
-                        </div>
-                    </div>
-
-                    {/* Text Section */}
+                    {/* Text Section: เน้นตัวอักษรสีเข้มให้อ่านง่ายบนพื้นหลังใส */}
                     <div className="flex-1 relative z-10">
-                        <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-black text-amber-400 uppercase tracking-[0.25em] mb-0.5">
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-[10px] font-black text-emerald-600 bg-emerald-100/60 px-2 py-0.5 rounded-md uppercase tracking-widest">
                                 {badgeText ?? t('achievementToast.unlocked')}
                             </span>
                         </div>
-                        <h4 className="text-white font-black text-lg leading-tight tracking-tight uppercase italic">
+                        <h4 className="text-slate-800 font-black text-lg leading-tight tracking-tight uppercase">
                             {title}
                         </h4>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mt-0.5 opacity-90">
+                        <p className="text-slate-500/80 text-[11px] font-bold uppercase tracking-wide mt-0.5">
                             {description}
                         </p>
                     </div>
                 </div>
 
-                {/* Progress Bar: ปรับให้วิ่งจากขวามาซ้าย (ลดลง) */}
-                <div className="h-1 bg-amber-400/10 w-full overflow-hidden">
+                {/* Progress Bar: เปลี่ยนเป็นสี Emerald-Cyan Gradient */}
+                <div className="absolute bottom-0 left-0 h-1.5 w-full bg-slate-200/30">
                     <div
-                        className="h-full bg-amber-400 transition-all ease-linear"
+                        className="h-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 transition-all ease-linear shadow-[0_0_8px_rgba(52,211,153,0.5)]"
                         style={{
                             width: `${progress}%`,
-                            transitionDuration: '3000ms' // วิ่งเป็นเวลา 3 วินาทีตามที่แสดง
+                            transitionDuration: '3000ms'
                         }}
                     />
                 </div>

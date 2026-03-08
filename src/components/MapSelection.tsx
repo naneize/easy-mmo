@@ -1,6 +1,5 @@
 import { Lock, Map as MapIcon, ChevronRight } from 'lucide-react'
 import { WORLD_MAPS } from '../data/maps'
-import { useGameStore } from '../store/useGameStore'
 import { useTranslation } from 'react-i18next'
 import type { GameMap } from '../types/game'
 
@@ -57,7 +56,7 @@ export function MapSelection({ playerLevel, onSelect }: MapSelectionProps) {
                                         </div>
                                         <div>
                                             <h3 className="font-black text-emerald-500 text-2xl leading-tight">{t(map.nameKey)}</h3>
-                                            <p className="text-sm text-slate-500 mt-1 max-w-[220px] line-clamp-1 italic">"{t(map.descriptionKey)}"</p>
+                                            <p className="text-sm text-slate-500 mt-1 max-w-[220px] line-clamp-1 ">{t(map.descriptionKey)}</p>
 
                                             {!isLocked && (
                                                 <div className="mt-4 flex flex-wrap gap-1.5 items-center">

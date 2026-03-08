@@ -450,8 +450,8 @@
       "description": "บอสแห่งไฟ"
     },
     "boss-04": {
-      "name": "จอมเวทย์แห่งนรก",
-      "description": "บอสแห่งนรก"
+      "name": "จอมเวทย์แห่งลม",
+      "description": "บอสแห่งลม"
     },
     "boss-05": {
       "name": "จอมเวทย์แห่งความว่างเปล่า",
@@ -531,6 +531,7 @@
     "lifestealDescription": "(ดูดเลือด +{value}%)"
   },
   "battleLog": {
+    "passiveEffect": "{{name}}: {{effect}}",
     "battleRecords": "บันทึกการต่อสู้",
     "you": "คุณ",
     "combatSession": "บันทึกการต่อสู้ #{{count}}",

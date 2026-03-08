@@ -29,7 +29,7 @@ function App() {
   }, [regenHP])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-400 via-cyan-500 to-blue-600 bg-fixed">      <MainLayout>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-400 via-cyan-500 to-blue-400 bg-fixed">      <MainLayout>
       {activeTab === 'dashboard' && <DashboardPage />}
       {activeTab === 'skills' && <PassiveSkillPage />}
       {activeTab === 'adventure' && <AdventurePage />}

@@ -15,7 +15,9 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-02'),
             MONSTERS.find(m => m.id === 'm-04'),
             MONSTERS.find(m => m.id === 'm-boss-01')
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
 
 
 
@@ -36,7 +38,9 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-05'),
             MONSTERS.find(m => m.id === 'm-06'),
             MONSTERS.find(m => m.id === 'm-07')
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     },
     {
         id: 'shadow-plains',
@@ -52,7 +56,9 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-11'),
             MONSTERS.find(m => m.id === 'm-12'),
             MONSTERS.find(m => m.id === 'm-13')
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     },
     {
         id: 'crystal-mountains',
@@ -68,7 +74,9 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-16'),
             MONSTERS.find(m => m.id === 'm-17'),
             MONSTERS.find(m => m.id === 'm-18')
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     },
     {
         id: 'inferno-wastelands',
@@ -84,7 +92,8 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-21'),
             MONSTERS.find(m => m.id === 'm-22'),
             MONSTERS.find(m => m.id === 'm-23')
-        ].filter(Boolean),
+        ].filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     },
     {
         id: 'celestial-realm',
@@ -100,7 +109,9 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-26'),
             MONSTERS.find(m => m.id === 'm-27'),
             MONSTERS.find(m => m.id === 'm-28')
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     },
     {
         id: 'eternal-peaks',
@@ -115,7 +126,9 @@ export const WORLD_MAPS: GameMap[] = [
             MONSTERS.find(m => m.id === 'm-30'),
             MONSTERS.find(m => m.id === 'm-31')
 
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     },
     {
         id: 'wizard-tower',
@@ -125,12 +138,16 @@ export const WORLD_MAPS: GameMap[] = [
         descriptionKey: 'maps.wizardTower.description',
         minLevel: 50,
         bgEmoji: '👑',
+
+        // ✨ จัดเรียงตรงนี้เลย
         monsters: [
             MONSTERS.find(m => m.id === 'boss-02'),
             MONSTERS.find(m => m.id === 'boss-03'),
             MONSTERS.find(m => m.id === 'boss-04'),
             MONSTERS.find(m => m.id === 'boss-05')
-        ].filter(Boolean),
+        ]
+            .filter((m): m is any => !!m) // กรองตัวที่หาไม่เจอออกก่อน (Type Guard)
+            .sort((a, b) => a.level - b.level) // 👈 สูตรคือ (หลัง - หน้า) = มากไปน้อย
     }
 ];
 

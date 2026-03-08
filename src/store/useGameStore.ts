@@ -147,9 +147,9 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     maxHp: 350,
     atk: 30, // 15
     def: 15, // 10
-    level: 1,
+    level: 50,
     lastElementChange: 0,
-    gold: 1000,
+    gold: 500,
     exp: 0,
     maxExp: 100,
     element: 'Neutral' as ElementType,
@@ -164,7 +164,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     critDamage: 1.5, // Default 1.5x
   },
   monster: null as MonsterData | null,
-  inventory: ['w_wooden_sword', 'a_leather_armor', 'acc_iron_ring'] as string[],
+  inventory: ['w_wooden_sword', 'a_leather_armor'] as string[],
   equipped: { weapon: null, armor: null, accessory: null } as GameState['equipped'],
   ownedSkills: INITIAL_SKILLS.map(s => ({ ...s, level: 1 })),
 
@@ -174,7 +174,7 @@ export const useGameStore = create<GameState>((set, get): GameState => ({
     return skill ? { ...skill, level: 1, unlocked: true } : null;
   }).filter(Boolean) as Skill[],
 
-  unlockedSkills: ['sturdy-body', 'brute-force', 'battle-focus', 'gold-finder'] as string[],
+  unlockedSkills: [] as string[],
 
 
   battleLogs: [],

@@ -451,8 +451,8 @@
       "description": "Fire boss"
     },
     "boss-04": {
-      "name": "Hell Mage",
-      "description": "Hell boss"
+      "name": "Wind Mage",
+      "description": "Wind boss"
     },
     "boss-05": {
       "name": "Void Mage",
@@ -539,6 +539,7 @@
     "lifestealDescription": "(Lifesteal +{value}%)"
   },
   "battleLog": {
+    "passiveEffect": "{{name}}: {{effect}}",
     "start": "⚔️ Battle started with {{name}} (HP: {{hp}})",
     "turn": "🔄 Turn {{num}}",
     "you": "You",
@@ -553,6 +554,7 @@
     "doubleAttack": "🌪️ DOUBLE ATTACK! 🌪️ {{attacker}} unleashes a devastating combo on {{target}}! -{{dmg}} HP (Remaining: {{hpLeft}} HP)",
     "miss": "💨 MISS! {{target}} gracefully dodges the attack!",
     "counterStrike": "⚡ COUNTER STRIKE! ⚡ {{attacker}} counters {{target}}: -{{dmg}} HP (Remaining: {{hpLeft}} HP)",
+    "elementalNotice": "{{playerType}} VS {{monsterType}}! DAMAGE x{{mult}}",
     "lifesteal": "🩸 [{{sourceName}}] Lifesteals +{{amt}} HP (Current: {{currentHp}} HP)",
     "victory": "✨ Victory! You defeated {{name}}! (Remaining HP: {{hpLeft}}) | 💰 +{{gold}}G 🌟 +{{exp}}EXP",
     "defeat": "💀 Defeated... You were killed by {{name}}! (Monster HP: {{monsterHpLeft}})",

@@ -159,8 +159,8 @@ export const calculateFinalStats = (
 
     // สูตร: (Base + FlatSkill) * (1 + PercentSum)
     const finalAtk = Math.max(0, Math.floor((player.atk + atkFlat + skillAtkMod) * (1 + atkPercent)));
-    const finalDef = Math.max(0, Math.floor((defFlat + skillDefMod) * (1 + defPercent)));
-    const finalMaxHp = Math.max(1, Math.floor((maxHpFlat + skillMaxHpMod) * (1 + maxHpPercent)));
+    const finalDef = Math.max(0, Math.floor((player.def + defFlat + skillDefMod) * (1 + defPercent)));
+    const finalMaxHp = Math.max(1, Math.floor((player.maxHp + maxHpFlat + skillMaxHpMod) * (1 + maxHpPercent)));
     const finalCritChance = Math.min(1, Math.max(0, critChanceFlat + critChancePercent)); // Cap between 0-100%
     const finalCritDamage = Math.max(1, critDamageFlat + critDamagePercent); // Minimum 1x
 

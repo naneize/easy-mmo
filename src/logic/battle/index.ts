@@ -7,7 +7,8 @@ import { initializeMonster } from '../../data/monsters';
 import { BattleLogger as Log } from '../battleLogger';
 import { calculatePlayerClass } from '../../utils/gameHelpers';
 import { MONSTER_PASSIVES } from '../monsterPassives';
-import { ITEMS } from '../../data/items';
+import { BattleLogger } from '../battleLogger';
+
 
 
 // Helper สำหรับแปลภาษา
@@ -50,18 +51,20 @@ export const simulateBattle = (
     // 2. ✨ ย้ายโค้ดเช็คเงื่อนไขมาไว้ตรงนี้ (หลังประกาศ logs)
     const equippedWeapon = player.equipment.weapon;
 
+    let weaponMasteryMultiplier = 1;
+
 
     // เปลี่ยนจาก message เป็น text ตามที่ Error แจ้ง
     if (playerClass?.id === 'mercenary' && (equippedWeapon as any)?.weaponType === 'sword') {
-        logs.push({
-            type: 'system', // หรือ 'info' ตามที่ type คุณรองรับ
-            text: '⚔️ Mercenary Sword Mastery: Increases Attack by 15%!',
-            // ถ้ามันยังฟ้องว่าขาดตัวไหน ให้เพิ่มตัวนั้นเข้าไปด้วยครับ เช่น
-            // damage: 0, 
-            // icon: '⚔️'
-        } as BattleLogEntry);
-    }
+        // เรียกใช้ Logger ที่เราเพิ่งสร้าง
+        logs.push(BattleLogger.constant(
+            'Class Special Skill',
+            '+15% ATK'
+        ));
 
+        // ค่าพลังคำนวณเหมือนเดิม
+        weaponMasteryMultiplier = 1.15;
+    }
     let turn = 1;
 
     // ✅ แก้ไข: ใช้ชื่อที่แปลแล้ว

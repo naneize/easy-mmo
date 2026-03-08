@@ -106,6 +106,12 @@ export const BattleLogger = {
         })
     }),
 
+    // เพิ่มเข้าไปต่อจากส่วน lifesteal หรือ bossPassive ก็ได้ครับ
+    constant: (name: string, effect: string): BattleLogEntry => ({
+        type: 'constant', // 👈 ตัวนี้แหละที่จะไปสั่ง UI ให้เปลี่ยนเป็นสีฟ้า
+        text: i18next.t('battleLog.passiveEffect', { name, effect })
+    }),
+
     bossPassive: (bossName: string, passiveName: string, effect: string, value: string = ""): BattleLogEntry => ({
         type: 'boss_passive',
         text: i18next.t('battleLog.bossPassive', {

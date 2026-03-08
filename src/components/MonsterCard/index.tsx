@@ -13,25 +13,26 @@ import { MonsterRole } from '../../data/monsters';
 
 const ROLE_STYLES: Record<string, { card: string; title: string; badge: string }> = {
     [MonsterRole.NORMAL]: {
-        card: 'border-slate-50 bg-white',
+        card: 'border-slate-200 bg-white shadow-sm',
         title: 'text-slate-800 group-hover:text-indigo-600',
         badge: 'bg-slate-100 text-slate-500'
     },
     [MonsterRole.BOSS]: {
-        // เพิ่ม shadow-xl และเปลี่ยนสี shadow ให้ติดโทนส้มทอง
-        card: 'border-amber-300 bg-gradient-to-br from-white to-amber-50 shadow-[0_20px_50px_rgba(245,158,11,0.3)]',
-        title: 'text-amber-700 group-hover:text-orange-600',
+        card: 'border-amber-400 bg-gradient-to-br from-amber-50/50 to-orange-50/50 shadow-[0_20px_50px_rgba(245,158,11,0.3)] ring-1 ring-amber-200',
+        title: 'text-amber-800 group-hover:text-orange-600',
         badge: 'bg-amber-500 text-white'
     },
     [MonsterRole.TANK]: {
-        card: 'border-blue-100 bg-slate-50',
-        title: 'text-blue-900',
+        // ✅ ปรับ Tank: ใช้สีฟ้าที่เข้มขึ้นเล็กน้อย และเพิ่ม shadow สีฟ้าจางๆ ให้ดูมีมิติ
+        card: 'border-blue-200 bg-blue-50/50 shadow-md shadow-blue-500/5',
+        title: 'text-blue-900 font-bold',
         badge: 'bg-blue-600 text-white'
     },
-    [MonsterRole.GLASS_CANNON]: {
-        card: 'border-rose-100 bg-rose-50/10',
-        title: 'text-rose-700',
-        badge: 'bg-rose-500 text-white'
+    [MonsterRole.Vanguard]: {
+        // ✅ ปรับ Glass Cannon: เพิ่มความเข้มพื้นหลังเป็น /30 และใช้ขอบสีชมพู/แดงที่ชัดขึ้น
+        card: 'border-rose-300 bg-rose-50/40 shadow-md shadow-rose-500/5',
+        title: 'text-rose-800 font-bold',
+        badge: 'bg-rose-600 text-white'
     }
 }
 
@@ -129,46 +130,55 @@ export function MonsterCard({ monster, onBattle, isProcessing }: MonsterCardProp
                 {/* Header Info */}
                 <div className="flex justify-between items-start mb-4 relative z-10">
                     <div>
+                        {/* 1. ส่วนชื่อ: เหลือแค่ชื่อเน้นๆ ให้ดูเรียบหรู */}
                         <h4 className={`font-black text-lg transition-colors flex items-center gap-2 ${roleStyle.title}`}>
+                            {monster.role === MonsterRole.BOSS && <span className="drop-shadow-sm text-base">👑</span>}
                             {t(monster.nameKey)}
-                            {monster.role === MonsterRole.BOSS && (
-                                <span className="flex items-center gap-1">
-                                    <span className="drop-shadow-sm">👑</span>
-                                    <span className="text-[10px] tracking-tighter bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded-md border border-amber-200">
-                                        BOSS
-                                    </span>
-                                </span>
-                            )}
                         </h4>
-                        {/* ✨ เพิ่ม Aura เฉพาะ Boss */}
-                        {monster.role === MonsterRole.BOSS && !isProcessing && (
-                            <div className="absolute top-0 right-0 w-48 h-48 bg-amber-400/40 blur-[70px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none z-0" />
-                        )}
-                        <div className="flex items-center gap-2 mt-1.5">
 
+                        {/* 2. ส่วนข้อมูลสถานะ: รวม Element, Level และ Role ไว้ด้วยกัน */}
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            {/* Element Badge */}
                             <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase border shadow-sm ${ELEMENT_COLORS[monster.element]}`}>
                                 {monster.element}
                             </span>
+
+                            {/* Level Badge */}
                             <span className="flex items-center bg-indigo-100 border border-indigo-200 px-2 py-0.5 rounded-md shadow-sm">
                                 <span className="text-[9px] font-black text-indigo-400 mr-0.5 tracking-tighter">LV.</span>
                                 <span className="text-[11px] font-black text-indigo-700 tracking-tight">
                                     {monster.level}
                                 </span>
                             </span>
+
+                            {/* ✨ Role Badge: ย้ายมาอยู่ข้างเลเวลแล้ว! */}
+                            {monster.role !== MonsterRole.NORMAL && (
+                                <span className={`text-[10px] tracking-tighter px-1.5 py-0.5 rounded-md border font-black shadow-sm uppercase shrink-0
+                    ${monster.role === MonsterRole.BOSS ? 'bg-amber-500 text-white border-amber-400' :
+                                        monster.role === MonsterRole.TANK ? 'bg-blue-600 text-white border-blue-400' :
+                                            'bg-rose-600 text-white border-rose-400'}`}>
+                                    {monster.role}
+                                </span>
+                            )}
                         </div>
+
+                        {/* Aura ยังคงอยู่ที่เดิมเพื่อความสวยงาม */}
+                        {monster.role !== MonsterRole.NORMAL && !isProcessing && (
+                            <div className={`absolute top-0 right-0 w-48 h-48 blur-[70px] -translate-y-1/2 translate-x-1/2 rounded-full pointer-events-none -z-10 opacity-60
+                ${monster.role === MonsterRole.BOSS ? 'bg-amber-400/40' :
+                                    monster.role === MonsterRole.TANK ? 'bg-blue-400/30' :
+                                        'bg-rose-400/40'}`}
+                            />
+                        )}
                     </div>
 
-
-
-                    <div className="flex flex-col gap-1 items-end">
-                        {/* EXP Badge */}
-                        <div className="bg-amber-50 text-amber-600 px-2 py-1 rounded-xl border border-amber-100 flex items-center gap-1 text-[10px] font-black shadow-sm">
+                    {/* ฝั่งขวา: EXP & GOLD เหมือนเดิม */}
+                    <div className="flex flex-col gap-1 items-end relative z-10">
+                        <div className="bg-amber-50/80 backdrop-blur-sm text-amber-600 px-2 py-1 rounded-xl border border-amber-100 flex items-center gap-1 text-[10px] font-black shadow-sm">
                             <Sparkles size={10} />
                             <span>+{initializedMonster.exp} EXP</span>
                         </div>
-
-                        {/* GOLD Badge */}
-                        <div className="bg-yellow-50 text-yellow-600 px-2 py-1 rounded-xl border border-yellow-100 flex items-center gap-1 text-[10px] font-black shadow-sm">
+                        <div className="bg-yellow-50/80 backdrop-blur-sm text-yellow-600 px-2 py-1 rounded-xl border border-yellow-100 flex items-center gap-1 text-[10px] font-black shadow-sm">
                             <Coins size={10} />
                             <span>+{monster.gold} GOLD</span>
                         </div>

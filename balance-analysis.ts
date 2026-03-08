@@ -6,14 +6,14 @@ const calculatePlayerStats = (level: number) => {
     let hp = 100; // Base HP at level 1
     let atk = 10; // Base ATK at level 1  
     let def = 5;  // Base DEF at level 1
-    
+
     // Simulate level up progression from experience.ts
     for (let l = 2; l <= level; l++) {
         hp += 30 + (l * 5);
         atk += 5 + Math.floor(l / 2);
         def += 2 + Math.floor(l / 4);
     }
-    
+
     return { hp, atk, def };
 };
 
@@ -22,16 +22,16 @@ const calculateMonsterStats = (level: number, role: string) => {
     const baseHp = 100 + (level * 60);
     const baseAtk = 12 + (level * 6);
     const baseDef = 6 + (level * 4);
-    
+
     const multipliers = {
         'NORMAL': { hp: 1.0, atk: 1.0, def: 1.0, exp: 1.0 },
         'TANK': { hp: 2.0, atk: 0.8, def: 1.6, exp: 1.4 },
-        'GLASS_CANNON': { hp: 0.8, atk: 1.7, def: 0.7, exp: 1.3 },
+        'Vanguard': { hp: 0.8, atk: 1.7, def: 0.7, exp: 1.3 },
         'BOSS': { hp: 3.5, atk: 1.6, def: 2.0, exp: 5.0 }
     };
-    
+
     const mult = multipliers[role as keyof typeof multipliers];
-    
+
     return {
         hp: Math.floor(baseHp * mult.hp),
         atk: Math.floor(baseAtk * mult.atk),
@@ -58,7 +58,7 @@ const getElementalMultiplier = (attacker: string, defender: string) => {
         'Light': { 'Dark': 1.2 },
         'Dark': { 'Light': 1.2 }
     };
-    
+
     return advantages[attacker]?.[defender] || 1.0;
 };
 
@@ -66,37 +66,37 @@ const getElementalMultiplier = (attacker: string, defender: string) => {
 const simulateBattle = (playerLevel: number, playerElement: string, monsterLevel: number, skillLevel: number = 5) => {
     const playerStats = calculatePlayerStats(playerLevel);
     const monsterStats = calculateMonsterStats(monsterLevel, 'BOSS');
-    
+
     // Apply Blazing Soul
     const blazingBonus = calculateBlazingSoul(playerStats.atk, skillLevel, playerElement);
     const playerAtk = playerStats.atk + blazingBonus;
-    
+
     // Elemental multipliers
     const pElementMult = getElementalMultiplier(playerElement, 'Dark');
     const mElementMult = getElementalMultiplier('Dark', playerElement);
-    
+
     const finalPlayerAtk = Math.floor(playerAtk * pElementMult);
     const finalMonsterAtk = Math.floor(monsterStats.atk * mElementMult);
-    
+
     // Battle calculation
     let playerHp = playerStats.hp;
     let monsterHp = monsterStats.hp;
     let turns = 0;
-    
+
     while (playerHp > 0 && monsterHp > 0 && turns < 50) {
         // Player turn
         const playerDmg = Math.max(1, finalPlayerAtk - monsterStats.def);
         monsterHp -= playerDmg;
-        
+
         if (monsterHp <= 0) break;
-        
+
         // Monster turn
         const monsterDmg = Math.max(1, finalMonsterAtk - playerStats.def);
         playerHp -= monsterDmg;
-        
+
         turns++;
     }
-    
+
     return {
         won: monsterHp <= 0,
         turns,
